@@ -1,0 +1,172 @@
+@if (!evenement()) {
+  <div class="loading-page">Chargement...</div>
+} @else {
+
+<div class="detail-page">
+  <button class="btn-retour" (click)="retour()">← Retour aux événements</button>
+
+  <!-- En-tête -->
+  <div class="detail-header">
+    <div class="evt-meta">
+      @if (evenement()!.type) {
+        <span class="evt-type-badge">{{ evenement()!.type }}</span>
+      }
+      <span class="evt-statut {{ getStatutEvenement(evenement()!.dateEvenement, evenement()!.dateFin, evenement()!.statut) }}">
+        {{ statutLabel(evenement()!.dateEvenement, evenement()!.dateFin, evenement()!.statut) }}
+      </span>
+      @if (evenement()!.statut && evenement()!.statut !== 'ANNULE') {
+        <span class="evt-statut-raw">({{ evenement()!.statut }})</span>
+      }
+    </div>
+    <h1>{{ evenement()!.titre }}</h1>
+    <div class="evt-dates">
+      <span>📅 {{ evenement()!.dateEvenement | date:'dd MMMM yyyy' }}</span>
+      @if (evenement()!.dateFin) {
+        <span> → {{ evenement()!.dateFin | date:'dd MMMM yyyy' }}</span>
+      }
+    </div>
+    @if (evenement()!.lieu) {
+      <p class="evt-lieu">📍 {{ evenement()!.lieu }}</p>
+    }
+  </div>
+
+  <!-- Description -->
+  @if (evenement()!.description) {
+    <div class="detail-section">
+      <h2>Description</h2>
+      <div class="evt-description" [innerHTML]="safeHtml(evenement()!.description)"></div>
+    </div>
+  }
+
+  <!-- Programme scientifique -->
+  @if (evenement()!.programmeTexte || evenement()!.programmeUrl) {
+    <div class="detail-section">
+      <h2>Programme scientifique</h2>
+
+      @if (evenement()!.programmeTexte) {
+        <div class="programme-text" [innerHTML]="safeHtml(evenement()!.programmeTexte)"></div>
+      }
+
+      @if (evenement()!.programmeUrl) {
+        <a [href]="evenement()!.programmeUrl" target="_blank" class="btn-programme">
+          📋 Télécharger le programme (PDF)
+        </a>
+      }
+    </div>
+  }
+
+  <!-- ═══ INTERVENANTS ═══ -->
+  <div class="detail-section">
+    <h2>Intervenants invités</h2>
+    @if (evenement()!.intervenants?.length) {
+      <div class="intervenants-grid">
+        @for (inv of evenement()!.intervenants; track inv.id) {
+          <div class="intervenant-card">
+            @if (inv.photoUrl) {
+              <img [src]="inv.photoUrl" [alt]="inv.nom" class="inv-photo" />
+            } @else {
+              <div class="inv-avatar">{{ (inv.prenom ?? '?')[0] }}{{ inv.nom[0] }}</div>
+            }
+            <div class="inv-info">
+              <strong>{{ inv.prenom }} {{ inv.nom }}</strong>
+              @if (inv.affiliation) { <p class="inv-affil">{{ inv.affiliation }}</p> }
+              @if (inv.titrePresentation) {
+                <p class="inv-titre">💬 {{ inv.titrePresentation }}</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-msg">Aucun intervenant invité.</p>
+    }
+  </div>
+
+  <!-- ═══ GALERIE PHOTOS ═══ -->
+  <div class="detail-section">
+    <h2>Galerie photos</h2>
+
+    <!-- Zone d'upload drag-drop (admin seulement) -->
+    @if (isAdmin) {
+      <div
+        class="upload-zone"
+        [class.uploading]="uploading()"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+      >
+        @if (uploading()) {
+          <span class="spinner-inline"></span> Upload en cours...
+        } @else {
+          <span>📂 Glissez-déposez vos photos ici ou</span>
+          <label class="btn-upload-label">
+            Choisir des fichiers
+            <input
+              type="file"
+              multiple
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              (change)="onFichiersSelectionnes($event)"
+              hidden
+            />
+          </label>
+          <span class="upload-hint">JPG, PNG, WebP, GIF — max 5 Mo par fichier</span>
+        }
+      </div>
+
+      @if (uploadErreur()) {
+        <div class="upload-erreur">⚠️ {{ uploadErreur() }}</div>
+      }
+    }
+
+    <!-- Grille photos avec drag-drop pour réordonner (admin) -->
+    @if (evenement()!.photos?.length) {
+      <div class="galerie-grid">
+        @for (photo of evenement()!.photos; track photo.id; let i = $index) {
+          <div
+            class="galerie-item"
+            [class.draggable]="isAdmin"
+            [draggable]="isAdmin"
+            (dragstart)="isAdmin && onDragStartPhoto(i)"
+            (dragover)="$event.preventDefault()"
+            (drop)="isAdmin && onDropPhoto($event, i)"
+            (click)="ouvrirPhoto(i)"
+          >
+            <img [src]="photo.url" [alt]="photo.legende || 'Photo ' + (i+1)" />
+            @if (photo.legende) {
+              <div class="galerie-legende">{{ photo.legende }}</div>
+            }
+            @if (isAdmin) {
+              <button
+                class="btn-suppr-photo"
+                (click)="$event.stopPropagation(); supprimerPhoto(photo)"
+                title="Supprimer"
+              >✕</button>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-msg">Aucune photo pour cet événement.</p>
+    }
+  </div>
+
+</div>
+
+<!-- ═══ LIGHTBOX ═══ -->
+@if (photoActive()) {
+  <div class="lightbox-overlay" (click)="fermerLightbox()">
+    <div class="lightbox-content" (click)="$event.stopPropagation()">
+      <button class="lb-close" (click)="fermerLightbox()">✕</button>
+      <button class="lb-prev" (click)="photoPrecedente()">‹</button>
+      <img [src]="photoActive()!.url" [alt]="photoActive()!.legende || ''" class="lb-img" />
+      <button class="lb-next" (click)="photoSuivante()">›</button>
+      @if (photoActive()!.legende) {
+        <p class="lb-legende">{{ photoActive()!.legende }}</p>
+      }
+      <div class="lb-counter">
+        {{ photoActiveIdx() + 1 }} / {{ evenement()!.photos!.length }}
+      </div>
+    </div>
+  </div>
+}
+
+} <!-- end @if evenement -->

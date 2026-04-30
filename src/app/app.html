@@ -1,0 +1,155 @@
+@if (showNavbar()) {
+<nav class="navbar">
+
+  <!-- Brand -->
+  <div class="nav-brand" routerLink="/home" style="cursor:pointer">
+    <div class="brand-logos">
+      <img src="utm_logo.png" alt="UTM" class="nav-utm-logo" />
+      <img [src]="settings.logoUrlResolved()" [attr.alt]="settings.acronyme()" class="nav-limtic-logo" />
+      <img src="isi.png" alt="ISI El Manar" class="nav-isi-logo" />
+    </div>
+  </div>
+
+  <!-- Hamburger (mobile) -->
+  <button class="nav-toggle" (click)="toggleMenu()" [attr.aria-expanded]="menuOuvert()" aria-label="Menu">
+    @if (menuOuvert()) { ✕ } @else { ☰ }
+  </button>
+
+  <!-- Liens -->
+  <div class="nav-links" [class.open]="menuOuvert()">
+
+    <a routerLink="/home" routerLinkActive="active" (click)="fermerTout()">Accueil</a>
+
+    <!-- Équipe -->
+    <div class="nav-dropdown">
+      <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'equipe'"
+        (click)="toggleDropdown('equipe')">
+        Équipe <span class="arrow" [class.rotated]="dropdownOuvert() === 'equipe'">▾</span>
+      </span>
+      @if (dropdownOuvert() === 'equipe') {
+      <div class="dropdown-menu">
+        <a routerLink="/directeur" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">👤</span> Directeur
+        </a>
+        <a routerLink="/chercheurs" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">🔬</span> Chercheurs
+        </a>
+        <a routerLink="/doctorants" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">🎓</span> Doctorants
+        </a>
+        <a routerLink="/masteriens" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">📚</span> Mastériens
+        </a>
+      </div>
+      }
+    </div>
+
+    <!-- Recherche -->
+    <div class="nav-dropdown">
+      <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'recherche'"
+        (click)="toggleDropdown('recherche')">
+        Recherche <span class="arrow" [class.rotated]="dropdownOuvert() === 'recherche'">▾</span>
+      </span>
+      @if (dropdownOuvert() === 'recherche') {
+      <div class="dropdown-menu">
+        <a routerLink="/publications" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">📄</span> Publications
+        </a>
+        <a routerLink="/axes" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">🧭</span> Axes de recherche
+        </a>
+        <a routerLink="/outils" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">🛠️</span> Outils
+        </a>
+      </div>
+      }
+    </div>
+
+    <!-- Activités -->
+    <div class="nav-dropdown">
+      <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'activites'"
+        (click)="toggleDropdown('activites')">
+        Activités <span class="arrow" [class.rotated]="dropdownOuvert() === 'activites'">▾</span>
+      </span>
+      @if (dropdownOuvert() === 'activites') {
+      <div class="dropdown-menu">
+        <a routerLink="/evenements" routerLinkActive="active" (click)="fermerTout()">
+          <span class="dd-icon">📅</span> Événements
+        </a>
+      </div>
+      }
+    </div>
+
+    <a routerLink="/contact" routerLinkActive="active" (click)="fermerTout()">Contact</a>
+
+    <!-- Auth dans le menu mobile -->
+    <div class="nav-auth-mobile">
+      @if (isLoggedIn()) {
+      <div class="nav-dropdown">
+        <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'auth-mobile'"
+          (click)="toggleDropdown('auth-mobile')">
+          <span class="user-email-mobile">{{ userEmail() }}</span>
+          <span class="arrow" [class.rotated]="dropdownOuvert() === 'auth-mobile'">▾</span>
+        </span>
+        @if (dropdownOuvert() === 'auth-mobile') {
+        <div class="dropdown-menu">
+          <div class="dropdown-header"
+            style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
+            Connecté en tant que <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
+          </div>
+          <a [routerLink]="userRole() === 'ADMIN' || userRole() === 'SUPER_ADMIN' ? '/dashboard-admin' : '/dashboard-chercheur'"
+            (click)="fermerTout()">
+            <span class="dd-icon">⚙️</span> Mon dashboard
+          </a>
+          <a (click)="logout(); fermerTout()" style="cursor: pointer;">
+            <span class="dd-icon">⏻</span> Déconnexion
+          </a>
+        </div>
+        }
+      </div>
+      } @else {
+      <a routerLink="/login" class="btn-signup-mobile" (click)="fermerTout()">Connexion</a>
+      }
+    </div>
+  </div>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" (click)="themeService.toggle()"
+    [title]="themeService.theme() === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'">
+    {{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}
+  </button>
+
+  <!-- Auth desktop -->
+  <div class="nav-auth">
+    @if (isLoggedIn()) {
+    <div class="nav-dropdown">
+      <span class="nav-dropdown-trigger user-info" [class.active]="dropdownOuvert() === 'auth-desktop'"
+        (click)="toggleDropdown('auth-desktop')">
+        <span class="user-email">{{ userEmail() }}</span>
+        <span class="arrow" [class.rotated]="dropdownOuvert() === 'auth-desktop'">▾</span>
+      </span>
+      @if (dropdownOuvert() === 'auth-desktop') {
+      <div class="dropdown-menu">
+        <div class="dropdown-header"
+          style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
+          Connecté en tant que <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
+        </div>
+        <a [routerLink]="userRole() === 'ADMIN' || userRole() === 'SUPER_ADMIN' ? '/dashboard-admin' : '/dashboard-chercheur'"
+          (click)="fermerTout()">
+          <span class="dd-icon">⚙️</span> Tableau de bord
+        </a>
+        <a (click)="logout(); fermerTout()" style="cursor: pointer;">
+          <span class="dd-icon">⏻</span> Déconnexion
+        </a>
+      </div>
+      }
+    </div>
+    } @else {
+    <a routerLink="/login" class="btn-signup" (click)="fermerTout()">Connexion</a>
+    }
+  </div>
+
+</nav>
+}
+
+<router-outlet />

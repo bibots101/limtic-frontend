@@ -1,0 +1,48 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 3rem 5rem;
+}
+.page-header {
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.page-header h1 { font-size: 2.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); }
+.outils-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.outil-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.outil-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.outil-header { display: flex; justify-content: space-between; align-items: center; }
+.outil-icon { font-size: 2rem; }
+.statut-ok { background: rgba(52,211,153,0.15); color: #34d399; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.statut-dev { background: rgba(245,158,11,0.15); color: #fbbf24; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+.outil-card h3 { color: var(--text-primary); font-size: 1.1rem; font-weight: 700; }
+.outil-card p { color: var(--text-secondary); font-size: 0.875rem; line-height: 1.6; flex: 1; }
+.outil-type { font-size: 0.8rem; color: var(--text-secondary); }
+.github-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+.github-link:hover { text-decoration: underline; }

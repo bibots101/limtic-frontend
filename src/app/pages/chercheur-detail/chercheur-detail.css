@@ -1,0 +1,557 @@
+/* ══════════════════════════════════════════════════════════
+   CHERCHEUR DETAIL — CSS  (adjusted to match LIMTIC app design)
+   ══════════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.loading-page {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.profil-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', sans-serif;
+  padding: 2rem 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Bouton retour ────────────────────────────────────────── */
+.btn-retour {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 7px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-retour:hover { color: var(--text-primary); background: var(--bg-secondary); }
+
+/* ── Hero card ────────────────────────────────────────────── */
+.profil-header { margin-bottom: 1.5rem; }
+
+.profil-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 2rem 2.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.profil-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, #00b4ff 0%, transparent 60%);
+}
+
+.profil-photo {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(0,180,255,0.25);
+}
+
+.profil-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00b4ff, #0055aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.55rem; font-weight: 800; color: white; flex-shrink: 0;
+  letter-spacing: -1px;
+  border: 2px solid rgba(0,180,255,0.2);
+}
+
+.profil-info {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  padding-top: 4px;
+}
+.profil-info h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+/* Badges row — grade, statut */
+.profil-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 2px;
+}
+
+.badge-grade {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  background: rgba(0,180,255,0.08);
+  color: #00b4ff;
+  border: 1px solid rgba(0,180,255,0.18);
+}
+
+.badge-statut {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.73rem;
+  font-weight: 700;
+}
+.badge-statut.en_cours {
+  background: rgba(0,180,255,0.1);
+  color: #00b4ff;
+  border: 1px solid rgba(0,180,255,0.2);
+}
+.badge-statut.en_cours::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #00b4ff;
+  display: inline-block;
+}
+.badge-statut.soutenu {
+  background: rgba(52,211,153,0.1);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.2);
+}
+.badge-statut.diplome {
+  background: rgba(240,192,64,0.1);
+  color: #f0c040;
+  border: 1px solid rgba(240,192,64,0.2);
+}
+
+.profil-institution { color: var(--text-secondary); font-size: 0.85rem; }
+.profil-specialite  { color: var(--text-muted); font-size: 0.82rem; }
+
+/* External links — kept but more subtle */
+.profil-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.3rem;
+}
+.ext-link {
+  padding: 3px 10px;
+  border-radius: 7px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+}
+.ext-link:hover { opacity: 1; transform: translateY(-1px); }
+.scholar-link { background: rgba(0,180,255,0.07);  color: #00b4ff; border-color: rgba(0,180,255,0.18); }
+.orcid-link   { background: rgba(166,206,57,0.07); color: #a6ce39; border-color: rgba(166,206,57,0.18); }
+.rg-link      { background: rgba(0,204,136,0.07);  color: #00cc88; border-color: rgba(0,204,136,0.18); }
+.li-link      { background: rgba(99,148,210,0.08); color: #6394d2; border-color: rgba(99,148,210,0.18); }
+
+/* ══════════════════════════════════════════════════════════
+   SECTIONS  — flat layout, no tabs
+   ══════════════════════════════════════════════════════════ */
+
+.section-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Section heading: colored square + bold label (matches screenshot) */
+.section-block h3,
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.section-title-icon {
+  width: 13px; height: 13px;
+  border-radius: 3px;
+  background: #00b4ff;
+  flex-shrink: 0;
+  display: inline-block;
+}
+/* Legacy h3 uppercase labels inside cards */
+.section-block .field-label {
+  color: var(--text-secondary);
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 0.35rem;
+}
+
+/* ── Info fields (sujet, statut, date, etc.) ──────────────── */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+}
+.info-grid.two-col { grid-template-columns: 1fr 1fr; }
+
+.info-field {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+}
+.info-field-label {
+  color: var(--text-secondary);
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 0.35rem;
+}
+.info-field-value {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ── Biography ────────────────────────────────────────────── */
+.biographie {
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.72;
+}
+
+/* ── Axes / tags ──────────────────────────────────────────── */
+.axes-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.axe-tag {
+  background: rgba(0,180,255,0.07);
+  color: #00b4ff;
+  border: 1px solid rgba(0,180,255,0.18);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+/* ── Contact ──────────────────────────────────────────────── */
+.infos-contact p {
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  margin-bottom: 5px;
+}
+
+/* ── Director / encadrant card ────────────────────────────── */
+.director-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.2rem 1.4rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+.director-card:hover {
+  border-color: rgba(0,180,255,0.2);
+  background: rgba(0,180,255,0.03);
+}
+
+.director-avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00b4ff, #0055aa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem; font-weight: 800; color: white; flex-shrink: 0;
+  border: 2px solid rgba(0,180,255,0.18);
+}
+.director-photo {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid rgba(0,180,255,0.18);
+}
+.director-info { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.director-info strong { color: var(--text-primary); font-size: 0.95rem; font-weight: 700; display: block; }
+.director-grade       { color: var(--text-secondary); font-size: 0.8rem; }
+.director-institution { color: var(--text-muted); font-size: 0.78rem; }
+.director-tags        { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 7px; }
+.director-tag {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.71rem;
+  font-weight: 600;
+}
+.director-tag.specialty {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   PUBLICATIONS — Scholar style (unchanged logic, restyled)
+   ══════════════════════════════════════════════════════════ */
+
+.scholar-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+.stat-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.7rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 75px;
+}
+.stat-val { font-size: 1.4rem; font-weight: 800; color: #00b4ff; line-height: 1; }
+.stat-key { font-size: 0.65rem; color: var(--text-secondary); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.q1-box .stat-val    { color: #22c55e; }
+.q2-box .stat-val    { color: #84cc16; }
+.astar-box .stat-val { color: #f59e0b; }
+.a-box .stat-val     { color: #fb923c; }
+
+.annee-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 72px;
+  margin-bottom: 1.25rem;
+  padding: 0 2px;
+  border-bottom: 1px solid var(--border-color);
+}
+.annee-bar-col { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.annee-bar {
+  width: 100%;
+  background: linear-gradient(180deg, #00b4ff, #0055aa);
+  border-radius: 3px 3px 0 0;
+  min-height: 3px;
+  transition: opacity 0.15s;
+}
+.annee-bar-col:hover .annee-bar { opacity: 0.6; }
+.annee-label { font-size: 0.62rem; color: var(--text-muted); white-space: nowrap; }
+
+.scholar-tri-bar {
+  display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.875rem;
+}
+.tri-label { color: var(--text-secondary); font-size: 0.78rem; }
+.scholar-tri-bar select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.scholar-tri-bar select:focus { outline: none; border-color: #00b4ff; }
+
+.scholar-pub-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.scholar-pub-item {
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.scholar-pub-item:hover { background: rgba(0,180,255,0.03); }
+.scholar-pub-item:last-child { border-bottom: none; }
+
+.scholar-pub-rank {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  min-width: 20px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+.scholar-pub-body { flex: 1; }
+
+.scholar-pub-meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.35rem; margin-bottom: 0.35rem;
+}
+.pub-type-chip  { background: rgba(167,139,250,0.1); color: #a78bfa; padding: 1px 7px; border-radius: 8px; font-size: 0.67rem; font-weight: 700; }
+.pub-year-chip  { background: var(--bg-secondary); color: var(--text-secondary); padding: 1px 7px; border-radius: 8px; font-size: 0.67rem; font-weight: 600; }
+.if-chip        { background: rgba(245,158,11,0.1); color: #f59e0b; padding: 1px 7px; border-radius: 8px; font-size: 0.67rem; font-weight: 700; }
+.snip-chip      { background: rgba(99,102,241,0.1); color: #818cf8; padding: 1px 7px; border-radius: 8px; font-size: 0.67rem; font-weight: 700; }
+
+.ranking-badge { padding: 1px 8px; border-radius: 8px; font-size: 0.67rem; font-weight: 800; }
+.badge-q1    { background: rgba(34,197,94,0.12);   color: #22c55e; }
+.badge-q2    { background: rgba(132,204,22,0.12);   color: #84cc16; }
+.badge-q3    { background: rgba(234,179,8,0.12);    color: #eab308; }
+.badge-q4    { background: rgba(249,115,22,0.12);   color: #f97316; }
+.badge-astar { background: rgba(245,158,11,0.12);   color: #f59e0b; }
+.badge-a     { background: rgba(251,146,60,0.12);   color: #fb923c; }
+.badge-b     { background: rgba(167,139,250,0.12);  color: #a78bfa; }
+.badge-c     { background: rgba(156,163,175,0.07);  color: #9ca3af; }
+
+.scholar-pub-titre {
+  color: var(--text-primary); font-size: 0.87rem; font-weight: 600;
+  margin-bottom: 2px; line-height: 1.4;
+}
+.scholar-pub-journal {
+  color: var(--text-muted); font-size: 0.78rem; margin-bottom: 0.35rem;
+}
+.scholar-pub-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.35rem; }
+.scholar-link {
+  color: #00b4ff; font-size: 0.72rem; font-weight: 600;
+  text-decoration: none; padding: 1px 7px;
+  border: 1px solid rgba(0,180,255,0.18); border-radius: 5px; transition: all 0.15s;
+}
+.scholar-link:hover { background: rgba(0,180,255,0.08); }
+.pdf-link           { color: #34d399; border-color: rgba(52,211,153,0.18); }
+.pdf-link:hover     { background: rgba(52,211,153,0.07); }
+
+/* ══════════════════════════════════════════════════════════
+   ENCADRÉS
+   ══════════════════════════════════════════════════════════ */
+
+.encadres-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+.encadres-list li {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.875rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s;
+}
+.encadres-list li:hover {
+  border-color: rgba(0,180,255,0.2);
+  background: rgba(0,180,255,0.03);
+}
+.encadre-info strong { color: var(--text-primary); font-size: 0.87rem; display: block; margin-bottom: 2px; }
+.encadre-info p      { color: var(--text-secondary); font-size: 0.76rem; }
+
+.encadre-statut {
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+}
+.encadre-statut.en_cours { background: rgba(0,180,255,0.1);  color: #00b4ff; border: 1px solid rgba(0,180,255,0.18); }
+.encadre-statut.soutenu  { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.18); }
+.encadre-statut.diplome  { background: rgba(240,192,64,0.1); color: #f0c040; border: 1px solid rgba(240,192,64,0.18); }
+
+/* ══════════════════════════════════════════════════════════
+   TABS  — removed in favour of flat layout to match app,
+   kept here as opt-in if needed on wider chercheur pages
+   ══════════════════════════════════════════════════════════ */
+
+.onglets-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.onglet-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: -1px;
+}
+.onglet-btn:hover { color: var(--text-primary); }
+.onglet-btn.actif { color: #00b4ff; border-bottom-color: #00b4ff; }
+
+.badge-count {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.onglet-content { animation: fadeUp 0.18s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════════════════ */
+
+.empty-msg {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 2rem 0;
+  text-align: center;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .profil-page    { padding: 1.1rem; }
+  .profil-hero    { flex-direction: column; gap: 1rem; padding: 1.25rem; }
+  .profil-info h1 { font-size: 1.3rem; }
+  .onglets-bar    { overflow-x: auto; scrollbar-width: none; }
+  .onglets-bar::-webkit-scrollbar { display: none; }
+  .onglet-btn     { white-space: nowrap; padding: 0.65rem 0.875rem; font-size: 0.8rem; }
+  .scholar-stats  { gap: 0.4rem; }
+  .stat-box       { min-width: 60px; padding: 0.55rem 0.75rem; }
+  .stat-val       { font-size: 1.1rem; }
+  .info-grid.two-col { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .profil-page    { padding: 0.875rem; }
+  .profil-info h1 { font-size: 1.15rem; }
+}

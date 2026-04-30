@@ -1,0 +1,718 @@
+<div class="dashboard">
+
+  <button class="btn-logout-fixed" (click)="logout()">⏻</button>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-logo">⬡</span>
+      <div class="brand-text">
+        <span class="brand-name">LIMTIC</span>
+        <span class="brand-role">Chercheur</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button [class.active]="activeTab() === 'profil'"
+              (click)="activeTab.set('profil')">
+        Mon Profil
+      </button>
+      <button [class.active]="activeTab() === 'publications'"
+              (click)="activeTab.set('publications')">
+        Mes Publications
+        @if (pubSoumises() > 0) {
+          <span class="nav-badge-orange">{{ pubSoumises() }}</span>
+        }
+      </button>
+      <button [class.active]="activeTab() === 'ajouter'"
+              (click)="activeTab.set('ajouter')">
+        Ajouter publication
+      </button>
+      <button [class.active]="activeTab() === 'encadrements'"
+              (click)="activeTab.set('encadrements')">
+        Mes encadrements
+      </button>
+      <button class="btn-logout-mobile" (click)="logout()">⏻ Quitter</button>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user-email">{{ email() }}</span>
+      <span class="user-role">CHERCHEUR</span>
+      <a routerLink="/home" class="btn-site-link" (click)="fermerTout()">Retour au site</a>
+      <button class="btn-logout-side" (click)="logout()">⏻ Déconnexion</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+
+    @if (message()) {
+      <div class="alert-success">{{ message() }}</div>
+    }
+
+    <div class="dash-header">
+      <div>
+        <h1>Mon Espace Chercheur</h1>
+        <p class="dash-sub">Bienvenue, {{ email() }}</p>
+      </div>
+      <div class="header-actions">
+        <span class="role-badge">{{ role() }}</span>
+        <button class="theme-toggle-dashboard" (click)="themeService.toggle()"
+                [title]="themeService.theme() === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'">
+          {{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">{{ publications().length }}</div>
+        <div class="stat-label">Publications totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num statut-brouillon-num">{{ pubBrouillons() }}</div>
+        <div class="stat-label">Brouillons</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num statut-soumis-num">{{ pubSoumises() }}</div>
+        <div class="stat-label">En attente</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num statut-publie-num">{{ pubPubliees() }}</div>
+        <div class="stat-label">Publiées</div>
+      </div>
+    </div>
+
+    <!-- ── TAB : PROFIL ─────────────────────────────────── -->
+    @if (activeTab() === 'profil') {
+      <div class="tab-header">
+        <h1>Mon Profil</h1>
+        <p>{{ profil().prenom }} {{ profil().nom }}</p>
+      </div>
+
+      <div class="form-card">
+        <h2>Informations générales</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Grade</label>
+            <input [(ngModel)]="editProfil.grade" placeholder="ex. Maître de conférences" />
+          </div>
+          <div class="field">
+            <label>Spécialité</label>
+            <input [(ngModel)]="editProfil.specialite" placeholder="ex. Intelligence Artificielle" />
+          </div>
+          <div class="field">
+            <label>Institution</label>
+            <input [(ngModel)]="editProfil.institution" placeholder="ex. ISI El Manar" />
+          </div>
+          <div class="field">
+            <label>Bureau</label>
+            <input [(ngModel)]="editProfil.bureau" placeholder="ex. Bureau 204" />
+          </div>
+          <div class="field">
+            <label>Téléphone</label>
+            <input [(ngModel)]="editProfil.telephone" placeholder="ex. +216 71 XXX XXX" />
+          </div>
+          <div class="field full">
+            <label>Biographie</label>
+            <textarea [(ngModel)]="editProfil.biographie" rows="4"
+              placeholder="Décrivez vos activités de recherche..."></textarea>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 1.5rem; margin-bottom: 1rem">Liens externes</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label>Google Scholar</label>
+            <input [(ngModel)]="editProfil.googleScholar" placeholder="https://scholar.google.com/..." />
+          </div>
+          <div class="field">
+            <label>ResearchGate</label>
+            <input [(ngModel)]="editProfil.researchGate" placeholder="https://www.researchgate.net/..." />
+          </div>
+          <div class="field">
+            <label>ORCID</label>
+            <input [(ngModel)]="editProfil.orcid" placeholder="https://orcid.org/..." />
+          </div>
+          <div class="field">
+            <label>LinkedIn</label>
+            <input [(ngModel)]="editProfil.linkedin" placeholder="https://linkedin.com/in/..." />
+          </div>
+        </div>
+        <button class="btn-submit" (click)="sauvegarderProfil()">Sauvegarder le profil</button>
+      </div>
+    }
+
+    <!-- ── TAB : AJOUTER PUBLICATION ────────────────────── -->
+    @if (activeTab() === 'ajouter') {
+      <div class="form-card">
+        <h2>Nouvelle Publication</h2>
+        <div class="form-grid">
+          <div class="field full">
+            <label>Titre *</label>
+            <input [(ngModel)]="newPub.titre" placeholder="Titre de la publication" />
+          </div>
+          <div class="field">
+            <label>Type</label>
+            <select [(ngModel)]="newPub.type">
+              <option value="Journal">Article de journal</option>
+              <option value="Conference">Conférence internationale</option>
+              <option value="Conference Nationale">Conférence nationale</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Année</label>
+            <input type="number" [(ngModel)]="newPub.annee" />
+          </div>
+          <div class="field">
+            <label>Journal / Conférence</label>
+            <input [(ngModel)]="newPub.journal" placeholder="IEEE, ACM..." />
+          </div>
+          <div class="field full">
+            <label>Résumé</label>
+            <textarea [(ngModel)]="newPub.resume" placeholder="Résumé de la publication..." rows="3"></textarea>
+          </div>
+
+          <!-- §3.7.2 CDC — DOI -->
+          <div class="field">
+            <label>DOI</label>
+            <input [(ngModel)]="newPub.doi" placeholder="ex. 10.1000/xyz123" />
+          </div>
+
+          <!-- §3.7.2 CDC — URL externe -->
+          <div class="field">
+            <label>URL externe</label>
+            <input [(ngModel)]="newPub.lienUrl" placeholder="https://..." />
+          </div>
+
+          <!-- §3.7.2 CDC — Upload PDF + prévisualisation -->
+          <div class="field full">
+            <label>Fichier PDF</label>
+            <div class="pdf-upload-zone">
+              <input type="file" accept="application/pdf" id="pdfInputChercheur"
+                     class="pdf-file-input" (change)="onPdfFileSelected($event)" />
+              <label for="pdfInputChercheur" class="pdf-upload-label">
+                @if (newPubPdfFile) {
+                  <span class="pdf-selected">📄 {{ newPubPdfFile.name }}</span>
+                } @else {
+                  <span class="pdf-placeholder">📎 Cliquez pour choisir un PDF</span>
+                }
+              </label>
+              @if (newPubPdfFile) {
+                <button class="pdf-clear" (click)="clearPdfSelection()">✕ Retirer</button>
+              }
+            </div>
+            <span class="field-hint">Le fichier sera uploadé après enregistrement.</span>
+
+            <!-- ── Prévisualisation inline du PDF sélectionné ── -->
+            @if (newPubPdfPreviewUrl) {
+              <div class="pdf-preview-panel">
+                <div class="pdf-preview-header">
+                  <span class="pdf-preview-title">👁 Prévisualisation — {{ newPubPdfFile?.name }}</span>
+                  <div class="pdf-preview-actions">
+                    <a [href]="pdfBlobUrl" target="_blank" class="btn-pdf-open">
+                      ↗ Ouvrir dans un onglet
+                    </a>
+                    <button class="pdf-preview-close" (click)="clearPdfSelection()">✕</button>
+                  </div>
+                </div>
+                <iframe
+                  [src]="newPubPdfPreviewUrl"
+                  class="pdf-preview-frame"
+                  type="application/pdf"
+                  title="Prévisualisation PDF">
+                </iframe>
+              </div>
+            }
+          </div>
+
+          <!-- ═══════════════════════════════════════════════════════════════
+               §3.7.2 CDC — Score / classement de la venue
+               Source de référence : Scimago SJR, CORE, JCR/Clarivate
+               ═══════════════════════════════════════════════════════════════ -->
+          <div class="field full ranking-section-header">
+            <label class="ranking-title">Classement / Score de la venue</label>
+            <span class="ranking-hint">Renseignez le classement selon la source officielle (Scimago, CORE, JCR…)</span>
+          </div>
+
+          <!-- Scimago Quartile — pour les journaux -->
+          <div class="field">
+            <label>
+              Quartile Scimago (SJR)
+              <a href="https://www.scimagojr.com" target="_blank" class="source-link" title="Voir Scimago Journal Rank">↗</a>
+            </label>
+            <select [(ngModel)]="newPub.scimagoQuartile">
+              <option value="">— Non renseigné —</option>
+              <option value="Q1">Q1 — Top 25 %</option>
+              <option value="Q2">Q2 — Top 50 %</option>
+              <option value="Q3">Q3 — Top 75 %</option>
+              <option value="Q4">Q4 — Reste</option>
+            </select>
+          </div>
+
+          <!-- CORE Ranking — pour les conférences -->
+          <div class="field">
+            <label>
+              Classement CORE (Conférences)
+              <a href="http://portal.core.edu.au/conf-ranks/" target="_blank" class="source-link" title="Voir CORE Portal">↗</a>
+            </label>
+            <select [(ngModel)]="newPub.classementCORE">
+              <option value="">— Non renseigné —</option>
+              <option value="A*">A* — Excellence</option>
+              <option value="A">A — Très bonne</option>
+              <option value="B">B — Bonne</option>
+              <option value="C">C — Reconnue</option>
+            </select>
+          </div>
+
+          <!-- Impact Factor JCR -->
+          <div class="field">
+            <label>
+              Impact Factor JCR
+              <a href="https://jcr.clarivate.com" target="_blank" class="source-link" title="Voir Clarivate JCR">↗</a>
+            </label>
+            <input type="number" step="0.01" min="0"
+                   [(ngModel)]="newPub.facteurImpact"
+                   placeholder="ex. 4.58" />
+          </div>
+
+          <!-- SNIP (Scopus) -->
+          <div class="field">
+            <label>
+              SNIP (Scopus/Elsevier)
+              <a href="https://www.journalindicators.com" target="_blank" class="source-link" title="Voir Journal Indicators">↗</a>
+            </label>
+            <input type="number" step="0.01" min="0"
+                   [(ngModel)]="newPub.snip"
+                   placeholder="ex. 1.23" />
+          </div>
+
+          <!-- Source de référence (libre) -->
+          <div class="field full">
+            <label>Source de référence (précision libre)</label>
+            <input [(ngModel)]="newPub.sourceClassement"
+                   placeholder="ex. Scimago 2024, CORE 2023, JCR Q1 Clarivate..." />
+            <span class="field-hint">Indiquez l'année et la source consultée pour faciliter la vérification.</span>
+          </div>
+        </div>
+
+        <div class="statut-choix">
+          <p class="statut-choix-label">Que voulez-vous faire ?</p>
+          <div class="statut-choix-btns">
+            <button class="btn-choix"
+                    [class.selected]="newPub.statut === 'BROUILLON'"
+                    (click)="newPub.statut = 'BROUILLON'">
+              Enregistrer en brouillon
+              <span>Vous pourrez soumettre plus tard</span>
+            </button>
+            <button class="btn-choix btn-choix-submit"
+                    [class.selected]="newPub.statut === 'SOUMIS'"
+                    (click)="newPub.statut = 'SOUMIS'">
+              Soumettre à validation
+              <span>L'admin devra valider</span>
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-submit" (click)="ajouterPublication()">
+          {{ newPub.statut === 'SOUMIS' ? 'Soumettre' : 'Enregistrer' }}
+        </button>
+      </div>
+    }
+
+    <!-- ── TAB : MES PUBLICATIONS ──────────────────────── -->
+    @if (activeTab() === 'publications') {
+      <div class="tab-header">
+        <h2>Mes Publications</h2>
+        <p>{{ publications().length }} publication(s) enregistrée(s)</p>
+      </div>
+
+      <div class="workflow-info">
+        <div class="workflow-step">
+          <span class="wf-badge statut-brouillon">Brouillon</span>
+          <span class="wf-arrow">→</span>
+          <span class="wf-desc">Soumettez pour validation</span>
+        </div>
+        <div class="workflow-step">
+          <span class="wf-badge statut-soumis">Soumis</span>
+          <span class="wf-arrow">→</span>
+          <span class="wf-desc">En attente de l'admin</span>
+        </div>
+        <div class="workflow-step">
+          <span class="wf-badge statut-publie">Publié</span>
+          <span class="wf-arrow">→</span>
+          <span class="wf-desc">Visible publiquement</span>
+        </div>
+      </div>
+
+      <!-- ── Formulaire d'édition de publication (affiché au-dessus du tableau) ── -->
+      @if (editingPublication()) {
+        <div class="form-card edit-card">
+          <h2>Modifier la publication</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Titre *</label>
+              <input [(ngModel)]="editingPublication().titre" placeholder="Titre de la publication" />
+            </div>
+            <div class="field">
+              <label>Type</label>
+              <select [(ngModel)]="editingPublication().type">
+                <option value="Journal">Article de journal</option>
+                <option value="Conference">Conférence internationale</option>
+                <option value="Conference Nationale">Conférence nationale</option>
+                <option value="Book Chapter">Chapitre d'ouvrage</option>
+                <option value="Thesis">Rapport / Thèse</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Année</label>
+              <input type="number" [(ngModel)]="editingPublication().annee" />
+            </div>
+            <div class="field">
+              <label>Journal / Conférence</label>
+              <input [(ngModel)]="editingPublication().journal" placeholder="IEEE, ACM…" />
+            </div>
+            <div class="field">
+              <label>DOI</label>
+              <input [(ngModel)]="editingPublication().doi" placeholder="ex. 10.1000/xyz123" />
+            </div>
+            <div class="field">
+              <label>URL externe</label>
+              <input [(ngModel)]="editingPublication().lienUrl" placeholder="https://…" />
+            </div>
+            <div class="field">
+              <label>Mots-clés</label>
+              <input [(ngModel)]="editingPublication().motsCles" placeholder="IA, ML, NLP…" />
+            </div>
+            <div class="field full">
+              <label>Résumé</label>
+              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="Résumé…"></textarea>
+            </div>
+
+            <!-- §3.7.2 CDC — PDF dans le formulaire d'édition -->
+            <div class="field full">
+              <label>Fichier PDF</label>
+
+              <!-- PDF viewer unique (existant ou nouveau) -->
+              @if (!editRemovePdf && editPdfViewerUrl()) {
+                <div class="pdf-existing-row">
+                  <span class="pdf-existing-label">
+                    📄 {{ editPubPdfFile ? 'Nouveau PDF' : 'PDF actuel' }}
+                  </span>
+                  <a [href]="editPubPdfFile ? editPdfBlobUrl : getFullPdfUrl(editingPublication().pdfUrl)"
+                     target="_blank" class="btn-pdf-open">↗ Ouvrir</a>
+                  @if (editPubPdfFile) {
+                    <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                  } @else {
+                    <button class="pdf-clear" (click)="markRemoveEditPdf()">✕ Supprimer</button>
+                  }
+                </div>
+                <div class="pdf-preview-panel" style="margin-top:0.75rem;">
+                  <iframe
+                    [src]="editPdfViewerUrl()!"
+                    class="pdf-preview-frame"
+                    type="application/pdf"
+                    title="Prévisualisation PDF">
+                  </iframe>
+                </div>
+              }
+
+              @if (editRemovePdf && !editPubPdfFile) {
+                <div class="pdf-remove-notice">
+                  ⚠️ Le PDF sera supprimé à l'enregistrement.
+                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">Annuler la suppression</button>
+                </div>
+              }
+
+              <!-- Upload nouveau PDF -->
+              <div class="pdf-upload-zone" style="margin-top: 0.5rem;">
+                <input type="file" accept="application/pdf" id="pdfInputEditChercheur"
+                       class="pdf-file-input" (change)="onEditPdfFileSelected($event)" />
+                <label for="pdfInputEditChercheur" class="pdf-upload-label">
+                  @if (editPubPdfFile) {
+                    <span class="pdf-selected">📄 {{ editPubPdfFile.name }}</span>
+                  } @else {
+                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? 'Remplacer le PDF…' : 'Choisir un PDF…' }}</span>
+                  }
+                </label>
+                @if (editPubPdfFile) {
+                  <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                }
+              </div>
+              <span class="field-hint">Vous pouvez remplacer le PDF existant ou en supprimer un.</span>
+
+            </div>
+            
+            <!-- §3.7.2 CDC — Classement -->
+            <div class="field full ranking-section-header">
+              <label class="ranking-title">Classement / Score de la venue</label>
+            </div>
+            <div class="field">
+              <label>Quartile Scimago (SJR)</label>
+              <select [(ngModel)]="editingPublication().scimagoQuartile">
+                <option value="">— Non renseigné —</option>
+                <option value="Q1">Q1 — Top 25 %</option>
+                <option value="Q2">Q2 — Top 50 %</option>
+                <option value="Q3">Q3 — Top 75 %</option>
+                <option value="Q4">Q4 — Reste</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Classement CORE (Conférences)</label>
+              <select [(ngModel)]="editingPublication().classementCORE">
+                <option value="">— Non renseigné —</option>
+                <option value="A*">A* — Excellence</option>
+                <option value="A">A — Très bonne</option>
+                <option value="B">B — Bonne</option>
+                <option value="C">C — Reconnue</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Impact Factor JCR</label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="editingPublication().facteurImpact"
+                     placeholder="ex. 4.58" />
+            </div>
+            <div class="field">
+              <label>SNIP (Scopus/Elsevier)</label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="editingPublication().snip"
+                     placeholder="ex. 1.23" />
+            </div>
+            <div class="field full">
+              <label>Source de référence</label>
+              <input [(ngModel)]="editingPublication().sourceClassement"
+                     placeholder="ex. Scimago 2024, CORE 2023…" />
+            </div>
+          </div>
+          <div class="edit-actions">
+            <button class="btn-submit" (click)="saveEditPublication()">Enregistrer la publication</button>
+            <button class="btn-cancel" (click)="cancelEditPublication()">Annuler</button>
+          </div>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Type</th>
+              <th>Journal / Conf.</th>
+              <th>Année</th>
+              <th>Classement</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of publications(); track p.id) {
+              <tr class="clickable-row" (click)="viewPublication(p.id)">
+                <td class="cell-title link-cell">{{ p.titre }}</td>
+                <td>
+                  <span class="badge-type" [class]="p.type === 'Journal' ? 'type-j' : 'type-c'">
+                    {{ p.type }}
+                  </span>
+                </td>
+                <td class="cell-muted">{{ p.journal }}</td>
+                <td class="cell-muted">{{ p.annee }}</td>
+                <td>
+                  @if (p.scimagoQuartile) {
+                    <span class="badge-ranking" [ngClass]="{
+                      'q1': p.scimagoQuartile === 'Q1',
+                      'q2': p.scimagoQuartile === 'Q2',
+                      'q3': p.scimagoQuartile === 'Q3',
+                      'q4': p.scimagoQuartile === 'Q4'
+                    }">{{ p.scimagoQuartile }}</span>
+                  }
+                  @if (p.classementCORE) {
+                    <span class="badge-ranking" [ngClass]="{
+                      'astar': p.classementCORE === 'A*',
+                      'core-a': p.classementCORE === 'A',
+                      'core-b': p.classementCORE === 'B'
+                    }">CORE {{ p.classementCORE }}</span>
+                  }
+                  @if (!p.scimagoQuartile && !p.classementCORE) {
+                    <span class="cell-muted">—</span>
+                  }
+                </td>
+                <td>
+                  <span class="badge-statut-pub" [class]="getStatutClass(p.statut || 'BROUILLON')">
+                    {{ getStatutLabel(p.statut || 'BROUILLON') }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-row">
+                    @if (p.statut === 'BROUILLON' || !p.statut) {
+                      <button class="btn-action btn-edit" (click)="startEditPublication(p); $event.stopPropagation()">
+                        Éditer
+                      </button>
+                      <button class="btn-action btn-soumettre" (click)="soumettre(p.id); $event.stopPropagation()">
+                        Soumettre
+                      </button>
+                    }
+                    @if (p.statut === 'SOUMIS') {
+                      <button class="btn-action btn-retirer" (click)="retirerSoumission(p.id); $event.stopPropagation()">
+                        ↩ Retirer
+                      </button>
+                    }
+                    @if (p.statut === 'PUBLIE') {
+                      <span class="pub-ok">Publié</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- ── TAB : MES ENCADREMENTS ─────────────────────── -->
+@if (activeTab() === 'encadrements') {
+
+  <div class="tab-header">
+    <h1>🎓 Mes Encadrements</h1>
+    <p>Gérez vos doctorants et mastériens</p>
+  </div>
+
+  @if (encMsg()) {
+    <div class="alert-success">✅ {{ encMsg() }}</div>
+  }
+
+  <div class="encadrements-layout">
+    <!-- Colonne gauche : Mes encadrements actuels -->
+    <div class="enc-col enc-col-current">
+      <h2>📚 Mes Encadrements Actuels</h2>
+
+      <!-- Doctorants encadrés -->
+      <div class="enc-section">
+        <h3>Doctorants ({{ mesDoctorants().length }})</h3>
+        @if (mesDoctorants().length === 0) {
+          <p class="empty-msg">Aucun doctorant encadré</p>
+        } @else {
+          <div class="enc-list">
+            @for (d of mesDoctorants(); track d.id) {
+              <div class="enc-item">
+                <div class="enc-avatar">{{ d.prenom?.[0] }}{{ d.nom?.[0] }}</div>
+                <div class="enc-info">
+                  <strong>{{ d.prenom }} {{ d.nom }}</strong>
+                  <p>{{ d.sujetThese || 'Sujet non spécifié' }}</p>
+                  <span class="enc-statut" [class.enc-en-cours]="d.statut === 'EN_COURS'"
+                        [class.enc-soutenu]="d.statut === 'SOUTENU'">
+                    {{ d.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}
+                  </span>
+                </div>
+                <button class="btn-remove" (click)="retirerDoctorant(d.id); $event.stopPropagation()">✕</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Mastériens encadrés -->
+      <div class="enc-section">
+        <h3>Mastériens ({{ mesMasteriens().length }})</h3>
+        @if (mesMasteriens().length === 0) {
+          <p class="empty-msg">Aucun mastérien encadré</p>
+        } @else {
+          <div class="enc-list">
+            @for (m of mesMasteriens(); track m.id) {
+              <div class="enc-item">
+                <div class="enc-avatar" style="background: linear-gradient(135deg, #34d399, #059669)">
+                  {{ m.prenom?.[0] }}{{ m.nom?.[0] }}
+                </div>
+                <div class="enc-info">
+                  <strong>{{ m.prenom }} {{ m.nom }}</strong>
+                  <p>{{ m.sujetMemoire || 'Sujet non spécifié' }}</p>
+                  @if (m.promotion) {
+                    <span class="enc-promo">Promotion {{ m.promotion }}</span>
+                  }
+                  <span class="enc-statut" [class.enc-en-cours]="m.statut === 'EN_COURS'"
+                        [class.enc-diplome]="m.statut === 'DIPLOME'">
+                    {{ m.statut === 'EN_COURS' ? 'En cours' : 'Diplômé' }}
+                  </span>
+                </div>
+                <button class="btn-remove" (click)="retirerMasterien(m.id); $event.stopPropagation()">✕</button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Colonne droite : Ajouter des encadrements -->
+    <div class="enc-col enc-col-add">
+      <h2>➕ Ajouter un Encadrement</h2>
+
+      <!-- Onglets pour choisir le type -->
+      <div class="enc-tabs">
+        <button [class.active]="encTab() === 'doctorants'"
+                (click)="encTab.set('doctorants')">
+          🎓 Doctorants
+        </button>
+        <button [class.active]="encTab() === 'masteriens'"
+                (click)="encTab.set('masteriens')">
+          📚 Mastériens
+        </button>
+      </div>
+
+      <!-- Contenu des onglets -->
+      <div class="enc-tab-content">
+        @if (encTab() === 'doctorants') {
+          <div class="enc-add-section">
+            <h3>Doctorants Disponibles</h3>
+            <p class="enc-desc">Sélectionnez un doctorant sans directeur pour l'encadrer</p>
+
+            @if (doctorantsDispos().length === 0) {
+              <p class="empty-msg">Aucun doctorant disponible</p>
+            } @else {
+              <div class="enc-available-list">
+                @for (d of doctorantsDispos(); track d.id) {
+                  <div class="enc-available-item">
+                    <div class="enc-avatar">{{ d.prenom?.[0] }}{{ d.nom?.[0] }}</div>
+                    <div class="enc-info">
+                      <strong>{{ d.prenom }} {{ d.nom }}</strong>
+                      <p>{{ d.sujetThese || 'Sujet non spécifié' }}</p>
+                      @if (d.dateInscription) {
+                        <span class="enc-date">Inscrit en {{ d.dateInscription }}</span>
+                      }
+                    </div>
+                    <button class="btn-assign" (click)="assignerDoctorant(d.id)">➕ Assigner</button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (encTab() === 'masteriens') {
+          <div class="enc-add-section">
+            <h3>Mastériens Disponibles</h3>
+            <p class="enc-desc">Sélectionnez un mastérien sans encadrant pour l'encadrer</p>
+
+            @if (masteriensDispos().length === 0) {
+              <p class="empty-msg">Aucun mastérien disponible</p>
+            } @else {
+              <div class="enc-available-list">
+                @for (m of masteriensDispos(); track m.id) {
+                  <div class="enc-avatar" style="background: linear-gradient(135deg, #34d399, #059669)">
+                    {{ m.prenom?.[0] }}{{ m.nom?.[0] }}
+                  </div>
+                  <div class="enc-info">
+                    <strong>{{ m.prenom }} {{ m.nom }}</strong>
+                    <p>{{ m.sujetMemoire || 'Sujet non spécifié' }}</p>
+                    @if (m.promotion) {
+                      <span class="enc-promo">Promotion {{ m.promotion }}</span>
+                    }
+                  </div>
+                  <button class="btn-assign" (click)="assignerMasterien(m.id)">➕ Assigner</button>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+  </main>
+</div>

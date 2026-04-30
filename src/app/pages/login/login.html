@@ -1,0 +1,32 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="auth-logo">⬡</span>
+      <h1>{{ settings.acronyme() }}</h1>
+      <p>Connexion à votre espace</p>
+    </div>
+
+    <div class="auth-form">
+      @if (erreur()) {
+        <div class="error-msg">⚠️ {{ erreur() }}</div>
+      }
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" placeholder="votre@email.tn" />
+      </div>
+
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="motDePasse" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-submit" (click)="onSubmit()" [disabled]="loading()">
+        {{ loading() ? 'Connexion...' : 'Se connecter' }}
+      </button>
+
+      <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+      
+    </div>
+  </div>
+</div>

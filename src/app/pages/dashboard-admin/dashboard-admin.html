@@ -1,0 +1,1479 @@
+<div class="dashboard">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-logo">⬡</span>
+      <span class="brand-name">ADMIN</span>
+    </div>
+    <nav class="sidebar-nav">
+      <button [class.active]="activeTab() === 'dashboard'" (click)="setTab('dashboard')">
+        Tableau de bord
+      </button>
+      <button [class.active]="activeTab() === 'membres'" (click)="setTab('membres')">
+        Membres
+      </button>
+      @if (userRole() === 'SUPER_ADMIN') {
+        <button [class.active]="activeTab() === 'comptes'" (click)="setTab('comptes')">
+          Comptes
+        </button>
+      }
+      <button [class.active]="activeTab() === 'publications'" (click)="setTab('publications')">
+        Publications
+        @if (publicationsEnAttente().length > 0) {
+          <span class="nav-badge">{{ publicationsEnAttente().length }}</span>
+        }
+      </button>
+      <button [class.active]="activeTab() === 'evenements'" (click)="setTab('evenements')">
+        Événements
+      </button>
+      <button [class.active]="activeTab() === 'axes'" (click)="setTab('axes')">
+        Axes
+      </button>
+      <button [class.active]="activeTab() === 'doctorants'" (click)="setTab('doctorants')">
+        Doctorants
+      </button>
+      <button [class.active]="activeTab() === 'masteriens'" (click)="setTab('masteriens')">
+        Mastériens
+      </button>
+      <!-- §4.3.6 — Paramètres généraux -->
+      @if (userRole() === 'SUPER_ADMIN') {
+        <button [class.active]="activeTab() === 'parametres'" (click)="setTab('parametres')" class="nav-btn-settings">
+          ⚙ Paramètres
+        </button>
+      }
+      <button class="btn-logout-mobile" (click)="logout()">⏻ Quitter</button>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="admin-email">{{ email() }}</span>
+      <span class="admin-role">{{ userRole() }}</span>
+      <a routerLink="/home" class="btn-site-link">Retour au site</a>
+      <button class="btn-logout-side" (click)="logout()">⏻ Déconnexion</button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+
+    <div class="dashboard-theme-bar">
+      <button class="theme-toggle-dashboard" (click)="themeService.toggle()"
+              [title]="themeService.theme() === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'">
+        {{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}
+      </button>
+    </div>
+
+    @if (message()) {
+      <div class="alert-success">✅ {{ message() }}</div>
+    }
+
+    @if (erreur()) {
+      <div class="alert-error">⚠️ {{ erreur() }}</div>
+    }
+
+    <!-- TAB: DASHBOARD -->
+    @if (activeTab() === 'dashboard') {
+      <div class="tab-header">
+        <h1>Tableau de bord</h1>
+        <p>Vue d'ensemble du laboratoire {{ settings.acronyme() }}</p>
+      </div>
+
+      <!-- Alerte publications en attente -->
+      @if (publicationsEnAttente().length > 0) {
+        <div class="alert-pending" (click)="setTab('publications')">
+          <span class="alert-icon">⏳</span>
+          <div class="alert-text">
+            <strong>{{ publicationsEnAttente().length }} publication(s) en attente de validation</strong>
+            <span>Cliquez pour examiner et valider</span>
+          </div>
+          <span class="alert-arrow">→</span>
+        </div>
+      }
+
+      <div class="stats-grid">
+        <div class="stat-card" (click)="setTab('membres')">
+          <div class="stat-num">{{ stats().chercheurs }}</div>
+          <div class="stat-label">Chercheurs</div>
+          <div class="stat-action">Gérer →</div>
+        </div>
+        <div class="stat-card" (click)="setTab('publications')">
+          <div class="stat-num">{{ stats().publications }}</div>
+          <div class="stat-label">Publications</div>
+          @if (publicationsEnAttente().length > 0) {
+            <div class="stat-pending">{{ publicationsEnAttente().length }} en attente</div>
+          } @else {
+            <div class="stat-action">Gérer →</div>
+          }
+        </div>
+        <div class="stat-card" (click)="setTab('evenements')">
+          <div class="stat-num">{{ stats().evenements }}</div>
+          <div class="stat-label">Événements</div>
+          <div class="stat-action">Gérer →</div>
+        </div>
+  
+          <div class="stat-card" (click)="setTab('axes')">
+            <div class="stat-num">{{ stats().axes }}</div>
+            <div class="stat-label">Axes</div>
+            <div class="stat-action">Gérer →</div>
+          </div>
+         @if (userRole() === 'SUPER_ADMIN') {
+          <div class="stat-card" (click)="setTab('comptes')">
+            <div class="stat-num">{{ users().length }}</div>
+            <div class="stat-label">Comptes</div>
+            <div class="stat-action">Gérer →</div>
+          </div>
+        }
+        <div class="stat-card" (click)="setTab('doctorants')">
+          <div class="stat-num">{{ stats().doctorants }}</div>
+          <div class="stat-label">Doctorants</div>
+          <div class="stat-action">Gérer →</div>
+        </div>
+        <div class="stat-card" (click)="setTab('masteriens')">
+          <div class="stat-num">{{ stats().masteriens }}</div>
+          <div class="stat-label">Mastériens</div>
+          <div class="stat-action">Gérer →</div>
+        </div>
+      </div>
+
+      <div class="quick-section">
+        <h2>Accès rapide</h2>
+        <div class="quick-grid">
+          <div class="quick-card" (click)="setTab('publications'); showForm.set('pub')">
+            <span>➕</span> Nouvelle publication
+          </div>
+          <div class="quick-card" (click)="setTab('evenements'); showForm.set('event')">
+            <span>➕</span> Nouvel événement
+          </div>
+          
+            <div class="quick-card" (click)="setTab('axes'); showForm.set('axe')">
+              <span>➕</span> Nouvel axe
+            </div>
+          @if (userRole() === 'SUPER_ADMIN') {
+            <div class="quick-card" (click)="setTab('comptes'); showForm.set('user')">
+              <span>➕</span> Nouveau compte
+            </div>
+          }
+          <div class="quick-card" (click)="setTab('doctorants'); showForm.set('doc')">
+            <span>➕</span> Nouveau doctorant
+          </div>
+          <div class="quick-card" (click)="setTab('masteriens'); showForm.set('masterien')">
+            <span>➕</span> Nouveau mastérien
+          </div>
+          <div class="quick-card" (click)="setTab('membres')">
+            <span>👥</span> Voir tous les membres
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- TAB: MEMBRES -->
+    @if (activeTab() === 'membres') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Membres</h1>
+          <p>Chercheurs permanents du laboratoire</p>
+        </div>
+        <div class="membres-actions">
+          <button class="btn-add" (click)="exportChercheursCsv()">⬇ Exporter CSV</button>
+
+          <input
+            type="file"
+            accept=".csv"
+            id="csvInput"
+            class="csv-file-input"
+            (change)="onCsvFileSelected($event)" />
+          <label for="csvInput" class="btn-add btn-add-secondary">📄 Choisir CSV</label>
+
+          <button class="btn-add" [disabled]="!csvFile()" (click)="importChercheursCsv()">
+            ⬆ Importer CSV
+          </button>
+        </div>
+      </div>
+
+      @if (csvFile()) {
+        <div class="csv-file-name">Fichier sélectionné : {{ csvFile()?.name }}</div>
+      }
+
+      @if (csvImportReport()) {
+        <div class="csv-report">
+          <div>Importés : <strong>{{ csvImportReport()?.importes }}</strong></div>
+          <div>Ignorés : <strong>{{ csvImportReport()?.ignores }}</strong></div>
+          @if (csvImportReport()?.erreurs?.length) {
+            <div class="csv-errors">
+              <div>Erreurs :</div>
+              <ul>
+                @for (e of csvImportReport()?.erreurs; track e) {
+                  <li>{{ e }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Chercheur</th><th>Grade</th><th>Spécialité</th>
+              <th>Institution</th><th>Publications</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (c of chercheurs(); track c.id) {
+              <tr>
+                <td>
+                  <div class="cell-user">
+                    <div class="mini-avatar">{{ c.prenom[0] }}{{ c.nom[0] }}</div>
+                    <span>{{ c.prenom }} {{ c.nom }}</span>
+                  </div>
+                </td>
+                <td><span class="badge-grade">{{ c.grade }}</span></td>
+                <td class="cell-muted">{{ c.specialite }}</td>
+                <td class="cell-muted">{{ c.institution }}</td>
+                <td><span class="badge-count">{{ c.publications?.length || 0 }}</span></td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-view" [routerLink]="['/chercheurs', c.id]">Voir</button>
+                    <button class="btn-action btn-delete" (click)="supprimerChercheur(c.id)">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- TAB: COMPTES -->
+    @if (activeTab() === 'comptes') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Comptes</h1>
+          <p>{{ users().length }} compte(s) enregistré(s)</p>
+        </div>
+        <button class="btn-add" (click)="showForm.set(showForm() === 'user' ? '' : 'user')">
+          {{ showForm() === 'user' ? '✕ Fermer' : '➕ Nouveau compte' }}
+        </button>
+      </div>
+
+      @if (showForm() === 'user') {
+        <div class="form-card">
+          <h2>Créer un compte</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label>Email *</label>
+              <input [(ngModel)]="newUser.email" placeholder="email@limtic.tn" />
+            </div>
+            <div class="field">
+              <label>Mot de passe *</label>
+              <input type="password" [(ngModel)]="newUser.motDePasse" placeholder="••••••••" />
+            </div>
+            <div class="field">
+              <label>Rôle</label>
+              <select [(ngModel)]="newUser.role">
+                <option value="CHERCHEUR">Chercheur</option>
+                <option value="ADMIN">Admin</option>
+                <option value="VISITEUR">Visiteur</option>
+                <option value="SUPER_ADMIN">Super Admin</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>DOI</label>
+              <input [(ngModel)]="newPub.doi" placeholder="10.1000/xyz123" />
+            </div>
+            <div class="field">
+              <label>Lien PDF</label>
+              <input [(ngModel)]="newPub.pdfUrl" placeholder="https://..." />
+            </div>
+            <div class="field full">
+              <label>Mots-clés</label>
+              <input [(ngModel)]="newPub.motsCles" placeholder="IA, NLP, deep learning..." />
+            </div>
+          </div>
+          <button class="btn-submit" (click)="creerCompte()">Créer le compte</button>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr><th>Email</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u.id) {
+              <tr>
+                <td class="cell-title">
+                  {{ u.email }}
+                  @if (u.email === email()) {
+                    <strong style="margin-left: 0.5rem; color: var(--accent); font-size: 0.85em;">(Moi)</strong>
+                  }
+                </td>
+                <td>
+                  <select class="role-select" [value]="u.role" (change)="changerRole(u.id, $event)" [disabled]="u.email === email()">
+                    <option value="CHERCHEUR">CHERCHEUR</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="VISITEUR">VISITEUR</option>
+                    <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="badge-status" [class.status-on]="u.actif" [class.status-off]="!u.actif">
+                    {{ u.actif ? 'Actif' : 'Désactivé' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-view" (click)="toggleActif(u.id)" [disabled]="u.email === email()">
+                      {{ u.actif ? 'Désactiver' : 'Activer' }}
+                    </button>
+                    <button class="btn-action btn-delete" (click)="supprimerUser(u.id)" [disabled]="u.email === email()">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- TAB: PUBLICATIONS -->
+    @if (activeTab() === 'publications') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Publications</h1>
+          <p>{{ publications().length }} publication(s) au total</p>
+        </div>
+        <button class="btn-add" (click)="showForm.set(showForm() === 'pub' ? '' : 'pub')">
+          {{ showForm() === 'pub' ? '✕ Fermer' : '➕ Nouvelle publication' }}
+        </button>
+      </div>
+
+      <!-- Section publications en attente -->
+      @if (publicationsEnAttente().length > 0) {
+        <div class="pending-section">
+          <h2 class="pending-title">⏳ Publications en attente de validation ({{ publicationsEnAttente().length }})</h2>
+          <div class="pending-list">
+            @for (p of publicationsEnAttente(); track p.id) {
+              <div class="pending-card">
+                <div class="pending-body">
+                  <span class="badge-type" [class]="p.type === 'Journal' ? 'type-j' : 'type-c'">{{ p.type }}</span>
+                  <h4>{{ p.titre }}</h4>
+                  <p class="pending-meta">{{ p.journal || '-' }} — {{ p.annee }}</p>
+                  @if (p.chercheur) {
+                    <p class="pending-author">👤 {{ p.chercheur.prenom }} {{ p.chercheur.nom }}</p>
+                  }
+                  @if (p.resume) {
+                    <p class="pending-resume">{{ p.resume }}</p>
+                  }
+                </div>
+                <div class="pending-actions">
+                  <button class="btn-valider" (click)="validerPublication(p.id)">✅ Valider</button>
+                  <button class="btn-rejeter" (click)="rejeterPublication(p.id)">❌ Rejeter</button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (showForm() === 'pub') {
+        <div class="form-card">
+          <h2>Ajouter une publication</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Titre *</label>
+              <input [(ngModel)]="newPub.titre" placeholder="Titre de la publication" />
+            </div>
+            <div class="field">
+              <label>Type</label>
+              <select [(ngModel)]="newPub.type">
+                <option value="Journal">Article de journal</option>
+                <option value="Conference">Conférence internationale</option>
+                <option value="Conference Nationale">Conférence nationale</option>
+                <option value="Chapitre">Chapitre d'ouvrage</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Année</label>
+              <input type="number" [(ngModel)]="newPub.annee" />
+            </div>
+            <div class="field">
+              <label>Journal / Conférence</label>
+              <input [(ngModel)]="newPub.journal" placeholder="ex. IEEE, ACM SIGCHI..." />
+            </div>
+            <div class="field full">
+              <label>Résumé</label>
+              <textarea [(ngModel)]="newPub.resume" rows="3" placeholder="Résumé de la publication..."></textarea>
+            </div>
+
+            <!-- §3.7.2 CDC — DOI -->
+            <div class="field">
+              <label>DOI</label>
+              <input [(ngModel)]="newPub.doi" placeholder="ex. 10.1000/xyz123" />
+            </div>
+
+            <!-- §3.7.2 CDC — URL externe -->
+            <div class="field">
+              <label>URL externe</label>
+              <input [(ngModel)]="newPub.lienUrl" placeholder="https://..." />
+            </div>
+
+            <!-- §3.7.2 CDC — Upload PDF + prévisualisation -->
+            <div class="field full">
+              <label>Fichier PDF</label>
+              <div class="pdf-upload-zone">
+                <input type="file" accept="application/pdf" id="pdfInput"
+                       class="pdf-file-input" (change)="onPdfFileSelected($event)" />
+                <label for="pdfInput" class="pdf-upload-label">
+                  @if (newPubPdfFile) {
+                    <span class="pdf-selected">📄 {{ newPubPdfFile.name }}</span>
+                  } @else {
+                    <span class="pdf-placeholder">📎 Cliquez pour choisir un PDF</span>
+                  }
+                </label>
+                @if (newPubPdfFile) {
+                  <button class="pdf-clear" (click)="clearPdfSelection()">✕ Retirer</button>
+                }
+              </div>
+              <span class="field-hint">Le fichier sera uploadé après la création de la publication.</span>
+
+              <!-- ── Prévisualisation inline du PDF sélectionné ── -->
+              @if (newPubPdfPreviewUrl) {
+                <div class="pdf-preview-panel">
+                  <div class="pdf-preview-header">
+                    <span class="pdf-preview-title">👁 Prévisualisation — {{ newPubPdfFile?.name }}</span>
+                    <div class="pdf-preview-actions">
+                      <a [href]="pdfBlobUrl" target="_blank" class="btn-pdf-open">
+                        ↗ Ouvrir dans un onglet
+                      </a>
+                      <button class="pdf-preview-close" (click)="clearPdfSelection()">✕</button>
+                    </div>
+                  </div>
+                  <iframe
+                    [src]="newPubPdfPreviewUrl"
+                    class="pdf-preview-frame"
+                    type="application/pdf"
+                    title="Prévisualisation PDF">
+                  </iframe>
+                </div>
+              }
+            </div>
+
+            <div class="field full">
+              <label>Mots-clés</label>
+              <input [(ngModel)]="newPub.motsCles" placeholder="IA, NLP, deep learning..." />
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════
+                 §3.7.2 CDC — Score / classement de la venue
+                 Source de référence : Scimago SJR, CORE, JCR/Clarivate
+                 ═══════════════════════════════════════════════════════════════ -->
+            <div class="field full ranking-section-header">
+              <label class="ranking-title">Classement / Score de la venue</label>
+              <span class="ranking-hint">Renseignez le classement selon la source officielle (Scimago, CORE, JCR…)</span>
+            </div>
+
+            <!-- Scimago Quartile — pour les journaux -->
+            <div class="field">
+              <label>
+                Quartile Scimago (SJR)
+                <a href="https://www.scimagojr.com" target="_blank" class="source-link" title="Voir Scimago Journal Rank">↗</a>
+              </label>
+              <select [(ngModel)]="newPub.scimagoQuartile">
+                <option value="">— Non renseigné —</option>
+                <option value="Q1">Q1 — Top 25 %</option>
+                <option value="Q2">Q2 — Top 50 %</option>
+                <option value="Q3">Q3 — Top 75 %</option>
+                <option value="Q4">Q4 — Reste</option>
+              </select>
+            </div>
+
+            <!-- CORE Ranking — pour les conférences -->
+            <div class="field">
+              <label>
+                Classement CORE (Conférences)
+                <a href="http://portal.core.edu.au/conf-ranks/" target="_blank" class="source-link" title="Voir CORE Portal">↗</a>
+              </label>
+              <select [(ngModel)]="newPub.classementCORE">
+                <option value="">— Non renseigné —</option>
+                <option value="A*">A* — Excellence</option>
+                <option value="A">A — Très bonne</option>
+                <option value="B">B — Bonne</option>
+                <option value="C">C — Reconnue</option>
+              </select>
+            </div>
+
+            <!-- Impact Factor JCR -->
+            <div class="field">
+              <label>
+                Impact Factor JCR
+                <a href="https://jcr.clarivate.com" target="_blank" class="source-link" title="Voir Clarivate JCR">↗</a>
+              </label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="newPub.facteurImpact"
+                     placeholder="ex. 4.58" />
+            </div>
+
+            <!-- SNIP (Scopus) -->
+            <div class="field">
+              <label>
+                SNIP (Scopus/Elsevier)
+                <a href="https://www.journalindicators.com" target="_blank" class="source-link" title="Voir Journal Indicators">↗</a>
+              </label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="newPub.snip"
+                     placeholder="ex. 1.23" />
+            </div>
+
+            <!-- Source de référence (libre) -->
+            <div class="field full">
+              <label>Source de référence (précision libre)</label>
+              <input [(ngModel)]="newPub.sourceClassement"
+                     placeholder="ex. Scimago 2024, CORE 2023, JCR Q1 Clarivate..." />
+              <span class="field-hint">Indiquez l'année et la source consultée pour faciliter la vérification.</span>
+            </div>
+          </div>
+          <button class="btn-submit" (click)="ajouterPublication()">💾 Enregistrer la publication</button>
+        </div>
+      }
+
+      <!-- ── Formulaire d'édition de publication ── -->
+      @if (editingPublication()) {
+        <div class="form-card edit-card">
+          <h2>Modifier la publication</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Titre *</label>
+              <input [(ngModel)]="editingPublication().titre" placeholder="Titre de la publication" />
+            </div>
+            <div class="field">
+              <label>Type</label>
+              <select [(ngModel)]="editingPublication().type">
+                <option value="Journal">Article de journal</option>
+                <option value="Conference">Conférence internationale</option>
+                <option value="Conference Nationale">Conférence nationale</option>
+                <option value="Book Chapter">Chapitre d'ouvrage</option>
+                <option value="Thesis">Rapport / Thèse</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Année</label>
+              <input type="number" [(ngModel)]="editingPublication().annee" />
+            </div>
+            <div class="field">
+              <label>Journal / Conférence</label>
+              <input [(ngModel)]="editingPublication().journal" placeholder="IEEE, ACM…" />
+            </div>
+            <div class="field">
+              <label>DOI</label>
+              <input [(ngModel)]="editingPublication().doi" placeholder="ex. 10.1000/xyz123" />
+            </div>
+            <div class="field">
+              <label>URL externe</label>
+              <input [(ngModel)]="editingPublication().lienUrl" placeholder="https://…" />
+            </div>
+            <div class="field">
+              <label>Mots-clés</label>
+              <input [(ngModel)]="editingPublication().motsCles" placeholder="IA, ML, NLP…" />
+            </div>
+            <div class="field">
+              <label>Statut</label>
+              <select [(ngModel)]="editingPublication().statut">
+                <option value="BROUILLON">Brouillon</option>
+                <option value="SOUMIS">Soumis</option>
+                <option value="PUBLIE">Publié</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Résumé</label>
+              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="Résumé…"></textarea>
+            </div>
+
+                        <!-- §3.7.2 CDC — PDF dans le formulaire d'édition -->
+            <div class="field full">
+              <label>Fichier PDF</label>
+
+              <!-- PDF viewer unique (existant ou nouveau) -->
+              @if (!editRemovePdf && editPdfViewerUrl()) {
+                <div class="pdf-existing-row">
+                  <span class="pdf-existing-label">
+                    📄 {{ editPubPdfFile ? 'Nouveau PDF' : 'PDF actuel' }}
+                  </span>
+                  <a [href]="editPubPdfFile ? editPdfBlobUrl : getFullPdfUrl(editingPublication().pdfUrl)"
+                     target="_blank" class="btn-pdf-open">↗ Ouvrir</a>
+                  @if (editPubPdfFile) {
+                    <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                  } @else {
+                    <button class="pdf-clear" (click)="markRemoveEditPdf()">✕ Supprimer</button>
+                  }
+                </div>
+                <div class="pdf-preview-panel" style="margin-top:0.75rem;">
+                  <iframe
+                    [src]="editPdfViewerUrl()!"
+                    class="pdf-preview-frame"
+                    type="application/pdf"
+                    title="Prévisualisation PDF">
+                  </iframe>
+                </div>
+              }
+
+              @if (editRemovePdf && !editPubPdfFile) {
+                <div class="pdf-remove-notice">
+                  ⚠️ Le PDF sera supprimé à l'enregistrement.
+                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">Annuler la suppression</button>
+                </div>
+              }
+
+              <!-- Upload nouveau PDF -->
+              <div class="pdf-upload-zone" style="margin-top: 0.5rem;">
+                <input type="file" accept="application/pdf" id="pdfInputEditAdmin"
+                       class="pdf-file-input" (change)="onEditPdfFileSelected($event)" />
+                <label for="pdfInputEditAdmin" class="pdf-upload-label">
+                  @if (editPubPdfFile) {
+                    <span class="pdf-selected">📄 {{ editPubPdfFile.name }}</span>
+                  } @else {
+                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? 'Remplacer le PDF…' : 'Choisir un PDF…' }}</span>
+                  }
+                </label>
+                @if (editPubPdfFile) {
+                  <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                }
+              </div>
+              <span class="field-hint">Vous pouvez remplacer le PDF existant ou en supprimer un.</span>
+
+            </div>
+
+            <!-- §3.7.2 CDC — Classement -->
+            <div class="field full ranking-section-header">
+              <label class="ranking-title">Classement / Score de la venue</label>
+            </div>
+            <div class="field">
+              <label>Quartile Scimago (SJR)</label>
+              <select [(ngModel)]="editingPublication().scimagoQuartile">
+                <option value="">— Non renseigné —</option>
+                <option value="Q1">Q1 — Top 25 %</option>
+                <option value="Q2">Q2 — Top 50 %</option>
+                <option value="Q3">Q3 — Top 75 %</option>
+                <option value="Q4">Q4 — Reste</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Classement CORE (Conférences)</label>
+              <select [(ngModel)]="editingPublication().classementCORE">
+                <option value="">— Non renseigné —</option>
+                <option value="A*">A* — Excellence</option>
+                <option value="A">A — Très bonne</option>
+                <option value="B">B — Bonne</option>
+                <option value="C">C — Reconnue</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Impact Factor JCR</label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="editingPublication().facteurImpact"
+                     placeholder="ex. 4.58" />
+            </div>
+            <div class="field">
+              <label>SNIP (Scopus/Elsevier)</label>
+              <input type="number" step="0.01" min="0"
+                     [(ngModel)]="editingPublication().snip"
+                     placeholder="ex. 1.23" />
+            </div>
+            <div class="field full">
+              <label>Source de référence</label>
+              <input [(ngModel)]="editingPublication().sourceClassement"
+                     placeholder="ex. Scimago 2024, CORE 2023…" />
+            </div>
+          </div>
+          <div class="edit-actions">
+            <button class="btn-submit" (click)="saveEditPublication()">Enregistrer la publication</button>
+            <button class="btn-cancel" (click)="cancelEditPublication()">Annuler</button>
+          </div>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Titre</th><th>Type</th><th>Journal / Conf.</th>
+              <th>Année</th><th>Classement</th><th>Statut</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of publications(); track p.id) {
+              <tr>
+                <td class="cell-title">{{ p.titre }}</td>
+                <td>
+                  <span class="badge-type" [class]="p.type === 'Journal' ? 'type-j' : 'type-c'">
+                    {{ p.type }}
+                  </span>
+                </td>
+                <td class="cell-muted">{{ p.journal }}</td>
+                <td class="cell-muted">{{ p.annee }}</td>
+                <td>
+                  @if (p.scimagoQuartile) {
+                    <span class="badge-ranking" [ngClass]="{
+                      'q1': p.scimagoQuartile === 'Q1',
+                      'q2': p.scimagoQuartile === 'Q2',
+                      'q3': p.scimagoQuartile === 'Q3',
+                      'q4': p.scimagoQuartile === 'Q4'
+                    }">{{ p.scimagoQuartile }}</span>
+                  }
+                  @if (p.classementCORE) {
+                    <span class="badge-ranking" [ngClass]="{
+                      'astar': p.classementCORE === 'A*',
+                      'core-a': p.classementCORE === 'A',
+                      'core-b': p.classementCORE === 'B'
+                    }">CORE {{ p.classementCORE }}</span>
+                  }
+                  @if (!p.scimagoQuartile && !p.classementCORE) {
+                    <span class="cell-muted">—</span>
+                  }
+                </td>
+                <td>
+                  <span class="badge-statut-pub" [class]="getStatutClass(p.statut)">
+                    {{ getStatutLabel(p.statut) }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-edit" (click)="startEditPublication(p)">Éditer</button>
+                    @if (p.statut === 'SOUMIS') {
+                      <button class="btn-action btn-valider-sm" (click)="validerPublication(p.id)">✅</button>
+                      <button class="btn-action btn-rejeter-sm" (click)="rejeterPublication(p.id)">❌</button>
+                    }
+                    <button class="btn-action btn-delete" (click)="supprimerPublication(p.id)">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <!-- TAB: ÉVÉNEMENTS -->
+    @if (activeTab() === 'evenements') {
+      <app-admin-evenements></app-admin-evenements>
+    }
+
+    <!-- TAB: AXES -->
+    @if (activeTab() === 'axes') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Axes</h1>
+          <p>{{ axes().length }} axe(s) de recherche</p>
+        </div>
+        <button class="btn-add" (click)="showForm.set(showForm() === 'axe' ? '' : 'axe')">
+          {{ showForm() === 'axe' ? '✕ Fermer' : '➕ Nouvel axe' }}
+        </button>
+      </div>
+
+      @if (showForm() === 'axe') {
+        <div class="form-card">
+          <h2>Créer un axe de recherche</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Nom de l'axe *</label>
+              <input [(ngModel)]="newAxe.nom" placeholder="ex. Intelligence Artificielle" />
+            </div>
+            <div class="field full">
+              <label>Description</label>
+              <textarea [(ngModel)]="newAxe.description" rows="3" placeholder="Description de l'axe..."></textarea>
+            </div>
+            <div class="field">
+              <label>Responsable</label>
+              <select [(ngModel)]="newAxe.responsableId">
+                <option value="">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <button class="btn-submit" (click)="ajouterAxe()">Créer l'axe</button>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr><th>Nom</th><th>Description</th><th>Responsable</th><th>Membres</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (axe of axes(); track axe.id) {
+              <tr>
+                <td class="cell-title">{{ axe.nom }}</td>
+                <td class="cell-muted">{{ axe.description || '-' }}</td>
+                <td>
+                  @if (axe.responsable) {
+                    <div class="cell-user">
+                      <div class="mini-avatar">{{ axe.responsable.prenom[0] }}{{ axe.responsable.nom[0] }}</div>
+                      <span>{{ axe.responsable.prenom }} {{ axe.responsable.nom }}</span>
+                    </div>
+                  } @else {
+                    <span class="cell-muted">-</span>
+                  }
+                </td>
+                <td><span class="badge-count">{{ axe.chercheurs?.length || 0 }}</span></td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-edit" (click)="startEditAxe(axe)">Éditer</button>
+                    <button class="btn-action btn-delete" (click)="supprimerAxe(axe.id)">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (editingAxe()) {
+        <div class="form-card">
+          <h2>Modifier l'axe</h2>
+          <div class="form-grid">
+            <div class="field full">
+              <label>Nom de l'axe *</label>
+              <input [(ngModel)]="editingAxe().nom" />
+            </div>
+            <div class="field full">
+              <label>Description</label>
+              <textarea [(ngModel)]="editingAxe().description" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>Responsable</label>
+              <select [(ngModel)]="editingAxe().responsableId">
+                <option value="">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-submit" (click)="saveEditAxe()">Enregistrer</button>
+            <button class="btn-cancel" (click)="cancelEditAxe()">Annuler</button>
+          </div>
+        </div>
+      }
+
+      <div class="section-card">
+        <h3>Associer des chercheurs aux axes</h3>
+        <div class="assoc-grid">
+          @for (axe of axes(); track axe.id) {
+            <div class="assoc-item">
+              <strong>{{ axe.nom }}</strong>
+              <select (change)="setAssocChercheur(axe.id, $event)">
+                <option value="">Choisir un chercheur</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+              <button class="btn-assoc" (click)="associerChercheur(axe.id)" [disabled]="!getAssocChercheur(axe.id)">Associer</button>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- TAB: DOCTORANTS -->
+    @if (activeTab() === 'doctorants') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Doctorants</h1>
+          <p>{{ doctorants().length }} doctorant(s) enregistré(s)</p>
+        </div>
+        <button class="btn-add" (click)="showForm.set(showForm() === 'doc' ? '' : 'doc')">
+          {{ showForm() === 'doc' ? '✕ Fermer' : '➕ Nouveau doctorant' }}
+        </button>
+      </div>
+
+      @if (showForm() === 'doc') {
+        <div class="form-card">
+          <h2>Ajouter un doctorant</h2>
+          <div class="form-grid">
+            <div class="field"><label>Nom *</label><input [(ngModel)]="newDoctorant.nom" /></div>
+            <div class="field"><label>Prénom *</label><input [(ngModel)]="newDoctorant.prenom" /></div>
+            <div class="field full"><label>Sujet de thèse</label><input [(ngModel)]="newDoctorant.sujetThese" /></div>
+            <div class="field">
+              <label>Directeur</label>
+              <select [(ngModel)]="newDoctorant.directeurId">
+                <option [value]="null">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+            <div class="field"><label>Date d'inscription</label><input type="date" [(ngModel)]="newDoctorant.dateInscription" /></div>
+            <div class="field">
+              <label>Statut</label>
+              <select [(ngModel)]="newDoctorant.statut">
+                <option value="EN_COURS">En cours</option>
+                <option value="SOUTENU">Soutenu</option>
+              </select>
+            </div>
+            <div class="field"><label>Mention</label><input [(ngModel)]="newDoctorant.mention" /></div>
+            <div class="field"><label>Photo URL</label><input [(ngModel)]="newDoctorant.photoUrl" /></div>
+          </div>
+          <button class="btn-submit" (click)="ajouterDoctorant()">Enregistrer</button>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr><th>Doctorant</th><th>Sujet</th><th>Directeur</th><th>Inscription</th><th>Statut</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (d of doctorants(); track d.id) {
+              <tr>
+                <td>
+                  <div class="cell-user">
+                    <div class="mini-avatar">{{ d.prenom?.[0] }}{{ d.nom?.[0] }}</div>
+                    <span>{{ d.prenom }} {{ d.nom }}</span>
+                  </div>
+                </td>
+                <td class="cell-muted">{{ d.sujetThese || '-' }}</td>
+                <td class="cell-muted">{{ d.directeur ? d.directeur.prenom + ' ' + d.directeur.nom : '-' }}</td>
+                <td class="cell-muted">{{ d.dateInscription || '-' }}</td>
+                <td>
+                  <span class="badge-status" [class.status-on]="d.statut === 'EN_COURS'" [class.status-off]="d.statut === 'SOUTENU'">
+                    {{ d.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-edit" (click)="startEditDoctorant(d)">Éditer</button>
+                    <button class="btn-action btn-delete" (click)="supprimerDoctorant(d.id)">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (editingDoctorant()) {
+        <div class="form-card">
+          <h2>Modifier le doctorant</h2>
+          <div class="form-grid">
+            <div class="field"><label>Nom *</label><input [(ngModel)]="editingDoctorant().nom" /></div>
+            <div class="field"><label>Prénom *</label><input [(ngModel)]="editingDoctorant().prenom" /></div>
+            <div class="field full"><label>Sujet de thèse</label><input [(ngModel)]="editingDoctorant().sujetThese" /></div>
+            <div class="field">
+              <label>Directeur</label>
+              <select [(ngModel)]="editingDoctorant().directeurId">
+                <option [value]="null">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+            <div class="field"><label>Date d'inscription</label><input type="date" [(ngModel)]="editingDoctorant().dateInscription" /></div>
+            <div class="field"><label>Date de soutenance</label><input type="date" [(ngModel)]="editingDoctorant().dateSoutenance" /></div>
+            <div class="field">
+              <label>Statut</label>
+              <select [(ngModel)]="editingDoctorant().statut">
+                <option value="EN_COURS">En cours</option>
+                <option value="SOUTENU">Soutenu</option>
+              </select>
+            </div>
+            <div class="field"><label>Mention</label><input [(ngModel)]="editingDoctorant().mention" /></div>
+            <div class="field"><label>Photo URL</label><input [(ngModel)]="editingDoctorant().photoUrl" /></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-submit" (click)="saveEditDoctorant()">Enregistrer</button>
+            <button class="btn-cancel" (click)="cancelEditDoctorant()">Annuler</button>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- TAB: MASTERIENS -->
+    @if (activeTab() === 'masteriens') {
+      <div class="tab-header-row">
+        <div>
+          <h1>Gestion des Mastériens</h1>
+          <p>{{ masteriens().length }} mastérien(s) enregistré(s)</p>
+        </div>
+        <button class="btn-add" (click)="showForm.set(showForm() === 'master' ? '' : 'master')">
+          {{ showForm() === 'master' ? '✕ Fermer' : '➕ Nouveau mastérien' }}
+        </button>
+      </div>
+
+      @if (showForm() === 'master') {
+        <div class="form-card">
+          <h2>Ajouter un mastérien</h2>
+          <div class="form-grid">
+            <div class="field"><label>Nom *</label><input [(ngModel)]="newMasterien.nom" /></div>
+            <div class="field"><label>Prénom *</label><input [(ngModel)]="newMasterien.prenom" /></div>
+            <div class="field full"><label>Sujet de mémoire</label><input [(ngModel)]="newMasterien.sujetMemoire" /></div>
+            <div class="field">
+              <label>Encadrant</label>
+              <select [(ngModel)]="newMasterien.encadrantId">
+                <option [value]="null">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+            <div class="field"><label>Promotion</label><input [(ngModel)]="newMasterien.promotion" /></div>
+            <div class="field">
+              <label>Statut</label>
+              <select [(ngModel)]="newMasterien.statut">
+                <option value="EN_COURS">En cours</option>
+                <option value="DIPLOME">Diplômé</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-submit" (click)="ajouterMasterien()">Enregistrer</button>
+        </div>
+      }
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr><th>Mastérien</th><th>Sujet</th><th>Encadrant</th><th>Promotion</th><th>Statut</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (m of masteriens(); track m.id) {
+              <tr>
+                <td>
+                  <div class="cell-user">
+                    <div class="mini-avatar">{{ m.prenom?.[0] }}{{ m.nom?.[0] }}</div>
+                    <span>{{ m.prenom }} {{ m.nom }}</span>
+                  </div>
+                </td>
+                <td class="cell-muted">{{ m.sujetMemoire || '-' }}</td>
+                <td class="cell-muted">{{ m.encadrant ? m.encadrant.prenom + ' ' + m.encadrant.nom : '-' }}</td>
+                <td class="cell-muted">{{ m.promotion || '-' }}</td>
+                <td>
+                  <span class="badge-status" [class.status-on]="m.statut === 'EN_COURS'" [class.status-off]="m.statut === 'DIPLOME'">
+                    {{ m.statut === 'EN_COURS' ? 'En cours' : 'Diplômé' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="actions-row">
+                    <button class="btn-action btn-edit" (click)="startEditMasterien(m)">Éditer</button>
+                    <button class="btn-action btn-delete" (click)="supprimerMasterien(m.id)">Suppr.</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (editingMasterien()) {
+        <div class="form-card">
+          <h2>Modifier le mastérien</h2>
+          <div class="form-grid">
+            <div class="field"><label>Nom *</label><input [(ngModel)]="editingMasterien().nom" /></div>
+            <div class="field"><label>Prénom *</label><input [(ngModel)]="editingMasterien().prenom" /></div>
+            <div class="field full"><label>Sujet de mémoire</label><input [(ngModel)]="editingMasterien().sujetMemoire" /></div>
+            <div class="field">
+              <label>Encadrant</label>
+              <select [(ngModel)]="editingMasterien().encadrantId">
+                <option [value]="null">Aucun</option>
+                @for (c of chercheurs(); track c.id) {
+                  <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
+                }
+              </select>
+            </div>
+            <div class="field"><label>Promotion</label><input [(ngModel)]="editingMasterien().promotion" /></div>
+            <div class="field">
+              <label>Statut</label>
+              <select [(ngModel)]="editingMasterien().statut">
+                <option value="EN_COURS">En cours</option>
+                <option value="DIPLOME">Diplômé</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-submit" (click)="saveEditMasterien()">Enregistrer</button>
+            <button class="btn-cancel" (click)="cancelEditMasterien()">Annuler</button>
+          </div>
+        </div>
+      }
+    }
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TAB: PARAMÈTRES GÉNÉRAUX  §4.3.6
+         Configuration : nom du laboratoire, logo, couleurs du thème
+         ═══════════════════════════════════════════════════════════════ -->
+    @if (activeTab() === 'parametres') {
+
+      <div class="tab-header">
+        <h1>⚙ Paramètres généraux</h1>
+        <p>Configuration du laboratoire, logo, couleurs du thème et métadonnées SEO</p>
+      </div>
+
+      @if (parametresLoading()) {
+        <div class="params-loading">
+          <span class="params-spinner"></span> Chargement des paramètres…
+        </div>
+      }
+
+      @if (!parametresLoading()) {
+
+        <div class="params-accordion">
+
+          <!-- ── Accordion 1 : Identité du laboratoire ── -->
+          <div class="params-accordion-item" [class.open]="activeParamsSection() === 'identite'">
+            <button class="params-accordion-header" type="button"
+                    (click)="toggleParamsSection('identite')">
+              <span class="params-section-icon">🏛</span>
+              <div class="params-accordion-title">
+                <span>Identité du laboratoire</span>
+                <small>Nom, acronyme et informations générales affichés sur le site public</small>
+              </div>
+              <span class="params-accordion-chevron">{{ activeParamsSection() === 'identite' ? '▲' : '▼' }}</span>
+            </button>
+
+            @if (activeParamsSection() === 'identite') {
+              <div class="params-accordion-body">
+                <div class="form-grid params-grid">
+                  <div class="field">
+                    <label>Nom complet *</label>
+                    <input [(ngModel)]="laboForm.nom"
+                           placeholder="ex. Laboratoire d'Informatique et TIC" />
+                  </div>
+                  <div class="field">
+                    <label>Acronyme</label>
+                    <input [(ngModel)]="laboForm.acronyme"
+                           placeholder="ex. LIMTIC" />
+                  </div>
+                  <div class="field">
+                    <label>Email de contact</label>
+                    <input type="email" [(ngModel)]="laboForm.email"
+                           placeholder="contact@limtic.tn" />
+                  </div>
+                  <div class="field">
+                    <label>Téléphone</label>
+                    <input [(ngModel)]="laboForm.telephone"
+                           placeholder="+216 XX XXX XXX" />
+                  </div>
+                  <div class="field full">
+                    <label>Adresse</label>
+                    <input [(ngModel)]="laboForm.adresse"
+                           placeholder="Campus universitaire, Tunis" />
+                  </div>
+                  <div class="field full">
+                    <label>Description courte</label>
+                    <textarea [(ngModel)]="laboForm.description"
+                              rows="3"
+                              placeholder="Présentation du laboratoire visible sur la page d'accueil…"></textarea>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ── Accordion 2 : Logos ── -->
+          <div class="params-accordion-item" [class.open]="activeParamsSection() === 'logos'">
+            <button class="params-accordion-header" type="button"
+                    (click)="toggleParamsSection('logos')">
+              <span class="params-section-icon">🖼</span>
+              <div class="params-accordion-title">
+                <span>Logos du laboratoire</span>
+                <small>Deux logos séparés pour les thèmes sombre et clair</small>
+              </div>
+              <span class="params-accordion-chevron">{{ activeParamsSection() === 'logos' ? '▲' : '▼' }}</span>
+            </button>
+
+            @if (activeParamsSection() === 'logos') {
+              <div class="params-accordion-body">
+                <div class="logo-grid">
+                  <div class="logo-block">
+                    <h3>Logo thème clair</h3>
+                    <div class="logo-upload-area">
+                      <div class="logo-preview-box">
+                        @if (logoPreviewUrlLight()) {
+                          <img [src]="logoPreviewUrlLight()" alt="Logo clair" class="logo-preview-img" />
+                        } @else {
+                          <div class="logo-preview-placeholder">
+                            <span>🌞</span>
+                            <small>Aucun logo</small>
+                          </div>
+                        }
+                      </div>
+                      <div class="logo-upload-controls">
+                        <input type="file"
+                               accept="image/png,image/jpeg,image/svg+xml"
+                               id="logoInputLight"
+                               class="logo-file-input"
+                               (change)="onLogoFileSelected('light', $event)" />
+                        <label for="logoInputLight" class="btn-logo-choose">
+                          📁 Choisir un fichier
+                        </label>
+                        @if (logoUrlCouranteLight()) {
+                          <button class="btn-logo-delete" (click)="supprimerLogo('light')">✕ Supprimer le logo</button>
+                        }
+                        @if (logoLightFile) {
+                          <div class="logo-file-info">
+                            <span class="logo-file-name">📄 {{ logoLightFile.name }}</span>
+                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('light')">✕ Annuler</button>
+                          </div>
+                        }
+                        @if (!logoPreviewUrlLight() && !logoLightFile) {
+                          <p class="logo-hint">Aucun logo sélectionné — le logo actuel sera conservé.</p>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="logo-block">
+                    <h3>Logo thème sombre</h3>
+                    <div class="logo-upload-area">
+                      <div class="logo-preview-box">
+                        @if (logoPreviewUrlDark()) {
+                          <img [src]="logoPreviewUrlDark()" alt="Logo sombre" class="logo-preview-img" />
+                        } @else {
+                          <div class="logo-preview-placeholder">
+                            <span>🌙</span>
+                            <small>Aucun logo</small>
+                          </div>
+                        }
+                      </div>
+                      <div class="logo-upload-controls">
+                        <input type="file"
+                               accept="image/png,image/jpeg,image/svg+xml"
+                               id="logoInputDark"
+                               class="logo-file-input"
+                               (change)="onLogoFileSelected('dark', $event)" />
+                        <label for="logoInputDark" class="btn-logo-choose">
+                          📁 Choisir un fichier
+                        </label>
+                        @if (logoUrlCouranteDark()) {
+                          <button class="btn-logo-delete" (click)="supprimerLogo('dark')">✕ Supprimer le logo</button>
+                        }
+                        @if (logoDarkFile) {
+                          <div class="logo-file-info">
+                            <span class="logo-file-name">📄 {{ logoDarkFile.name }}</span>
+                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('dark')">✕ Annuler</button>
+                          </div>
+                        }
+                        @if (!logoPreviewUrlDark() && !logoDarkFile) {
+                          <p class="logo-hint">Aucun logo sélectionné — le logo actuel sera conservé.</p>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ── Accordion 3 : Couleurs du thème ── -->
+          <div class="params-accordion-item" [class.open]="activeParamsSection() === 'couleurs'">
+            <button class="params-accordion-header" type="button"
+                    (click)="toggleParamsSection('couleurs')">
+              <span class="params-section-icon">🎨</span>
+              <div class="params-accordion-title">
+                <span>Couleurs du thème</span>
+                <small>Les modifications s'appliquent en temps réel au thème actif</small>
+              </div>
+              <span class="params-accordion-chevron">{{ activeParamsSection() === 'couleurs' ? '▲' : '▼' }}</span>
+            </button>
+
+            @if (activeParamsSection() === 'couleurs') {
+              <div class="params-accordion-body">
+                <div class="theme-groups">
+                  @for (section of THEME_SECTIONS; track section.key) {
+                    <div class="theme-group">
+                      <div class="theme-group-header">
+                        <h3>{{ section.label }}</h3>
+                        <p>{{ section.description }}</p>
+                      </div>
+                      <div class="colors-grid">
+                        @for (field of THEME_FIELDS; track field.key) {
+                          <div class="color-field">
+                            <label>{{ field.label }}</label>
+                            <div class="color-input-row">
+                              <input type="color"
+                                     [value]="themeForm[section.key][field.key]"
+                                     (input)="onColorInput(section.key, field.key, $event)"
+                                     class="color-picker" />
+                              <input type="text"
+                                     [value]="themeForm[section.key][field.key]"
+                                     (change)="onColorText(section.key, field.key, $event)"
+                                     class="color-hex-input"
+                                     maxlength="64"
+                                     placeholder="#000000" />
+                            </div>
+                            <span class="color-hint">{{ field.hint }}</span>
+                          </div>
+                        }
+                      </div>
+                      <button class="btn-colors-reset" (click)="resetCouleursDefaut(section.key)">
+                        ↺ Réinitialiser les couleurs par défaut
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ── Accordion 4 : SMTP ── -->
+          <div class="params-accordion-item" [class.open]="activeParamsSection() === 'smtp'">
+            <button class="params-accordion-header" type="button"
+                    (click)="toggleParamsSection('smtp')">
+              <span class="params-section-icon">✉️</span>
+              <div class="params-accordion-title">
+                <span>Paramètres SMTP</span>
+                <small>Adresse destinataire et mot de passe applicatif</small>
+              </div>
+              <span class="params-accordion-chevron">{{ activeParamsSection() === 'smtp' ? '▲' : '▼' }}</span>
+            </button>
+
+            @if (activeParamsSection() === 'smtp') {
+              <div class="params-accordion-body">
+                <div class="form-grid params-grid">
+                  <div class="field">
+                    <label>Serveur SMTP</label>
+                    <input [(ngModel)]="smtpForm.host"
+                           placeholder="smtp.gmail.com" />
+                  </div>
+                  <div class="field">
+                    <label>Port SMTP</label>
+                    <input type="number" [(ngModel)]="smtpForm.port"
+                           placeholder="587" min="1" />
+                  </div>
+                  <div class="field">
+                    <label>Utilisateur SMTP</label>
+                    <input type="email" [(ngModel)]="smtpForm.username"
+                           placeholder="user@domaine.tn" />
+                  </div>
+                  <div class="field">
+                    <label>Destinataire</label>
+                    <input type="email" [(ngModel)]="smtpForm.destinataire"
+                           placeholder="contact@limtic.tn" />
+                  </div>
+                  <div class="field">
+                    <label>Mot de passe SMTP</label>
+                    <input type="password" [(ngModel)]="smtpForm.password"
+                           placeholder="Laissez vide pour ne pas changer" />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- ── Accordion 5 : SEO par page ── -->
+          <div class="params-accordion-item" [class.open]="activeParamsSection() === 'seo'">
+            <button class="params-accordion-header" type="button"
+                    (click)="toggleParamsSection('seo')">
+              <span class="params-section-icon">🔍</span>
+              <div class="params-accordion-title">
+                <span>Métadonnées SEO</span>
+                <small>Titre, description et mots-clés pour chaque page publique du site</small>
+              </div>
+              <span class="params-accordion-chevron">{{ activeParamsSection() === 'seo' ? '▲' : '▼' }}</span>
+            </button>
+
+            @if (activeParamsSection() === 'seo') {
+              <div class="params-accordion-body">
+        <!-- ── Section 4 : SEO par page ── -->
+        <div class="params-section">
+          <div class="params-section-header">
+            <span class="params-section-icon">🔍</span>
+            <div>
+              <h2>Métadonnées SEO</h2>
+              <p>Titre, description et mots-clés pour chaque page publique du site</p>
+            </div>
+          </div>
+
+          <div class="seo-accordion">
+            @for (page of SEO_PAGES; track page.key) {
+              <div class="seo-accordion-item"
+                   [class.open]="seoPageActive() === page.key">
+
+                <!-- En-tête cliquable -->
+                <button class="seo-accordion-header"
+                        (click)="toggleSeoPage(page.key)"
+                        type="button">
+                  <span class="seo-page-icon">{{ page.icon }}</span>
+                  <span class="seo-page-label">{{ page.label }}</span>
+                  <span class="seo-status-badge"
+                        [class.filled]="seoForm[page.key].titre || seoForm[page.key].description">
+                    {{ (seoForm[page.key].titre || seoForm[page.key].description) ? 'Configuré' : 'Non configuré' }}
+                  </span>
+                  <span class="seo-chevron">{{ seoPageActive() === page.key ? '▲' : '▼' }}</span>
+                </button>
+
+                <!-- Panneau de champs -->
+                @if (seoPageActive() === page.key) {
+                  <div class="seo-accordion-body">
+                    <div class="form-grid params-grid">
+
+                      <div class="field full">
+                        <label>Titre de la page
+                          <span class="seo-counter"
+                                [class.warn]="seoForm[page.key].titre.length > 60">
+                            {{ seoForm[page.key].titre.length }}/60
+                          </span>
+                        </label>
+                        <input [(ngModel)]="seoForm[page.key].titre"
+                               [name]="'seo-titre-' + page.key"
+                               maxlength="80"
+                               placeholder="ex. LIMTIC — Accueil" />
+                        <span class="field-hint">Affiché dans l'onglet du navigateur et les résultats Google (recommandé : 50–60 car.)</span>
+                      </div>
+
+                      <div class="field full">
+                        <label>Description
+                          <span class="seo-counter"
+                                [class.warn]="seoForm[page.key].description.length > 160">
+                            {{ seoForm[page.key].description.length }}/160
+                          </span>
+                        </label>
+                        <textarea [(ngModel)]="seoForm[page.key].description"
+                                  [name]="'seo-desc-' + page.key"
+                                  rows="3"
+                                  maxlength="300"
+                                  placeholder="Courte description visible dans les résultats de recherche…"></textarea>
+                        <span class="field-hint">Recommandé : 120–160 caractères pour un bon affichage dans Google.</span>
+                      </div>
+
+                      <div class="field full">
+                        <label>Mots-clés <span class="field-optional">(séparés par des virgules)</span></label>
+                        <input [(ngModel)]="seoForm[page.key].motsCles"
+                               [name]="'seo-kw-' + page.key"
+                               placeholder="ex. laboratoire, informatique, recherche, Tunis" />
+                        <span class="field-hint">Les moteurs de recherche modernes les utilisent peu, mais ils restent utiles pour la cohérence sémantique.</span>
+                      </div>
+
+                    </div>
+                  </div>
+                }
+
+              </div>
+            }
+          </div>
+        </div>
+              </div>
+            }
+          </div>
+
+        </div><!-- /.params-accordion -->
+
+        <!-- ── Barre d'actions globale ── -->
+        <div class="params-actions-bar">
+          <button class="btn-params-save"
+                  [disabled]="parametresSaving()"
+                  (click)="sauvegarderParametres()">
+            @if (parametresSaving()) {
+              <span class="params-spinner params-spinner-sm"></span> Enregistrement…
+            } @else {
+              💾 Enregistrer tous les paramètres
+            }
+          </button>
+        </div>
+
+      }
+    }
+    <!-- ── fin TAB PARAMÈTRES ── -->
+
+  </main>
+</div>

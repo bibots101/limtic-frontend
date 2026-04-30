@@ -1,0 +1,80 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Doctorants</h1>
+    <p>Étudiants en thèse au laboratoire {{ settings.acronyme() }}</p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters">
+    <input [(ngModel)]="filterDirecteur" (ngModelChange)="applyFilters()"
+           placeholder="Filtrer par directeur..." class="filter-input" />
+    <select [(ngModel)]="filterStatut" (ngModelChange)="applyFilters()" class="filter-select">
+      <option value="">Tous les statuts</option>
+      <option value="EN_COURS">En cours</option>
+      <option value="SOUTENU">Soutenu</option>
+    </select>
+    <input [(ngModel)]="filterAnnee" (ngModelChange)="applyFilters()"
+           placeholder="Année inscription (ex: 2022)" class="filter-input" />
+    <select [(ngModel)]="filterAxe" (ngModelChange)="applyFilters()" class="filter-select">
+      <option value="">Tous les axes</option>
+      @for (axe of axes(); track axe) {
+        <option [value]="axe">{{ axe }}</option>
+      }
+    </select>
+    <button class="btn-reset" (click)="resetFilters()">✕ Réinitialiser</button>
+  </div>
+
+
+  @if (loading()) {
+    <div class="loading-state">Chargement...</div>
+  }
+
+  <div class="cards-grid">
+    @for (d of filtered(); track d.id) {
+      <div class="card" [class.soutenu]="d.statut === 'SOUTENU'" [routerLink]="['/doctorants', d.id]">
+
+        <div class="card-top">
+          @if (d.photoUrl) {
+            <img [src]="d.photoUrl" [alt]="d.prenom + ' ' + d.nom" class="avatar-img" />
+          } @else {
+            <div class="avatar-initials">{{ getInitials(d) }}</div>
+          }
+          <div class="card-identity">
+            <h3>{{ d.prenom }} {{ d.nom }}</h3>
+            <span class="badge-statut" [class.en-cours]="d.statut === 'EN_COURS'"
+                  [class.soutenu-badge]="d.statut === 'SOUTENU'">
+              {{ d.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}
+            </span>
+          </div>
+        </div>
+
+        <p class="sujet">📄 {{ d.sujetThese || 'Sujet non renseigné' }}</p>
+
+        @if (d.directeur) {
+          <div class="directeur">
+            <span class="label">Directeur de thèse :</span>
+            <a [routerLink]="['/chercheurs', d.directeur.id]" [queryParams]="{from: 'doctorants'}" class="link">
+              {{ d.directeur.prenom }} {{ d.directeur.nom }}
+            </a>
+          </div>
+        }
+
+        @if (d.dateInscription) {
+          <div class="meta">📅 Inscription : {{ d.dateInscription }}</div>
+        }
+
+        @if (d.statut === 'SOUTENU' && d.dateSoutenance) {
+          <div class="meta">🎓 Soutenance : {{ d.dateSoutenance }}</div>
+        }
+
+        @if (d.statut === 'SOUTENU' && d.mention) {
+          <div class="mention">Mention : <strong>{{ d.mention }}</strong></div>
+        }
+      </div>
+    }
+
+    @if (!loading() && filtered().length === 0) {
+      <div class="empty-state">Aucun doctorant trouvé.</div>
+    }
+  </div>
+</div>

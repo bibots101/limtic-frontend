@@ -1,0 +1,183 @@
+<div class="page contact-page">
+  <div class="page-header">
+    <h1>Contactez nous</h1>
+    <p>Laboratoire {{ settings.acronyme() }} — Nous sommes à votre disposition</p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- ── Formulaire de contact ─────────────────────────────── -->
+    <div class="contact-form-col">
+
+      @if (envoi() === 'ok') {
+        <div class="success-banner">
+          ✅ Votre message a bien été envoyé. Nous vous répondrons prochainement.
+        </div>
+      }
+
+      @if (envoi() !== 'ok') {
+        <form class="contact-form" (ngSubmit)="soumettre()" #f="ngForm" novalidate>
+
+          <div class="form-group">
+            <label for="nom">Nom complet <span class="required">*</span></label>
+            <input
+              id="nom" type="text" name="nom"
+              [ngModel]="nom()" (ngModelChange)="nom.set($event)"
+              required minlength="2"
+              placeholder="Votre nom"
+              #nomCtrl="ngModel"
+            />
+            @if (nomCtrl.invalid && nomCtrl.touched) {
+              <span class="field-error">Nom requis (min 2 caractères).</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="email">Adresse email <span class="required">*</span></label>
+            <input
+              id="email" type="email" name="email"
+              [ngModel]="email()" (ngModelChange)="email.set($event)"
+              required email
+              placeholder="vous@exemple.tn"
+              #emailCtrl="ngModel"
+            />
+            @if (emailCtrl.invalid && emailCtrl.touched) {
+              <span class="field-error">Email invalide.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="sujet">Sujet</label>
+            <input
+              id="sujet" type="text" name="sujet"
+              [ngModel]="sujet()" (ngModelChange)="sujet.set($event)"
+              placeholder="Objet de votre message"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message <span class="required">*</span></label>
+            <textarea
+              id="message" name="message"
+              [ngModel]="message()" (ngModelChange)="message.set($event)"
+              required minlength="10" maxlength="5000"
+              rows="6"
+              placeholder="Votre message..."
+              #msgCtrl="ngModel"
+            ></textarea>
+            <div class="char-count">{{ message().length }}/5000</div>
+            @if (msgCtrl.invalid && msgCtrl.touched) {
+              <span class="field-error">Message requis (min 10 caractères).</span>
+            }
+          </div>
+
+          <!-- hCaptcha -->
+          <div class="form-group captcha-group">
+            <div id="hcaptcha-container"></div>
+            @if (!captchaToken() && envoi() === 'error') {
+              <span class="field-error">Veuillez compléter le captcha.</span>
+            }
+          </div>
+
+          @if (erreurMsg()) {
+            <div class="error-banner">{{ erreurMsg() }}</div>
+          }
+
+          <button
+            type="submit"
+            class="btn-envoyer"
+            [disabled]="f.invalid || envoi() === 'loading' || !captchaToken()"
+          >
+            @if (envoi() === 'loading') {
+              <span class="spinner"></span> Envoi en cours...
+            } @else {
+              Envoyer le message
+            }
+          </button>
+
+        </form>
+      }
+    </div>
+
+    <!-- ── Informations de contact ────────────────────────────── -->
+    <div class="contact-info-col">
+
+      <div class="info-block">
+        <h3>Coordonnées</h3>
+
+        @if (adresse()) {
+          <div class="info-item">
+            <span class="info-icon">📍</span>
+            <div>
+              <strong>Adresse postale</strong>
+              <p>{{ adresse() }}</p>
+            </div>
+          </div>
+        }
+
+        @if (telephone()) {
+          <div class="info-item">
+            <span class="info-icon">📞</span>
+            <div>
+              <strong>Téléphone</strong>
+              <a [href]="'tel:' + telephone()">{{ telephone() }}</a>
+            </div>
+          </div>
+        }
+
+        <div class="info-item">
+          <span class="info-icon">✉️</span>
+          <div>
+            <strong>Email</strong>
+            <a [href]="'mailto:' + emailContact()">{{ emailContact() }}</a>
+          </div>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        @if (linkedinLabo() || researchGate() || twitterLabo() || facebookLabo()) {
+          <div class="social-separator"></div>
+          <h4 class="social-title">Suivez-nous</h4>
+          <div class="social-links">
+            @if (linkedinLabo()) {
+              <a [href]="linkedinLabo()" target="_blank" class="social-btn linkedin-btn">
+                <span class="social-icon">in</span> LinkedIn
+              </a>
+            }
+            @if (researchGate()) {
+              <a [href]="researchGate()" target="_blank" class="social-btn rg-btn">
+                <span class="social-icon">R</span> ResearchGate
+              </a>
+            }
+            @if (twitterLabo()) {
+              <a [href]="twitterLabo()" target="_blank" class="social-btn twitter-btn">
+                <span class="social-icon">𝕏</span> X / Twitter
+              </a>
+            }
+            @if (facebookLabo()) {
+              <a [href]="facebookLabo()" target="_blank" class="social-btn fb-btn">
+                <span class="social-icon">f</span> Facebook
+              </a>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Google Maps -->
+      @if (googleMapsUrl()) {
+        <div class="maps-container">
+          <iframe
+            [src]="googleMapsUrl()"
+            width="100%"
+            height="300"
+            style="border:0; border-radius:10px;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Localisation LIMTIC"
+          ></iframe>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

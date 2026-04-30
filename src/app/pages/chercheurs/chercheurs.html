@@ -1,0 +1,80 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Nos Chercheurs</h1>
+    <p>{{ chercheursFiltres().length }} chercheur(s) — Membres de l'équipe de recherche {{ settings.acronyme() }}</p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-bar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Rechercher par nom, spécialité, institution..."
+        [ngModel]="recherche()"
+        (ngModelChange)="recherche.set($event)"
+      />
+    </div>
+
+    <div class="filters-row">
+      <select [ngModel]="filtreGrade()" (ngModelChange)="filtreGrade.set($event)">
+        <option value="">Tous les grades</option>
+        @for (g of grades(); track g) {
+          <option [value]="g">{{ g }}</option>
+        }
+      </select>
+
+      <select [ngModel]="filtreAxe()" (ngModelChange)="filtreAxe.set($event)">
+        <option value="">Tous les axes</option>
+        @for (axe of axes(); track axe) {
+          <option [value]="axe">{{ axe }}</option>
+        }
+      </select>
+
+      <select [ngModel]="filtreStatut()" (ngModelChange)="filtreStatut.set($event)">
+        <option value="">Tous les statuts</option>
+        <option value="actif">Actif</option>
+        <option value="retraité">Retraité</option>
+      </select>
+
+      <button class="btn-reset" (click)="resetFiltres()">✕ Réinitialiser</button>
+    </div>
+  </div>
+
+  <!-- Grille chercheurs -->
+  <div class="cards-grid">
+    @for (c of chercheursFiltres(); track c.id) {
+      <div class="card" [routerLink]="['/chercheurs', c.id]">
+        <div class="card-avatar">{{ c.prenom[0] }}{{ c.nom[0] }}</div>
+        <div class="card-info">
+          <h3>{{ c.prenom }} {{ c.nom }}</h3>
+          <span class="grade">{{ c.grade }}</span>
+          <span class="institution">{{ c.institution }}</span>
+          <div class="specialite">🔬 {{ c.specialite }}</div>
+          @if (c.axes && c.axes.length > 0) {
+            <div class="axes-tags">
+              @for (axe of c.axes; track axe.id) {
+                <span class="axe-tag">{{ axe.nom }}</span>
+              }
+            </div>
+          }
+          <div class="pub-count">{{ c.publications?.length || 0 }} publication(s)</div>
+        </div>
+        @if (c.statut === 'retraité') {
+          <span class="statut-badge retraite">Retraité</span>
+        } @else {
+          <span class="statut-badge actif">Actif</span>
+        }
+        <div class="card-footer">Voir profil →</div>
+      </div>
+    }
+
+    @if (chercheursFiltres().length === 0) {
+      <div class="empty-state">
+        <span>👤</span>
+        <p>Aucun chercheur ne correspond à votre recherche.</p>
+        <button class="btn-reset" (click)="resetFiltres()">Réinitialiser les filtres</button>
+      </div>
+    }
+  </div>
+</div>

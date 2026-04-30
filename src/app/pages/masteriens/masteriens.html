@@ -1,0 +1,61 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Étudiants en Mastère</h1>
+    <p>Étudiants encadrés au laboratoire {{ settings.acronyme() }}</p>
+  </div>
+
+  <div class="filters">
+    <input [(ngModel)]="filterEncadrant" (ngModelChange)="applyFilters()"
+           placeholder="Filtrer par encadrant..." class="filter-input" />
+    <select [(ngModel)]="filterStatut" (ngModelChange)="applyFilters()" class="filter-select">
+      <option value="">Tous les statuts</option>
+      <option value="EN_COURS">En cours</option>
+      <option value="DIPLOME">Diplômé</option>
+    </select>
+    <input [(ngModel)]="filterPromotion" (ngModelChange)="applyFilters()"
+           placeholder="Promotion (ex: 2023-2024)" class="filter-input" />
+    <button class="btn-reset" (click)="resetFilters()">✕ Réinitialiser</button>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">Chargement...</div>
+  }
+
+  <div class="cards-grid">
+    @for (m of filtered(); track m.id) {
+      <div class="card" [class.diplome]="m.statut === 'DIPLOME'" [routerLink]="['/masteriens', m.id]">
+
+        <div class="card-top">
+          <div class="avatar-initials">{{ getInitials(m) }}</div>
+          <div class="card-identity">
+            <h3>{{ m.prenom }} {{ m.nom }}</h3>
+            <span class="badge-statut"
+              [class.en-cours]="m.statut === 'EN_COURS'"
+              [class.diplome-badge]="m.statut === 'DIPLOME'">
+              {{ m.statut === 'EN_COURS' ? 'En cours' : 'Diplômé' }}
+            </span>
+          </div>
+        </div>
+
+        <p class="sujet">📄 {{ m.sujetMemoire || 'Sujet non renseigné' }}</p>
+
+        @if (m.encadrant) {
+          <div class="encadrant">
+            <span class="label">Encadrant :</span>
+            <a [routerLink]="['/chercheurs', m.encadrant.id]" [queryParams]="{from: 'masteriens'}" class="link">
+              {{ m.encadrant.prenom }} {{ m.encadrant.nom }}
+            </a>
+          </div>
+        }
+
+        @if (m.promotion) {
+          <div class="meta">🎓 Promotion : {{ m.promotion }}</div>
+        }
+      </div>
+    }
+
+    @if (!loading() && filtered().length === 0) {
+      <div class="empty-state">Aucun mastérien trouvé.</div>
+    }
+  </div>
+</div>

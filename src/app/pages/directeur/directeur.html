@@ -1,0 +1,92 @@
+<div class="page">
+
+  <!-- Hero section -->
+  <div class="hero-section">
+    <div class="hero-left">
+      <div class="photo-container">
+        <div class="photo-placeholder">
+          {{ directeur.prenom[0] }}{{ directeur.nom[0] }}
+        </div>
+        <div class="photo-badge">Directeur du LIMTIC</div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-badge">Direction du Laboratoire</div>
+      <h1>{{ directeur.prenom }} {{ directeur.nom }}</h1>
+      <p class="titre">{{ directeur.titre }}</p>
+      <p class="specialite">🔬 {{ directeur.specialite }}</p>
+      <p class="institution">🏛️ {{ directeur.institution }}</p>
+
+      <!-- Coordonnées -->
+      <div class="coords">
+        <div class="coord-item">
+          <span class="coord-icon">✉️</span>
+          <a [href]="'mailto:' + directeur.email">{{ directeur.email }}</a>
+        </div>
+        <div class="coord-item">
+          <span class="coord-icon">📞</span>
+          <span>{{ directeur.telephone }}</span>
+        </div>
+        <div class="coord-item">
+          <span class="coord-icon">📍</span>
+          <span>{{ directeur.bureau }}</span>
+        </div>
+      </div>
+
+      <!-- Liens académiques -->
+      <div class="liens-academiques">
+        <a [href]="directeur.liens.googleScholar" target="_blank" class="lien-btn scholar">
+          <span>G</span> Google Scholar
+        </a>
+        <a [href]="directeur.liens.researchGate" target="_blank" class="lien-btn rgate">
+          <span>R</span> ResearchGate
+        </a>
+        <a [href]="directeur.liens.orcid" target="_blank" class="lien-btn orcid">
+          <span>ID</span> ORCID
+        </a>
+        <a [href]="directeur.liens.linkedin" target="_blank" class="lien-btn linkedin">
+          <span>in</span> LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message de bienvenue -->
+  <div class="section message-section">
+    <div class="section-title">
+      <span class="section-icon">💬</span>
+      <h2>Message du Directeur</h2>
+    </div>
+    <div class="message-card">
+      <div class="quote-mark">"</div>
+      @for (para of directeur.message.split('\n\n'); track $index) {
+        <p>{{ para }}</p>
+      }
+    </div>
+  </div>
+
+  <!-- Publications récentes -->
+  <div class="section">
+    <div class="section-title">
+      <span class="section-icon">📄</span>
+      <h2>Publications Récentes</h2>
+      <a routerLink="/publications" class="voir-tout">Voir toutes →</a>
+    </div>
+    <div class="pub-list">
+      @for (p of directeur.publications; track $index) {
+        <div class="pub-card">
+          <span class="pub-type" [class]="p.type === 'Journal' ? 'type-j' : 'type-c'">
+            {{ p.type }}
+          </span>
+          <div class="pub-body">
+            <h4>{{ p.titre }}</h4>
+            <p>{{ p.journal }} — {{ p.annee }}</p>
+          </div>
+          <span class="pub-year">{{ p.annee }}</span>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,96 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Axes de Recherche</h1>
+    <p>Les domaines scientifiques du laboratoire {{ settings.acronyme() }}</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">Chargement des axes...</div>
+  }
+
+  <div class="cards-grid">
+
+    @for (axe of axes(); track axe.id) {
+      <div class="card" [routerLink]="['/axes', axe.id]">
+
+        <div class="card-header">
+          <div class="card-icon">🔬</div>
+          <div class="card-title">{{ axe.nom }}</div>
+        </div>
+
+        <!-- Responsable -->
+        @if (axe.responsable) {
+          <div class="card-meta">
+            <span class="meta-label">Responsable :</span>
+            <a [routerLink]="['/chercheurs', axe.responsable.id]"
+               class="meta-link"
+               (click)="$event.stopPropagation()">
+              {{ axe.responsable.prenom }} {{ axe.responsable.nom }}
+            </a>
+            @if (axe.responsable.grade) {
+              <span class="grade-badge">{{ axe.responsable.grade }}</span>
+            }
+          </div>
+        }
+
+        @if (axe.description) {
+          <p class="card-description">{{ axe.description }}</p>
+        }
+
+        <!-- Membres -->
+        @if (axe.chercheurs && axe.chercheurs.length > 0) {
+          <div class="card-members">
+            <span class="members-count">{{ axe.chercheurs.length }} membre(s)</span>
+            <div class="members-list">
+              @for (c of axe.chercheurs; track c.id) {
+                <a [routerLink]="['/chercheurs', c.id]"
+                   class="member-link"
+                   (click)="$event.stopPropagation()">
+                  {{ c.prenom }} {{ c.nom }}
+                </a>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="card-footer">
+          <button class="btn-secondary"
+                  (click)="$event.stopPropagation(); togglePublications(axe.id)">
+            {{ isExpanded(axe.id) ? 'Masquer publications' : 'Voir publications' }}
+          </button>
+        </div>
+
+        @if (isExpanded(axe.id)) {
+          <div class="publications-panel">
+            @if (getPublications(axe.id).length === 0) {
+              <p class="no-publications">Aucune publication pour cet axe.</p>
+            } @else {
+              <ul class="publications-list">
+                @for (pub of getPublications(axe.id); track pub.id) {
+                  <li class="publication-item">
+                    <span class="pub-type">{{ pub.type }}</span>
+                    <div class="pub-content">
+                      <span class="pub-title">{{ pub.titre }}</span>
+                      <span class="pub-details">{{ pub.journal }} · {{ pub.annee }}</span>
+                    </div>
+                    @if (pub.lienUrl) {
+                      <a [href]="pub.lienUrl" target="_blank"
+                         class="pub-link"
+                         (click)="$event.stopPropagation()">↗</a>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+
+      </div>
+    }
+
+    @if (!loading() && axes().length === 0) {
+      <div class="empty-state">Aucun axe de recherche enregistré.</div>
+    }
+
+  </div>
+</div>

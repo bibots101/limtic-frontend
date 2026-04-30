@@ -1,0 +1,209 @@
+<div class="ev-page">
+
+  <!-- EN-TÊTE -->
+  <div class="ev-header">
+    <div>
+      <h1>Événements</h1>
+      <p class="subtitle">{{ evenementsFiltres().length }} affiché(s)</p>
+    </div>
+    <button class="btn-primary" (click)="ouvrirCreation()">+ Nouvel événement</button>
+  </div>
+
+  <!-- FILTRES STATUT -->
+  <div class="ev-filters">
+    <button class="chip" [class.active]="filtreStatut() === ''"        (click)="filtreStatut.set('')">Tous</button>
+    <button class="chip a-venir"  [class.active]="filtreStatut() === 'A_VENIR'"  (click)="filtreStatut.set('A_VENIR')">À venir</button>
+    <button class="chip en-cours" [class.active]="filtreStatut() === 'EN_COURS'" (click)="filtreStatut.set('EN_COURS')">En cours</button>
+    <button class="chip termine"  [class.active]="filtreStatut() === 'TERMINE'"  (click)="filtreStatut.set('TERMINE')">Terminé</button>
+  </div>
+
+  @if (loading()) { <div class="ev-loading">Chargement...</div> }
+
+  <!-- GRILLE -->
+  <div class="ev-grid">
+    @for (ev of evenementsFiltres(); track ev.id) {
+      <div class="ev-card" [class.card-termine]="statutCalcule(ev) === 'TERMINE'">
+
+        <div class="ev-img">
+          @if (ev.images.length > 0) {
+            <img [src]="ev.images[0].preview || ev.images[0].url" [alt]="ev.images[0].legende" />
+            @if (ev.images.length > 1) { <span class="img-count">+{{ ev.images.length - 1 }}</span> }
+          } @else {
+            <div class="ev-img-placeholder">📷</div>
+          }
+          <span class="badge badge-{{ statutCalcule(ev).toLowerCase().replace('_','-') }}">
+            {{ labelStatut(statutCalcule(ev)) }}
+          </span>
+        </div>
+
+        <div class="ev-body">
+          @if (ev.type) {
+            <span class="ev-type">{{ ev.type }}</span>
+          }
+          <h3>{{ ev.titre }}</h3>
+          <p class="ev-meta">
+            📅 {{ ev.dateEvenement | date:'dd/MM/yyyy' }}
+            @if (ev.dateFin !== ev.dateEvenement) { → {{ ev.dateFin | date:'dd/MM/yyyy' }} }
+          </p>
+          @if (ev.lieu) { <p class="ev-meta">📍 {{ ev.lieu }}</p> }
+          <div class="ev-desc" [innerHTML]="safeHtml(ev.description)"></div>
+        </div>
+
+        <div class="ev-actions">
+          <button class="btn-icon" (click)="ouvrirEdition(ev)" title="Modifier">Modifier</button>
+          <button class="btn-icon btn-del" (click)="demanderSuppression(ev.id!)" title="Supprimer">Supprimer</button>
+        </div>
+      </div>
+    }
+    @if (!loading() && evenementsFiltres().length === 0) {
+      <div class="ev-empty">Aucun événement.</div>
+    }
+  </div>
+
+  <!-- ══ MODAL FORMULAIRE ══ -->
+  @if (modalOuvert()) {
+    <div class="overlay" (click)="fermerModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+          <h2>{{ modeEdition() ? 'Modifier' : 'Créer' }} un événement</h2>
+          <button class="btn-close" (click)="fermerModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- Titre -->
+          <div class="fg">
+            <label>Titre <span class="req">*</span></label>
+            <input [(ngModel)]="form.titre" placeholder="Titre de l'événement" />
+          </div>
+
+          <!-- Dates -->
+          <div class="fg-row">
+            <div class="fg">
+              <label>Date de début <span class="req">*</span></label>
+              <input type="date" [(ngModel)]="form.dateEvenement" />
+            </div>
+            <div class="fg">
+              <label>Date de fin <span class="req">*</span></label>
+              <input type="date" [(ngModel)]="form.dateFin" />
+            </div>
+          </div>
+
+          <!-- Lieu -->
+          <div class="fg">
+            <label>Lieu</label>
+            <input [(ngModel)]="form.lieu" placeholder="Salle, adresse..." />
+          </div>
+
+          <!-- Type -->
+          <div class="fg">
+            <label>Type</label>
+            <input [(ngModel)]="form.type" placeholder="Ex: Séminaire, Soutenance, Workshop" />
+          </div>
+
+          <!-- Programme PDF -->
+          <div class="fg">
+            <label>URL du programme PDF</label>
+            <input [(ngModel)]="form.programmeUrl" placeholder="https://..." />
+          </div>
+
+          <!-- Programme scientifique riche -->
+          <div class="fg">
+            <label>Texte du programme scientifique</label>
+            <div class="quill-wrap"><div id="quill-programme"></div></div>
+          </div>
+
+          <!-- Intervenants invités -->
+          <div class="fg">
+            <label>Intervenants invités</label>
+            <div class="intervenants-list">
+              @if (form.intervenants && form.intervenants.length > 0) {
+                @for (inv of form.intervenants; track inv.id; let i = $index) {
+                  <div class="intervenant-row">
+                    <input name="intervenant-prenom-{{i}}" [(ngModel)]="inv.prenom" placeholder="Prénom" />
+                    <input name="intervenant-nom-{{i}}" [(ngModel)]="inv.nom" placeholder="Nom" />
+                    <input name="intervenant-affiliation-{{i}}" [(ngModel)]="inv.affiliation" placeholder="Affiliation" />
+                    <input name="intervenant-titre-{{i}}" [(ngModel)]="inv.titrePresentation" placeholder="Titre de l'intervention" />
+                    <button type="button" class="btn-small btn-remove" (click)="supprimerIntervenant(i)">✕</button>
+                  </div>
+                }
+              }
+              <button type="button" class="btn-add" (click)="ajouterIntervenant()">Ajouter un intervenant</button>
+            </div>
+          </div>
+
+          <!-- Statut calculé (lecture seule) -->
+          <div class="fg">
+            <label>Statut (mis à jour automatiquement)</label>
+            <span class="badge badge-{{ statutCalcule(form).toLowerCase().replace('_','-') }}">
+              {{ labelStatut(statutCalcule(form)) }}
+            </span>
+          </div>
+
+          <!-- Éditeur Quill -->
+          <div class="fg">
+            <label>Description</label>
+            <div class="quill-wrap"><div id="quill-editor"></div></div>
+          </div>
+
+          <!-- Upload images -->
+          <div class="fg">
+            <label>Images</label>
+            <label class="upload-zone">
+              <input type="file" accept="image/*" multiple hidden (change)="onFileSelect($event)" />
+              <span>📁 Cliquer ou déposer des images</span>
+              <small>PNG, JPG, WEBP — upload multiple</small>
+            </label>
+
+            @if (form.images.length > 0) {
+              <div class="gallery">
+                @for (img of form.images; track img.ordre; let i = $index) {
+                  <div class="gal-item"
+                       [class.drag-over]="dragOverIndex === i"
+                       draggable="true"
+                       (dragstart)="onDragStart(i)"
+                       (dragover)="onDragOver($event, i)"
+                       (drop)="onDrop(i)"
+                       (dragend)="onDragEnd()">
+                    <div class="gal-img">
+                      <img [src]="img.preview || img.url" alt="" />
+                      <button class="gal-remove" (click)="supprimerImage(i)">✕</button>
+                      <span class="gal-handle">⠿</span>
+                    </div>
+                    <input class="gal-legende" [(ngModel)]="img.legende" placeholder="Légende..." />
+                  </div>
+                }
+              </div>
+              <p class="gallery-tip">⟺ Glissez les vignettes pour réordonner</p>
+            }
+          </div>
+
+        </div><!-- /modal-body -->
+
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="fermerModal()" [disabled]="enregistrement()">Annuler</button>
+          <button class="btn-primary"   (click)="enregistrer()" [disabled]="enregistrement()">
+            {{ enregistrement() ? 'Enregistrement...' : (modeEdition() ? 'Mettre à jour' : "Créer l'événement") }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ══ CONFIRM SUPPRESSION ══ -->
+  @if (confirmSupprId !== null) {
+    <div class="overlay" (click)="annulerSuppression()">
+      <div class="modal modal-sm" (click)="$event.stopPropagation()">
+        <h3>Supprimer cet événement ?</h3>
+        <p>Cette action est irréversible.</p>
+        <div class="confirm-actions">
+          <button class="btn-secondary" (click)="annulerSuppression()">Annuler</button>
+          <button class="btn-danger"    (click)="confirmerSuppression()">Supprimer</button>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

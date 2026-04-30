@@ -1,0 +1,161 @@
+<div class="axe-detail-container">
+  <button class="btn-retour" (click)="retour()">← Retour aux axes de recherche</button>
+
+  @if (axe(); as axeData) {
+    <div class="axe-content">
+
+      <!-- En-tête -->
+      <div class="axe-header">
+        <h1>{{ axeData.nom }}</h1>
+        @if (axeData.description) {
+          <p class="axe-description">{{ axeData.description }}</p>
+        }
+      </div>
+
+      <!-- Responsable -->
+      @if (axeData.responsable) {
+        <div class="axe-responsable">
+          <h3>Responsable</h3>
+          <div class="responsable-card" (click)="navigateToChercheur(axeData.responsable.id)">
+            <div class="card-avatar">
+              {{ axeData.responsable.prenom.charAt(0) }}{{ axeData.responsable.nom.charAt(0) }}
+            </div>
+            <div class="responsable-info">
+              <h4>{{ axeData.responsable.prenom }} {{ axeData.responsable.nom }}</h4>
+              @if (axeData.responsable.grade) {
+                <p class="grade">{{ axeData.responsable.grade }}</p>
+              }
+              @if (axeData.responsable.institution) {
+                <p class="institution">{{ axeData.responsable.institution }}</p>
+              }
+              @if (axeData.responsable.specialite) {
+                <p class="specialite">{{ axeData.responsable.specialite }}</p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Chercheurs associés -->
+      @if (chercheurs().length > 0) {
+        <div class="axe-chercheurs">
+          <h3>Chercheurs associés ({{ chercheurs().length }})</h3>
+          <div class="chercheurs-grid">
+            @for (chercheur of chercheurs(); track chercheur.id) {
+              <div class="chercheur-card" (click)="navigateToChercheur(chercheur.id)">
+                <div class="card-avatar small">
+                  {{ chercheur.prenom.charAt(0) }}{{ chercheur.nom.charAt(0) }}
+                </div>
+                <div class="chercheur-info">
+                  <h4>{{ chercheur.prenom }} {{ chercheur.nom }}</h4>
+                  @if (chercheur.grade) {
+                    <p class="grade">{{ chercheur.grade }}</p>
+                  }
+                  @if (chercheur.specialite) {
+                    <p class="specialite">{{ chercheur.specialite }}</p>
+                  }
+                  @if (chercheur.institution) {
+                    <p class="institution">{{ chercheur.institution }}</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Publications -->
+      @if (publications().length > 0) {
+        <div class="axe-publications">
+          <h3>Publications ({{ publications().length }})</h3>
+          <div class="publications-list">
+            @for (pub of publications(); track pub.id) {
+              <div class="publication-item" (click)="navigateToPublication(pub.id)">
+                <div class="pub-left">
+                  <span class="pub-type" [class]="pub.type === 'JOURNAL' ? 'type-journal' : 'type-conf'">
+                    {{ pub.type }}
+                  </span>
+                  @if (pub.classement) {
+                    <span class="badge-classement badge-{{ pub.classement!.toLowerCase() }}">
+                      {{ pub.classement }}
+                    </span>
+                  }
+                </div>
+                <div class="publication-info">
+                  <h4>{{ pub.titre }}</h4>
+                  @if (pub.journal) {
+                    <p class="publication-journal">{{ pub.journal }}</p>
+                  }
+                  <p class="publication-date">{{ pub.annee }}</p>
+                </div>
+                <span class="pub-year">{{ pub.annee }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Doctorants -->
+      @if (doctorants().length > 0) {
+        <div class="axe-doctorants">
+          <h3>Doctorants ({{ doctorants().length }})</h3>
+          <div class="doctorants-list">
+            @for (doctorant of doctorants(); track doctorant.id) {
+              <div class="doctorant-item" (click)="navigateToDoctorant(doctorant.id)">
+                <div class="item-header">
+                  <h4>{{ doctorant.prenom }} {{ doctorant.nom }}</h4>
+                  <span class="statut-badge" [class]="doctorant.statut === 'SOUTENU' ? 'soutenu-badge' : 'en-cours'">
+                    {{ doctorant.statut === 'SOUTENU' ? 'Soutenu' : 'En cours' }}
+                  </span>
+                </div>
+                @if (doctorant.sujetThese) {
+                  <p class="sujet">{{ doctorant.sujetThese }}</p>
+                }
+                @if (doctorant.directeur) {
+                  <p class="directeur">Dir. : {{ doctorant.directeur.prenom }} {{ doctorant.directeur.nom }}</p>
+                }
+                @if (doctorant.dateInscription) {
+                  <p class="meta">Inscrit le {{ formatDate(doctorant.dateInscription) }}</p>
+                }
+                @if (doctorant.dateSoutenance) {
+                  <p class="meta">Soutenu le {{ formatDate(doctorant.dateSoutenance) }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Masteriens -->
+      @if (masteriens().length > 0) {
+        <div class="axe-masteriens">
+          <h3>Masteriens ({{ masteriens().length }})</h3>
+          <div class="masteriens-list">
+            @for (masterien of masteriens(); track masterien.id) {
+              <div class="masterien-item" (click)="navigateToMasterien(masterien.id)">
+                <div class="item-header">
+                  <h4>{{ masterien.prenom }} {{ masterien.nom }}</h4>
+                  <span class="statut-badge" [class]="masterien.statut === 'TERMINE' ? 'soutenu-badge' : 'en-cours'">
+                    {{ masterien.statut === 'TERMINE' ? 'Terminé' : 'En cours' }}
+                  </span>
+                </div>
+                @if (masterien.sujetMemoire) {
+                  <p class="sujet">{{ masterien.sujetMemoire }}</p>
+                }
+                @if (masterien.encadrant) {
+                  <p class="encadrant">Enc. : {{ masterien.encadrant.prenom }} {{ masterien.encadrant.nom }}</p>
+                }
+                @if (masterien.promotion) {
+                  <p class="meta">Promotion {{ masterien.promotion }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+  } @else {
+    <div class="loading"><p>Chargement de l'axe de recherche...</p></div>
+  }
+</div>

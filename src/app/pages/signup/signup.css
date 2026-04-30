@@ -1,0 +1,134 @@
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0f1e, #0d1f3c, #0a2a4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  background: #1f2937;
+  border: 1px solid rgba(0,210,255,0.15);
+  border-radius: 20px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.auth-logo {
+  font-size: 3rem;
+  color: #00d2ff;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field label {
+  display: block;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.field input {
+  width: 100%;
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: #00d2ff;
+  box-shadow: 0 0 0 3px rgba(0,210,255,0.1);
+}
+
+.field input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #00d2ff, #0077b6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(0,210,255,0.3);
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,210,255,0.5);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  background: rgba(255,50,50,0.1);
+  border: 1px solid rgba(255,50,50,0.3);
+  color: #f87171;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.875rem;
+}
+
+.auth-link a {
+  color: #00d2ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.success-msg {
+  background: rgba(0,200,100,0.1);
+  border: 1px solid rgba(0,200,100,0.3);
+  color: #34d399;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1.25rem;
+}

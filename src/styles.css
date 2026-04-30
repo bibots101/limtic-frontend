@@ -1,0 +1,1098 @@
+/* ══════════════════════════════════════════════════════════
+   THÈME DARK (défaut — design actuel)
+   ══════════════════════════════════════════════════════════ */
+[data-theme="dark"],
+:root {
+  --bg-primary:      #111827;
+  --bg-secondary:    #1a2234;
+  --bg-card:         #1f2937;
+  --bg-input:        #252840;
+  --bg-table-head:   #1a2234;
+  --bg-table-row:    #1f2937;
+  --bg-table-hover:  #252840;
+  --bg-sidebar:      #1e293b;
+  --bg-modal:        #1f2937;
+  --bg-navbar:       linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+
+  --text-primary:    #ffffff;
+  --text-secondary:  #d1d5db;
+  --text-muted:      rgba(255,255,255,0.4);
+  --text-heading:    #ffffff;
+
+  --border-color:    rgba(0,210,255,0.15);
+  --border-subtle:   rgba(255,255,255,0.05);
+
+  --accent:          #00d2ff;
+  --accent-hover:    #00a8cc;
+  --accent-soft:     rgba(0,210,255,0.08);
+
+  --success:         #34d399;
+  --success-soft:    rgba(0,200,100,0.1);
+  --warning:         #f59e0b;
+  --warning-soft:    rgba(245,158,11,0.1);
+  --danger:          #f87171;
+  --danger-soft:     rgba(248,113,113,0.12);
+
+  --shadow-sm:       0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md:       0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg:       0 8px 40px rgba(0,0,0,0.5);
+
+  --scrollbar-track: #1a2234;
+  --scrollbar-thumb: #2e3150;
+}
+
+/* ══════════════════════════════════════════════════════════
+   THÈME LIGHT
+   ══════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+  --bg-primary:      #f2f3f7;
+  --bg-secondary:    #ffffff;
+  --bg-card:         #ffffff;
+  --bg-input:        #f2f3f7;
+  --bg-table-head:   #dde1ef;
+  --bg-table-row:    #ffffff;
+  --bg-table-hover:  #e4e7f2;
+  --bg-sidebar:      #f8fafc;
+  --bg-modal:        #ffffff;
+  --bg-navbar:       linear-gradient(135deg, #f2f3f7, #f7f8fc, #ffffff);
+
+  --text-primary:    #0a0c18;
+  --text-secondary:  #1a1d2e;
+  --text-body:       #2d3152;
+  --text-muted:      #5c637a;
+  --text-heading:    #0a0c18;
+  --text-placeholder: #9ba3c0;
+
+  --border-color:    #d9dce8;
+  --border-subtle:   #d8dceb;
+
+  --accent:          #4338ca;
+  --accent-hover:    #3730a3;
+  --accent-soft:     rgba(67,56,202,0.10);
+
+  --success:         #15803d;
+  --success-soft:    rgba(21,128,61,0.10);
+  --warning:         #b45309;
+  --warning-soft:    rgba(180,83,9,0.10);
+  --danger:          #b91c1c;
+  --danger-soft:     rgba(185,28,28,0.10);
+
+  --shadow-sm:       0 2px 12px rgba(0,0,0,0.10);
+  --shadow-md:       0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lg:       0 8px 40px rgba(0,0,0,0.14);
+
+  --scrollbar-track: #dde1ef;
+  --scrollbar-thumb: #c8cedf;
+}
+
+[data-theme="light"] {
+  --text-color:        #1A1D2E;
+  --text-light:        #4A5270;
+  --text-muted:        #8891AE;
+  --bg-color:          #F2F3F7;
+  --card-bg:           #FFFFFF;
+  --heading-color:     #0A0C18;
+  --link-color:        #4338CA;
+  --link-hover:        #3730A3;
+}
+
+[data-theme="light"] .profil-page,
+[data-theme="light"] .directeur-page,
+[data-theme="light"] .chercheur-page,
+[data-theme="light"] .page {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-hero,
+[data-theme="light"] .director-card,
+[data-theme="light"] .section-block,
+[data-theme="light"] .info-field,
+[data-theme="light"] .pub-card,
+[data-theme="light"] .message-card,
+[data-theme="light"] .coords,
+[data-theme="light"] .hero-section {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10) !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-info h1,
+[data-theme="light"] .hero-right h1,
+[data-theme="light"] .section-title,
+[data-theme="light"] .section-title h2,
+[data-theme="light"] .section-block h3,
+[data-theme="light"] .quote-mark,
+[data-theme="light"] .publications-recentes h2,
+[data-theme="light"] .publications-recentes h3,
+[data-theme="light"] .section-publications .section-title,
+[data-theme="light"] .recent-pubs-title {
+  color: #0A0C18 !important;
+}
+
+[data-theme="light"] .profil-info,
+[data-theme="light"] .profil-info p,
+[data-theme="light"] .profil-specialite,
+[data-theme="light"] .profil-institution,
+[data-theme="light"] .specialite,
+[data-theme="light"] .institution,
+[data-theme="light"] .info-field-value,
+[data-theme="light"] .biographie,
+[data-theme="light"] .message-card p,
+[data-theme="light"] .pub-body p,
+[data-theme="light"] .coord-item,
+[data-theme="light"] .coord-item a {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .coord-item a {
+  color: #4338CA !important;
+}
+
+[data-theme="light"] .section-icon,
+[data-theme="light"] .title-icon,
+[data-theme="light"] .hero-badge,
+[data-theme="light"] .photo-badge {
+  color: #4338CA !important;
+  opacity: 1 !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   DARK MODE HOME PAGE FIXES
+   ══════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] .hero-description,
+[data-theme="dark"] .hero-subtitle {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+[data-theme="dark"] .btn-outline-hero {
+  border: 2px solid rgba(255,255,255,0.70) !important;
+  color: rgba(255,255,255,0.90) !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+[data-theme="dark"] .btn-outline-hero:hover {
+  background: rgba(255,255,255,0.15) !important;
+  border-color: #fff !important;
+}
+
+[data-theme="dark"] .keyword-box {
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  color: rgba(255,255,255,0.90) !important;
+}
+[data-theme="dark"] .keyword-box:hover {
+  background: rgba(0,210,255,0.15) !important;
+  border-color: #00D2FF !important;
+  color: #00D2FF !important;
+}
+
+[data-theme="dark"] .feature-card p,
+[data-theme="dark"] .feature-card .card-description {
+  color: rgba(255,255,255,0.65) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LIGHT MODE DETAIL PAGES FIXES
+   ══════════════════════════════════════════════════════════ */
+
+/* === PAGE CONTAINER BACKGROUNDS === */
+[data-theme="light"] .profil-page {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .loading-page {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .masterien-detail-container {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .axe-detail-container {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .detail-page {
+  background: #F2F3F7 !important;
+  color: #1A1D2E !important;
+}
+
+/* === CHERCHEUR/DOCTORANT/MASTERIEN DETAIL PAGES === */
+[data-theme="light"] .profil-page,
+[data-theme="light"] .masterien-detail-container,
+[data-theme="light"] .axe-detail-container,
+[data-theme="light"] .detail-page {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-page * {
+  color: inherit;
+}
+
+[data-theme="light"] .profil-page .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .profil-page .profil-hero {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .profil-hero::before {
+  background: linear-gradient(90deg, #4338CA 0%, transparent 60%) !important;
+}
+
+[data-theme="light"] .profil-page .profil-info h1,
+[data-theme="light"] .profil-page .profil-info {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-page .profil-grade,
+[data-theme="light"] .profil-page .profil-institution,
+[data-theme="light"] .profil-page .profil-specialite {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .profil-page .badge-grade {
+  background: rgba(67,56,202,0.10) !important;
+  color: #4338CA !important;
+  border: 1px solid rgba(67,56,202,0.2) !important;
+}
+
+[data-theme="light"] .profil-page .badge-statut {
+  background: rgba(67,56,202,0.08) !important;
+  color: #4338CA !important;
+  border: 1px solid rgba(67,56,202,0.15) !important;
+}
+[data-theme="light"] .profil-page .badge-statut.en_cours {
+  background: rgba(67,56,202,0.08) !important;
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .badge-statut.en_cours::before {
+  background: #4338CA !important;
+}
+[data-theme="light"] .profil-page .badge-statut.soutenu {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .profil-page .badge-statut.diplome {
+  background: rgba(245,158,11,0.10) !important;
+  color: #B45309 !important;
+}
+
+[data-theme="light"] .profil-page .onglet-bar {
+  border-color: #D9DCE8 !important;
+}
+
+[data-theme="light"] .profil-page .onglet-btn {
+  color: #1A1D2E !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+}
+[data-theme="light"] .profil-page .onglet-btn.actif {
+  background: transparent !important;
+  color: #4338CA !important;
+  border-bottom: 2px solid #4338CA !important;
+}
+
+[data-theme="light"] .profil-page .badge-count {
+  background: #4338CA !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .profil-page .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .section-block p {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .profil-page .biographie {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .profil-page .axe-tag {
+  background: rgba(67,56,202,0.10) !important;
+  color: #4338CA !important;
+}
+
+[data-theme="light"] .profil-page .stat-box {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .stat-val {
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .stat-key {
+  color: #5C637A !important;
+}
+[data-theme="light"] .profil-page .q1-box .stat-val {
+  color: #15803D !important;
+}
+
+[data-theme="light"] .profil-page .pub-card {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .pub-card:hover {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .profil-page .pub-titre {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .pub-authors {
+  color: #2D3152 !important;
+}
+[data-theme="light"] .profil-page .pub-journal {
+  color: #5C637A !important;
+}
+[data-theme="light"] .profil-page .pub-if {
+  color: #15803D !important;
+}
+[data-theme="light"] .profil-page .pub-q {
+  color: #B45309 !important;
+}
+
+[data-theme="light"] .profil-page .ext-link {
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .ext-link:hover {
+  color: #3730A3 !important;
+}
+
+/* === PUBLICATION DETAIL PAGES === */
+[data-theme="light"] .publication-detail-container {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .publication-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-content {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-title h1,
+[data-theme="light"] .publication-detail-container .publication-authors h3,
+[data-theme="light"] .publication-detail-container .section-title h2,
+[data-theme="light"] .publication-detail-container .section-title h3 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-meta,
+[data-theme="light"] .publication-detail-container .publication-date,
+[data-theme="light"] .publication-detail-container .publication-type,
+[data-theme="light"] .publication-detail-container .event-date,
+[data-theme="light"] .publication-detail-container .event-location {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .publication-detail-container .type-journal {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .publication-detail-container .type-conf {
+  background: rgba(245,158,11,0.10) !important;
+  color: #B45309 !important;
+}
+[data-theme="light"] .publication-detail-container .type-other {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+
+[data-theme="light"] .publication-detail-container .statut-publie {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .publication-detail-container .statut-soumis {
+  background: rgba(245,158,11,0.10) !important;
+  color: #F59E0B !important;
+}
+[data-theme="light"] .publication-detail-container .statut-brouillon {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+
+[data-theme="light"] .publication-detail-container .author-chip {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .publication-detail-container .author-chip:hover {
+  background: rgba(67,56,202,0.05) !important;
+}
+[data-theme="light"] .publication-detail-container .author-avatar {
+  background: linear-gradient(135deg, #4338CA, #3730A3) !important;
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .publication-detail-container .author-name,
+[data-theme="light"] .publication-detail-container .author-grade {
+  color: #1A1D2E !important;
+}
+
+/* === MASTERIEN DETAIL PAGES === */
+[data-theme="light"] .masterien-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .masterien-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .masterien-detail-container .masterien-content,
+[data-theme="light"] .masterien-detail-container .hero-section {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .masterien-detail-container .hero-right h1 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .masterien-detail-container .statut-badge {
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .masterien-detail-container .statut-badge.en-cours {
+  background: rgba(245,158,11,0.20) !important;
+  color: #B45309 !important;
+}
+[data-theme="light"] .masterien-detail-container .statut-badge.soutenu-badge {
+  background: rgba(21,128,61,0.20) !important;
+  color: #15803D !important;
+}
+
+[data-theme="light"] .masterien-detail-container .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .masterien-detail-container .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .masterien-detail-container .section-block p {
+  color: #2D3152 !important;
+}
+
+/* === AXE DE RECHERCHE DETAIL PAGES === */
+[data-theme="light"] .axe-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .axe-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .axe-detail-container .axe-content,
+[data-theme="light"] .axe-detail-container .axe-header {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .axe-detail-container .axe-description {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .axe-detail-container .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .axe-detail-container .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .axe-detail-container .section-block p {
+  color: #2D3152 !important;
+}
+
+/* === EVENEMENT DETAIL PAGES === */
+[data-theme="light"] .detail-page .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .detail-page .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .detail-page .detail-header,
+[data-theme="light"] .detail-page .detail-content {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .detail-page h1,
+[data-theme="light"] .detail-page .event-title,
+[data-theme="light"] .detail-page .section-title h2,
+[data-theme="light"] .detail-page .section-title h3 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .detail-page .evt-meta,
+[data-theme="light"] .detail-page .evt-type-badge {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .detail-page .evt-statut {
+  color: #5C637A !important;
+}
+[data-theme="light"] .detail-page .evt-statut.publie {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .detail-page .evt-statut.brouillon {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+[data-theme="light"] .detail-page .evt-statut.annule {
+  background: rgba(245,158,11,0.10) !important;
+  color: #F59E0B !important;
+}
+
+[data-theme="light"] .detail-page .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .detail-page .section-block h3,
+[data-theme="light"] .detail-page .section-block p {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-page * {
+  color: inherit;
+}
+
+[data-theme="light"] .profil-page .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .profil-page .profil-hero {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .profil-hero::before {
+  background: linear-gradient(90deg, #4338CA 0%, transparent 60%) !important;
+}
+
+[data-theme="light"] .profil-page .profil-info h1,
+[data-theme="light"] .profil-page .profil-info {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .profil-page .profil-grade,
+[data-theme="light"] .profil-page .profil-institution,
+[data-theme="light"] .profil-page .profil-specialite {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .profil-page .badge-grade {
+  background: rgba(67,56,202,0.10) !important;
+  color: #4338CA !important;
+  border: 1px solid rgba(67,56,202,0.2) !important;
+}
+
+[data-theme="light"] .profil-page .badge-statut {
+  background: rgba(67,56,202,0.08) !important;
+  color: #4338CA !important;
+  border: 1px solid rgba(67,56,202,0.15) !important;
+}
+[data-theme="light"] .profil-page .badge-statut.en_cours {
+  background: rgba(67,56,202,0.08) !important;
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .badge-statut.en_cours::before {
+  background: #4338CA !important;
+}
+[data-theme="light"] .profil-page .badge-statut.soutenu {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .profil-page .badge-statut.diplome {
+  background: rgba(245,158,11,0.10) !important;
+  color: #B45309 !important;
+}
+
+[data-theme="light"] .profil-page .onglet-bar {
+  border-color: #D9DCE8 !important;
+}
+
+[data-theme="light"] .profil-page .onglet-btn {
+  color: #1A1D2E !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+}
+[data-theme="light"] .profil-page .onglet-btn.actif {
+  background: transparent !important;
+  color: #4338CA !important;
+  border-bottom: 2px solid #4338CA !important;
+}
+
+[data-theme="light"] .profil-page .badge-count {
+  background: #4338CA !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="light"] .profil-page .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .section-block p {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .profil-page .biographie {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .profil-page .axe-tag {
+  background: rgba(67,56,202,0.10) !important;
+  color: #4338CA !important;
+}
+
+[data-theme="light"] .profil-page .stat-box {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .profil-page .stat-val {
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .stat-key {
+  color: #5C637A !important;
+}
+[data-theme="light"] .profil-page .q1-box .stat-val {
+  color: #15803D !important;
+}
+
+[data-theme="light"] .profil-page .pub-card {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .pub-card:hover {
+  background: #FFFFFF !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .profil-page .pub-titre {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .profil-page .pub-authors {
+  color: #2D3152 !important;
+}
+[data-theme="light"] .profil-page .pub-journal {
+  color: #5C637A !important;
+}
+[data-theme="light"] .profil-page .pub-if {
+  color: #15803D !important;
+}
+[data-theme="light"] .profil-page .pub-q {
+  color: #B45309 !important;
+}
+
+[data-theme="light"] .profil-page .ext-link {
+  color: #4338CA !important;
+}
+[data-theme="light"] .profil-page .ext-link:hover {
+  color: #3730A3 !important;
+}
+
+/* === PUBLICATION DETAIL PAGES === */
+[data-theme="light"] .publication-detail-container {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .publication-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-content {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-title h1,
+[data-theme="light"] .publication-detail-container .publication-authors h3,
+[data-theme="light"] .publication-detail-container .section-title h2,
+[data-theme="light"] .publication-detail-container .section-title h3 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .publication-detail-container .publication-meta,
+[data-theme="light"] .publication-detail-container .publication-date,
+[data-theme="light"] .publication-detail-container .publication-type,
+[data-theme="light"] .publication-detail-container .event-date,
+[data-theme="light"] .publication-detail-container .event-location {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .publication-detail-container .type-journal {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .publication-detail-container .type-conf {
+  background: rgba(245,158,11,0.10) !important;
+  color: #B45309 !important;
+}
+[data-theme="light"] .publication-detail-container .type-other {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+
+[data-theme="light"] .publication-detail-container .statut-publie {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .publication-detail-container .statut-soumis {
+  background: rgba(245,158,11,0.10) !important;
+  color: #F59E0B !important;
+}
+[data-theme="light"] .publication-detail-container .statut-brouillon {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+
+[data-theme="light"] .publication-detail-container .author-chip {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .publication-detail-container .author-chip:hover {
+  background: rgba(67,56,202,0.05) !important;
+}
+[data-theme="light"] .publication-detail-container .author-avatar {
+  background: linear-gradient(135deg, #4338CA, #3730A3) !important;
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .publication-detail-container .author-name,
+[data-theme="light"] .publication-detail-container .author-grade {
+  color: #1A1D2E !important;
+}
+
+/* === MASTERIEN DETAIL PAGES === */
+[data-theme="light"] .masterien-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .masterien-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .masterien-detail-container .masterien-content,
+[data-theme="light"] .masterien-detail-container .hero-section {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .masterien-detail-container .hero-right h1 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .masterien-detail-container .statut-badge {
+  color: #FFFFFF !important;
+}
+[data-theme="light"] .masterien-detail-container .statut-badge.en-cours {
+  background: rgba(245,158,11,0.20) !important;
+  color: #B45309 !important;
+}
+[data-theme="light"] .masterien-detail-container .statut-badge.soutenu-badge {
+  background: rgba(21,128,61,0.20) !important;
+  color: #15803D !important;
+}
+
+[data-theme="light"] .masterien-detail-container .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .masterien-detail-container .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .masterien-detail-container .section-block p {
+  color: #2D3152 !important;
+}
+
+/* === AXE DE RECHERCHE DETAIL PAGES === */
+[data-theme="light"] .axe-detail-container .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .axe-detail-container .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .axe-detail-container .axe-content,
+[data-theme="light"] .axe-detail-container .axe-header {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .axe-detail-container .axe-description {
+  color: #2D3152 !important;
+}
+
+[data-theme="light"] .axe-detail-container .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .axe-detail-container .section-block h3 {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .axe-detail-container .section-block p {
+  color: #2D3152 !important;
+}
+
+/* === EVENEMENT DETAIL PAGES === */
+[data-theme="light"] .detail-page .btn-retour {
+  background: rgba(0,0,0,0.05) !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .detail-page .btn-retour:hover {
+  color: #0a0c18 !important;
+  background: rgba(0,0,0,0.09) !important;
+}
+
+[data-theme="light"] .detail-page .detail-header,
+[data-theme="light"] .detail-page .detail-content {
+  background: #FFFFFF !important;
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .detail-page h1,
+[data-theme="light"] .detail-page .event-title,
+[data-theme="light"] .detail-page .section-title h2,
+[data-theme="light"] .detail-page .section-title h3 {
+  color: #1A1D2E !important;
+}
+
+[data-theme="light"] .detail-page .evt-meta,
+[data-theme="light"] .detail-page .evt-type-badge {
+  color: #5C637A !important;
+}
+
+[data-theme="light"] .detail-page .evt-statut {
+  color: #5C637A !important;
+}
+[data-theme="light"] .detail-page .evt-statut.publie {
+  background: rgba(21,128,61,0.10) !important;
+  color: #15803D !important;
+}
+[data-theme="light"] .detail-page .evt-statut.brouillon {
+  background: rgba(185,28,28,0.10) !important;
+  color: #B91C1C !important;
+}
+[data-theme="light"] .detail-page .evt-statut.annule {
+  background: rgba(245,158,11,0.10) !important;
+  color: #F59E0B !important;
+}
+
+[data-theme="light"] .detail-page .section-block {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .detail-page .section-block h3,
+[data-theme="light"] .detail-page .section-block p {
+  color: #1A1D2E !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   LIGHT MODE INNER CARDS & SECTIONS (detail-item, sections)
+   ══════════════════════════════════════════════════════════ */
+
+/* Detail items (small cards inside sections) */
+[data-theme="light"] .detail-item {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .detail-item label {
+  color: #5C637A !important;
+}
+[data-theme="light"] .detail-item span {
+  color: #1A1D2E !important;
+}
+
+/* Stage items (for doctorant/masterien pages) */
+[data-theme="light"] .stage-item {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .stage-item label {
+  color: #5C637A !important;
+}
+[data-theme="light"] .stage-item span {
+  color: #1A1D2E !important;
+}
+
+/* Detail sections (main sections like Description, Galerie photos) */
+[data-theme="light"] .detail-section {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .detail-section h2 {
+  color: #1A1D2E !important;
+  border-bottom-color: rgba(67,56,202,0.15) !important;
+}
+[data-theme="light"] .detail-section h2::before {
+  background: #4338CA !important;
+}
+[data-theme="light"] .evt-description {
+  color: #2D3152 !important;
+}
+
+/* Intervenant cards (speakers in events) */
+[data-theme="light"] .intervenant-card {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .intervenant-card:hover {
+  border-color: rgba(67,56,202,0.2) !important;
+  background: rgba(67,56,202,0.02) !important;
+}
+[data-theme="light"] .inv-info strong {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .inv-affil {
+  color: #5C637A !important;
+}
+[data-theme="light"] .inv-titre {
+  color: #4338CA !important;
+}
+
+/* Galerie items (photo gallery) */
+[data-theme="light"] .galerie-item {
+  background: #F9F9FB !important;
+  border: 1px solid #D9DCE8 !important;
+}
+[data-theme="light"] .galerie-item:hover {
+  border-color: rgba(67,56,202,0.2) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08) !important;
+}
+[data-theme="light"] .galerie-legende {
+  background: rgba(0,0,0,0.05) !important;
+  color: #5C637A !important;
+}
+
+/* Axe cards (research axes) */
+[data-theme="light"] .axe-card {
+  background: #FFFFFF !important;
+  border: 1px solid #D9DCE8 !important;
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .axe-card:hover {
+  border-color: rgba(67,56,202,0.2) !important;
+  background: rgba(67,56,202,0.02) !important;
+}
+
+/* Masterien/Doctorant sections */
+[data-theme="light"] .masterien-details h3,
+[data-theme="light"] .masterien-stage h3,
+[data-theme="light"] .masterien-encadrant h3,
+[data-theme="light"] .masterien-axe h3,
+[data-theme="light"] .masterien-formation h3,
+[data-theme="light"] .masterien-competences h3,
+[data-theme="light"] .masterien-projets h3 {
+  color: #1A1D2E !important;
+  border-bottom-color: rgba(67,56,202,0.15) !important;
+}
+
+/* Publication sections */
+[data-theme="light"] .publication-authors h3,
+[data-theme="light"] .publication-abstract h3,
+[data-theme="light"] .publication-details h3,
+[data-theme="light"] .publication-keywords h3,
+[data-theme="light"] .publication-axe h3 {
+  color: #1A1D2E !important;
+  border-bottom-color: rgba(67,56,202,0.15) !important;
+}
+[data-theme="light"] .publication-authors p {
+  color: #1A1D2E !important;
+}
+[data-theme="light"] .publication-abstract p {
+  color: #2D3152 !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   §4.3.6 — VARIABLES DYNAMIQUES DU THÈME (admin paramètres)
+   Ces variables sont écrasées en JS via document.documentElement
+   .style.setProperty(...) depuis dashboard-admin.ts :
+   appliquerCouleursTheme().  Leur déclaration ici dans :root
+   (sans sélecteur [data-theme]) garantit qu'elles existent
+   comme propriétés inline overridables même avant que l'attribut
+   data-theme soit posé par Angular.
+   ══════════════════════════════════════════════════════════ */
+:root {
+  /* Couleur primaire — utilisée pour les liens, accents, boutons actifs */
+  --accent:          #00d2ff;
+  --accent-hover:    #00a8cc;
+  --accent-soft:     rgba(0, 210, 255, 0.08);
+
+  /* Couleurs sémantiques — succès, danger, avertissement */
+  --success:         #34d399;
+  --success-soft:    rgba(52, 211, 153, 0.10);
+  --warning:         #f59e0b;
+  --warning-soft:    rgba(245, 158, 11, 0.10);
+  --danger:          #f87171;
+  --danger-soft:     rgba(248, 113, 113, 0.12);
+
+  /* Variable logo — peut être utilisée en background-image si besoin */
+  --logo-url:        none;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg-primary);
+}

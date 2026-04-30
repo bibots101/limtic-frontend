@@ -1,0 +1,85 @@
+<div class="masterien-detail-container">
+  <button class="btn-retour" (click)="retour()">← Retour aux masteriens</button>
+
+  @if (masterien(); as mst) {
+    <div class="masterien-content">
+
+      <!-- En-tête / identité -->
+      <div class="masterien-header">
+        <div class="hero-section">
+          <div class="photo-container">
+            <div class="photo-placeholder">
+              {{ mst.prenom.charAt(0) }}{{ mst.nom.charAt(0) }}
+            </div>
+            <span class="photo-badge">Masterien</span>
+          </div>
+          <div class="hero-right">
+            <h1>{{ mst.prenom }} {{ mst.nom }}</h1>
+            <div class="masterien-meta">
+              <span class="statut-badge" [class]="mst.statut === 'TERMINE' ? 'soutenu-badge' : 'en-cours'">
+                {{ mst.statut === 'TERMINE' ? 'Mémoire soutenu' : 'En cours' }}
+              </span>
+              @if (mst.promotion) {
+                <span class="promo-badge">Promotion {{ mst.promotion }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mémoire / sujet -->
+      @if (mst.sujetMemoire) {
+        <div class="masterien-stage">
+          <h3>Mémoire de master</h3>
+          <div class="stage-details">
+            <div class="stage-item">
+              <label>Sujet du mémoire</label>
+              <p>{{ mst.sujetMemoire }}</p>
+            </div>
+            <div class="details-grid">
+              @if (mst.statut) {
+                <div class="detail-item">
+                  <label>Statut</label>
+                  <span>{{ mst.statut }}</span>
+                </div>
+              }
+              @if (mst.promotion) {
+                <div class="detail-item">
+                  <label>Promotion</label>
+                  <span>{{ mst.promotion }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Encadrant -->
+      @if (mst.encadrant) {
+        <div class="masterien-encadrant">
+          <h3>Encadrant</h3>
+          <div class="encadrant-card" (click)="navigateToChercheur(mst.encadrant.id)">
+            <div class="card-avatar">
+              {{ mst.encadrant.prenom.charAt(0) }}{{ mst.encadrant.nom.charAt(0) }}
+            </div>
+            <div class="encadrant-info">
+              <h4>{{ mst.encadrant.prenom }} {{ mst.encadrant.nom }}</h4>
+              @if (mst.encadrant.grade) {
+                <p class="grade">{{ mst.encadrant.grade }}</p>
+              }
+              @if (mst.encadrant.institution) {
+                <p class="institution">{{ mst.encadrant.institution }}</p>
+              }
+              @if (mst.encadrant.specialite) {
+                <p class="specialite">{{ mst.encadrant.specialite }}</p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  } @else {
+    <div class="loading"><p>Chargement du masterien...</p></div>
+  }
+</div>

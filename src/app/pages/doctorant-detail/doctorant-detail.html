@@ -1,0 +1,130 @@
+<div class="masterien-detail-container">
+  <button class="btn-retour" (click)="retour()">← Retour aux doctorants</button>
+
+  @if (doctorant(); as doc) {
+    <div class="masterien-content">
+
+      <!-- En-tête / identité -->
+      <div class="masterien-header">
+        <div class="hero-section">
+          <div class="photo-container">
+            @if (doc.photoUrl) {
+              <img [src]="doc.photoUrl" [alt]="doc.prenom"
+                style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,210,255,0.3);" />
+            } @else {
+              <div class="photo-placeholder">
+                {{ doc.prenom.charAt(0) }}{{ doc.nom.charAt(0) }}
+              </div>
+            }
+            <span class="photo-badge">Doctorant</span>
+          </div>
+          <div class="hero-right">
+            <h1>{{ doc.prenom }} {{ doc.nom }}</h1>
+            <div class="masterien-meta">
+              <span class="statut-badge"
+                [class]="doc.statut === 'SOUTENU' ? 'soutenu-badge' : 'en-cours'">
+                {{ doc.statut === 'SOUTENU' ? '🎓 Thèse soutenue' : '🔄 En cours' }}
+              </span>
+              @if (doc.mention) {
+                <span class="promo-badge">🏅 {{ doc.mention }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sujet de thèse -->
+      @if (doc.sujetThese) {
+        <div class="masterien-stage">
+          <h3>📘 Thèse de doctorat</h3>
+          <div class="stage-details">
+            <div class="stage-item">
+              <label>Sujet de thèse</label>
+              <p>{{ doc.sujetThese }}</p>
+            </div>
+            <div class="details-grid">
+              @if (doc.statut) {
+                <div class="detail-item">
+                  <label>Statut</label>
+                  <span>{{ doc.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}</span>
+                </div>
+              }
+              @if (doc.dateInscription) {
+                <div class="detail-item">
+                  <label>Date d'inscription</label>
+                  <span>{{ formatDate(doc.dateInscription) }}</span>
+                </div>
+              }
+              @if (doc.dateSoutenance) {
+                <div class="detail-item">
+                  <label>Date de soutenance</label>
+                  <span>{{ formatDate(doc.dateSoutenance) }}</span>
+                </div>
+              }
+              @if (doc.mention) {
+                <div class="detail-item">
+                  <label>Mention</label>
+                  <span>{{ doc.mention }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Directeur de thèse -->
+      @if (doc.directeur) {
+        <div class="masterien-encadrant">
+          <h3>Directeur de thèse</h3>
+          <div class="encadrant-card" (click)="navigateToChercheur(doc.directeur.id)">
+            <div class="card-avatar">
+              {{ doc.directeur.prenom.charAt(0) }}{{ doc.directeur.nom.charAt(0) }}
+            </div>
+            <div class="encadrant-info">
+              <h4>{{ doc.directeur.prenom }} {{ doc.directeur.nom }}</h4>
+              @if (doc.directeur.grade) {
+                <p class="grade">{{ doc.directeur.grade }}</p>
+              }
+              @if (doc.directeur.institution) {
+                <p class="institution">{{ doc.directeur.institution }}</p>
+              }
+              @if (doc.directeur.specialite) {
+                <p class="specialite">{{ doc.directeur.specialite }}</p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Publications liées -->
+      @if (doc.publications && doc.publications.length > 0) {
+        <div class="masterien-stage">
+          <h3>📄 Publications liées</h3>
+          <div class="stage-details">
+            @for (pub of doc.publications; track pub.id) {
+              <div class="stage-item" style="cursor:pointer"
+                (click)="navigateToPublication(pub.id)">
+                <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:4px;">
+                  <span class="pub-type"
+                    [class]="pub.type === 'Journal' ? 'type-journal' : 'type-conf'">
+                    {{ pub.type }}
+                  </span>
+                  <span class="pub-year">{{ pub.annee }}</span>
+                </div>
+                <label>{{ pub.titre }}</label>
+                @if (pub.journal) {
+                  <p>{{ pub.journal }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+    </div>
+  } @else {
+    <div class="loading">
+      <p>Chargement du doctorant...</p>
+    </div>
+  }
+</div>

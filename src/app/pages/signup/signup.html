@@ -1,0 +1,41 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <span class="auth-logo">⬡</span>
+      <h1>LIMTIC</h1>
+      <p>Créer votre compte</p>
+    </div>
+
+    <div class="auth-form">
+      @if (erreur()) {
+        <div class="error-msg">⚠️ {{ erreur() }}</div>
+      }
+      @if (succes()) {
+        <div class="success-msg">✅ {{ succes() }}</div>
+      }
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="email" placeholder="votre@email.tn" />
+      </div>
+
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="motDePasse" placeholder="••••••••" />
+      </div>
+
+      <div class="field">
+        <label>Confirmer le mot de passe</label>
+        <input type="password" [(ngModel)]="confirm" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-submit" (click)="onSubmit()" [disabled]="loading()">
+        {{ loading() ? 'Création...' : 'Créer mon compte' }}
+      </button>
+
+      <p class="auth-link">
+        Déjà un compte ? <a routerLink="/login">Se connecter</a>
+      </p>
+    </div>
+  </div>
+</div>
