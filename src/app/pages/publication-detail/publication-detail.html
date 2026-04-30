@@ -125,18 +125,18 @@
         <div class="publication-pdf-viewer">
           <div class="pdf-viewer-header">
             <h3>Document PDF</h3>
-            <a [href]="'https://localhost:8443' + publication()!.pdfUrl!"
+            <a [href]="baseUrl + publication()!.pdfUrl!"
               target="_blank" rel="noopener" class="btn-pdf-download">
               Télécharger
             </a>
           </div>
-
+ 
           @if (pdfLoading()) {
             <div class="pdf-loading">Chargement du PDF...</div>
           } @else if (pdfError()) {
             <div class="pdf-error">
               Impossible de charger le PDF.
-              <a [href]="'https://localhost:8443' + publication()!.pdfUrl!" target="_blank">
+              <a [href]="baseUrl + publication()!.pdfUrl!" target="_blank">
                 Ouvrir dans un nouvel onglet
               </a>
             </div>
@@ -194,11 +194,13 @@
             <div class="detail-item">
               <label>Fichier PDF</label>
               <a class="detail-link btn-pdf-download"
-                [href]="'https://localhost:8443' + pub.pdfUrl"
+                [href]="baseUrl + pub.pdfUrl"
                 target="_blank" rel="noopener">
                 Télécharger le PDF
               </a>
             </div>
+          }
+      </div>
           }
         </div>
       </div>

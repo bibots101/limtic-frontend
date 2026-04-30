@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
 
-  private base = 'https://localhost:8443/api';
+  private base = environment.apiUrl;
 
   private options = { withCredentials: true };
 
@@ -75,11 +77,11 @@ export class ApiService {
   }
 
   getUploadUrl(relativePath: string): string {
-    return `https://localhost:8443${relativePath}`;
+    return `${environment.baseUrl}${relativePath}`;
   }
 
   getPdfBlob(relativePath: string): Observable<Blob> {
-    return this.http.get(`https://localhost:8443${relativePath}`, {
+    return this.http.get(`${environment.baseUrl}${relativePath}`, {
       responseType: 'blob',
       withCredentials: true
     });
@@ -284,7 +286,7 @@ export class ApiService {
   getLogoUrl(relativePath: string): string {
     if (!relativePath) return '';
     if (relativePath.startsWith('http')) return relativePath;
-    return `https://localhost:8443${relativePath}`;
+    return `${environment.baseUrl}${relativePath}`;
   }
 
   // ── Journal d'audit ───────────────────────────────────────────────────────

@@ -8,10 +8,12 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+
 @Injectable()
 export class CustomXsrfInterceptor implements HttpInterceptor {
   private readonly tokenExtractor = inject(HttpXsrfTokenExtractor);
-  private readonly backendBaseUrl = 'https://localhost:8443';
+  private readonly backendBaseUrl = environment.baseUrl;
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.method === 'GET' || req.method === 'HEAD') {

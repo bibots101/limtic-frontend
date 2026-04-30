@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LabSettingsService } from '../../services/lab-settings.service';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-reset-password',
   imports: [FormsModule, RouterLink],
@@ -42,7 +44,7 @@ export class ResetPassword implements OnInit {
     this.loading.set(true);
     this.erreur.set('');
 
-    fetch('https://localhost:8443/api/auth/reset-password', {
+    fetch(`${environment.apiUrl}/auth/reset-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token: this.token, motDePasse: this.motDePasse })

@@ -2,6 +2,8 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
+import { environment } from '../../../environments/environment';
+
 @Component({
   selector: 'app-signup',
   imports: [FormsModule, RouterLink],
@@ -26,7 +28,7 @@ export class Signup {
     this.loading.set(true);
     this.erreur.set('');
 
-    fetch('https://localhost:8443/api/auth/signup', {
+    fetch(`${environment.apiUrl}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: this.email, motDePasse: this.motDePasse })

@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { Publication } from '../../models/chercheur.model';
 import { SafePipe } from '../../pipes/Safepipe';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-publication-detail',
@@ -17,6 +18,7 @@ export class PublicationDetail implements OnInit, OnDestroy {
   pdfBlobUrl = signal<string | null>(null);
   pdfLoading = signal(false);
   pdfError = signal(false);
+  readonly baseUrl = environment.baseUrl;
 
   private blobUrl: string | null = null;
 
@@ -47,7 +49,7 @@ export class PublicationDetail implements OnInit, OnDestroy {
     this.pdfLoading.set(true);
     this.pdfError.set(false);
 
-    this.http.get('https://localhost:8443' + pdfPath, {
+    this.http.get(this.baseUrl + pdfPath, {
       responseType: 'blob',
       withCredentials: true
     }).subscribe({
