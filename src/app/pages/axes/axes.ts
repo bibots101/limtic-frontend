@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AxeRecherche, Publication } from '../../models/chercheur.model';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-axes',
@@ -17,7 +18,7 @@ export class Axes implements OnInit {
   expandedAxeId = signal<number | null>(null);
   loading = signal(true);
 
-  constructor(private api: ApiService, public settings: LabSettingsService) {}
+  constructor(private api: ApiService, public settings: LabSettingsService, public i18n: I18nService) {}
 
   ngOnInit() {
     this.api.getAxes().subscribe({

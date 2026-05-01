@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class Login {
   constructor(
     private router: Router,
     private api: ApiService,
-    public settings: LabSettingsService
+    public settings: LabSettingsService,
+    public i18n: I18nService
   ) {}
 
   onSubmit() {

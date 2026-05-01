@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 import { environment } from '../../../environments/environment';
 
@@ -22,7 +23,8 @@ export class ResetPassword implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    public settings: LabSettingsService
+    public settings: LabSettingsService,
+    public i18n: I18nService
   ) {}
 
   ngOnInit() {

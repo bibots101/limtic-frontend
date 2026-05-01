@@ -1,47 +1,41 @@
 <div class="page">
   <div class="page-header">
-    <h1>Nos Chercheurs</h1>
-    <p>{{ chercheursFiltres().length }} chercheur(s) — Membres de l'équipe de recherche {{ settings.acronyme() }}</p>
+    <h1>{{ i18n.t('ch.titre') }}</h1>
+    <p>{{ chercheursFiltres().length }} chercheur(s) — {{ i18n.t('ch.sous_titre') }} {{ settings.acronyme() }}</p>
   </div>
 
-  <!-- Filtres -->
   <div class="filters-bar">
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input
-        type="text"
-        placeholder="Rechercher par nom, spécialité, institution..."
-        [ngModel]="recherche()"
-        (ngModelChange)="recherche.set($event)"
-      />
+      <input type="text" [placeholder]="i18n.t('ch.recherche')"
+        [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" />
     </div>
 
     <div class="filters-row">
       <select [ngModel]="filtreGrade()" (ngModelChange)="filtreGrade.set($event)">
-        <option value="">Tous les grades</option>
+        <option value="">{{ i18n.t('ch.grade.all') }}</option>
         @for (g of grades(); track g) {
           <option [value]="g">{{ g }}</option>
         }
       </select>
 
       <select [ngModel]="filtreAxe()" (ngModelChange)="filtreAxe.set($event)">
-        <option value="">Tous les axes</option>
+        <option value="">{{ i18n.t('pub.axe.all') }}</option>
         @for (axe of axes(); track axe) {
           <option [value]="axe">{{ axe }}</option>
         }
       </select>
 
       <select [ngModel]="filtreStatut()" (ngModelChange)="filtreStatut.set($event)">
-        <option value="">Tous les statuts</option>
-        <option value="actif">Actif</option>
-        <option value="retraité">Retraité</option>
+        <option value="">{{ i18n.t('ch.statut.all') }}</option>
+        <option value="ACTIF">{{ i18n.t('ch.statut.actif') }}</option>
+        <option value="RETRAITE">{{ i18n.t('ch.statut.retraite') }}</option>
       </select>
 
-      <button class="btn-reset" (click)="resetFiltres()">✕ Réinitialiser</button>
+      <button class="btn-reset" (click)="resetFiltres()">✕ {{ i18n.t('general.reset') }}</button>
     </div>
   </div>
 
-  <!-- Grille chercheurs -->
   <div class="cards-grid">
     @for (c of chercheursFiltres(); track c.id) {
       <div class="card" [routerLink]="['/chercheurs', c.id]">
@@ -61,19 +55,19 @@
           <div class="pub-count">{{ c.publications?.length || 0 }} publication(s)</div>
         </div>
         @if (c.statut === 'retraité') {
-          <span class="statut-badge retraite">Retraité</span>
+          <span class="statut-badge retraite">{{ i18n.t('ch.statut.retraite') }}</span>
         } @else {
-          <span class="statut-badge actif">Actif</span>
+          <span class="statut-badge actif">{{ i18n.t('ch.statut.actif') }}</span>
         }
-        <div class="card-footer">Voir profil →</div>
+        <div class="card-footer">{{ i18n.t('ch.voir_profil') }}</div>
       </div>
     }
 
     @if (chercheursFiltres().length === 0) {
       <div class="empty-state">
         <span>👤</span>
-        <p>Aucun chercheur ne correspond à votre recherche.</p>
-        <button class="btn-reset" (click)="resetFiltres()">Réinitialiser les filtres</button>
+        <p>{{ i18n.t('ch.vide') }}</p>
+        <button class="btn-reset" (click)="resetFiltres()">{{ i18n.t('ch.reset_filtres') }}</button>
       </div>
     }
   </div>

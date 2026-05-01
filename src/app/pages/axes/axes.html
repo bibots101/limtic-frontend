@@ -1,30 +1,25 @@
 <div class="page">
   <div class="page-header">
-    <h1>Axes de Recherche</h1>
-    <p>Les domaines scientifiques du laboratoire {{ settings.acronyme() }}</p>
+    <h1>{{ i18n.t('axe.titre') }}</h1>
+    <p>{{ i18n.t('axe.sous_titre') }} {{ settings.acronyme() }}</p>
   </div>
 
   @if (loading()) {
-    <div class="loading-state">Chargement des axes...</div>
+    <div class="loading-state">{{ i18n.t('general.loading') }}</div>
   }
 
   <div class="cards-grid">
-
     @for (axe of axes(); track axe.id) {
       <div class="card" [routerLink]="['/axes', axe.id]">
-
         <div class="card-header">
           <div class="card-icon">🔬</div>
           <div class="card-title">{{ axe.nom }}</div>
         </div>
 
-        <!-- Responsable -->
         @if (axe.responsable) {
           <div class="card-meta">
-            <span class="meta-label">Responsable :</span>
-            <a [routerLink]="['/chercheurs', axe.responsable.id]"
-               class="meta-link"
-               (click)="$event.stopPropagation()">
+            <span class="meta-label">{{ i18n.t('axe.responsable') }} :</span>
+            <a [routerLink]="['/chercheurs', axe.responsable.id]" class="meta-link" (click)="$event.stopPropagation()">
               {{ axe.responsable.prenom }} {{ axe.responsable.nom }}
             </a>
             @if (axe.responsable.grade) {
@@ -37,15 +32,12 @@
           <p class="card-description">{{ axe.description }}</p>
         }
 
-        <!-- Membres -->
         @if (axe.chercheurs && axe.chercheurs.length > 0) {
           <div class="card-members">
-            <span class="members-count">{{ axe.chercheurs.length }} membre(s)</span>
+            <span class="members-count">{{ axe.chercheurs.length }} {{ i18n.t('axe.membres') }}</span>
             <div class="members-list">
               @for (c of axe.chercheurs; track c.id) {
-                <a [routerLink]="['/chercheurs', c.id]"
-                   class="member-link"
-                   (click)="$event.stopPropagation()">
+                <a [routerLink]="['/chercheurs', c.id]" class="member-link" (click)="$event.stopPropagation()">
                   {{ c.prenom }} {{ c.nom }}
                 </a>
               }
@@ -54,16 +46,15 @@
         }
 
         <div class="card-footer">
-          <button class="btn-secondary"
-                  (click)="$event.stopPropagation(); togglePublications(axe.id)">
-            {{ isExpanded(axe.id) ? 'Masquer publications' : 'Voir publications' }}
+          <button class="btn-secondary" (click)="$event.stopPropagation(); togglePublications(axe.id)">
+            {{ isExpanded(axe.id) ? ('▲ ' + i18n.t('axe.masquer_pub')) : ('▼ ' + i18n.t('axe.voir_pub')) }}
           </button>
         </div>
 
         @if (isExpanded(axe.id)) {
           <div class="publications-panel">
             @if (getPublications(axe.id).length === 0) {
-              <p class="no-publications">Aucune publication pour cet axe.</p>
+              <p class="no-publications">{{ i18n.t('axe.aucune_pub') }}</p>
             } @else {
               <ul class="publications-list">
                 @for (pub of getPublications(axe.id); track pub.id) {
@@ -74,9 +65,7 @@
                       <span class="pub-details">{{ pub.journal }} · {{ pub.annee }}</span>
                     </div>
                     @if (pub.lienUrl) {
-                      <a [href]="pub.lienUrl" target="_blank"
-                         class="pub-link"
-                         (click)="$event.stopPropagation()">↗</a>
+                      <a [href]="pub.lienUrl" target="_blank" class="pub-link" (click)="$event.stopPropagation()">↗</a>
                     }
                   </li>
                 }
@@ -84,13 +73,11 @@
             }
           </div>
         }
-
       </div>
     }
 
     @if (!loading() && axes().length === 0) {
-      <div class="empty-state">Aucun axe de recherche enregistré.</div>
+      <div class="empty-state">{{ i18n.t('axe.vide') }}</div>
     }
-
   </div>
 </div>

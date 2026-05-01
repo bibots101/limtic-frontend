@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { Publication } from '../../models/chercheur.model';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-publications',
@@ -105,7 +106,7 @@ export class Publications implements OnInit {
     return list;
   });
 
-  constructor(private api: ApiService, public settings: LabSettingsService) {}
+  constructor(private api: ApiService, public settings: LabSettingsService, public i18n: I18nService) {}
 
   ngOnInit() {
     this.api.getPublications().subscribe(data => this.publications.set(data));

@@ -18,27 +18,27 @@
   <!-- Liens -->
   <div class="nav-links" [class.open]="menuOuvert()">
 
-    <a routerLink="/home" routerLinkActive="active" (click)="fermerTout()">Accueil</a>
+    <a routerLink="/home" routerLinkActive="active" (click)="fermerTout()">{{ i18n.t('nav.accueil') }}</a>
 
     <!-- Équipe -->
     <div class="nav-dropdown">
       <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'equipe'"
         (click)="toggleDropdown('equipe')">
-        Équipe <span class="arrow" [class.rotated]="dropdownOuvert() === 'equipe'">▾</span>
+        {{ i18n.t('nav.equipe') }} <span class="arrow" [class.rotated]="dropdownOuvert() === 'equipe'">▾</span>
       </span>
       @if (dropdownOuvert() === 'equipe') {
       <div class="dropdown-menu">
         <a routerLink="/directeur" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">👤</span> Directeur
+          <span class="dd-icon">👤</span> {{ i18n.t('nav.directeur') }}
         </a>
         <a routerLink="/chercheurs" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">🔬</span> Chercheurs
+          <span class="dd-icon">🔬</span> {{ i18n.t('nav.chercheurs') }}
         </a>
         <a routerLink="/doctorants" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">🎓</span> Doctorants
+          <span class="dd-icon">🎓</span> {{ i18n.t('nav.doctorants') }}
         </a>
         <a routerLink="/masteriens" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">📚</span> Mastériens
+          <span class="dd-icon">📚</span> {{ i18n.t('nav.masteriens') }}
         </a>
       </div>
       }
@@ -48,18 +48,18 @@
     <div class="nav-dropdown">
       <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'recherche'"
         (click)="toggleDropdown('recherche')">
-        Recherche <span class="arrow" [class.rotated]="dropdownOuvert() === 'recherche'">▾</span>
+        {{ i18n.t('nav.recherche') }} <span class="arrow" [class.rotated]="dropdownOuvert() === 'recherche'">▾</span>
       </span>
       @if (dropdownOuvert() === 'recherche') {
       <div class="dropdown-menu">
         <a routerLink="/publications" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">📄</span> Publications
+          <span class="dd-icon">📄</span> {{ i18n.t('nav.publications') }}
         </a>
         <a routerLink="/axes" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">🧭</span> Axes de recherche
+          <span class="dd-icon">🧭</span> {{ i18n.t('nav.axes') }}
         </a>
         <a routerLink="/outils" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">🛠️</span> Outils
+          <span class="dd-icon">🛠️</span> {{ i18n.t('nav.outils') }}
         </a>
       </div>
       }
@@ -69,18 +69,18 @@
     <div class="nav-dropdown">
       <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'activites'"
         (click)="toggleDropdown('activites')">
-        Activités <span class="arrow" [class.rotated]="dropdownOuvert() === 'activites'">▾</span>
+        {{ i18n.t('nav.activites') }} <span class="arrow" [class.rotated]="dropdownOuvert() === 'activites'">▾</span>
       </span>
       @if (dropdownOuvert() === 'activites') {
       <div class="dropdown-menu">
         <a routerLink="/evenements" routerLinkActive="active" (click)="fermerTout()">
-          <span class="dd-icon">📅</span> Événements
+          <span class="dd-icon">📅</span> {{ i18n.t('nav.evenements') }}
         </a>
       </div>
       }
     </div>
 
-    <a routerLink="/contact" routerLinkActive="active" (click)="fermerTout()">Contact</a>
+    <a routerLink="/contact" routerLinkActive="active" (click)="fermerTout()">{{ i18n.t('nav.contact') }}</a>
 
     <!-- Auth dans le menu mobile -->
     <div class="nav-auth-mobile">
@@ -95,25 +95,23 @@
         <div class="dropdown-menu">
           <div class="dropdown-header"
             style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
-            Connecté en tant que <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
+            {{ i18n.t('nav.connecte_as') }} <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
           </div>
           <a [routerLink]="userRole() === 'ADMIN' || userRole() === 'SUPER_ADMIN' ? '/dashboard-admin' : '/dashboard-chercheur'"
             (click)="fermerTout()">
-            <span class="dd-icon">⚙️</span> Mon dashboard
+            <span class="dd-icon">⚙️</span> {{ i18n.t('nav.mon_dashboard') }}
           </a>
-          <!-- Sélecteur de langue dans le menu mobile -->
           <app-lang-switcher mode="dropdown" />
           <a (click)="logout(); fermerTout()" style="cursor: pointer;">
-            <span class="dd-icon">⏻</span> Déconnexion
+            <span class="dd-icon">⏻</span> {{ i18n.t('nav.deconnexion') }}
           </a>
         </div>
         }
       </div>
       } @else {
-      <!-- Sélecteur de langue + bouton connexion côte à côte en mobile -->
       <div class="mobile-auth-row">
         <app-lang-switcher />
-        <a routerLink="/login" class="btn-signup-mobile" (click)="fermerTout()">Connexion</a>
+        <a routerLink="/login" class="btn-signup-mobile" (click)="fermerTout()">{{ i18n.t('nav.connexion') }}</a>
       </div>
       }
     </div>
@@ -138,24 +136,22 @@
       <div class="dropdown-menu">
         <div class="dropdown-header"
           style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
-          Connecté en tant que <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
+          {{ i18n.t('nav.connecte_as') }} <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
         </div>
         <a [routerLink]="userRole() === 'ADMIN' || userRole() === 'SUPER_ADMIN' ? '/dashboard-admin' : '/dashboard-chercheur'"
           (click)="fermerTout()">
-          <span class="dd-icon">⚙️</span> Tableau de bord
+          <span class="dd-icon">⚙️</span> {{ i18n.t('nav.dashboard') }}
         </a>
-        <!-- Sélecteur de langue dans le menu utilisateur -->
         <app-lang-switcher mode="dropdown" />
         <a (click)="logout(); fermerTout()" style="cursor: pointer;">
-          <span class="dd-icon">⏻</span> Déconnexion
+          <span class="dd-icon">⏻</span> {{ i18n.t('nav.deconnexion') }}
         </a>
       </div>
       }
     </div>
     } @else {
-    <!-- Sélecteur de langue visible à côté du bouton Connexion -->
     <app-lang-switcher />
-    <a routerLink="/login" class="btn-signup" (click)="fermerTout()">Connexion</a>
+    <a routerLink="/login" class="btn-signup" (click)="fermerTout()">{{ i18n.t('nav.connexion') }}</a>
     }
   </div>
 

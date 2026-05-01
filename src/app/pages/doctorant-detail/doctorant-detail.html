@@ -1,5 +1,5 @@
 <div class="masterien-detail-container">
-  <button class="btn-retour" (click)="retour()">← Retour aux doctorants</button>
+  <button class="btn-retour" (click)="retour()">← {{ i18n.t('doc.retour') }}</button>
 
   @if (doctorant(); as doc) {
     <div class="masterien-content">
@@ -23,7 +23,7 @@
             <div class="masterien-meta">
               <span class="statut-badge"
                 [class]="doc.statut === 'SOUTENU' ? 'soutenu-badge' : 'en-cours'">
-                {{ doc.statut === 'SOUTENU' ? '🎓 Thèse soutenue' : '🔄 En cours' }}
+                {{ doc.statut === 'SOUTENU' ? ('🎓 ' + i18n.t('doc.statut.soutenu')) : ('🔄 ' + i18n.t('doc.statut.en_cours')) }}
               </span>
               @if (doc.mention) {
                 <span class="promo-badge">🏅 {{ doc.mention }}</span>
@@ -36,34 +36,34 @@
       <!-- Sujet de thèse -->
       @if (doc.sujetThese) {
         <div class="masterien-stage">
-          <h3>📘 Thèse de doctorat</h3>
+          <h3>📘 {{ i18n.t('doc.these') }}</h3>
           <div class="stage-details">
             <div class="stage-item">
-              <label>Sujet de thèse</label>
+              <label>{{ i18n.t('doc.sujet') }}</label>
               <p>{{ doc.sujetThese }}</p>
             </div>
             <div class="details-grid">
               @if (doc.statut) {
                 <div class="detail-item">
-                  <label>Statut</label>
-                  <span>{{ doc.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}</span>
+                  <label>{{ i18n.t('doc.statut_label') }}</label>
+                  <span>{{ doc.statut === 'EN_COURS' ? i18n.t('doc.statut.en_cours') : i18n.t('doc.statut.soutenu') }}</span>
                 </div>
               }
               @if (doc.dateInscription) {
                 <div class="detail-item">
-                  <label>Date d'inscription</label>
+                  <label>{{ i18n.t('doc.inscription') }}</label>
                   <span>{{ formatDate(doc.dateInscription) }}</span>
                 </div>
               }
               @if (doc.dateSoutenance) {
                 <div class="detail-item">
-                  <label>Date de soutenance</label>
+                  <label>{{ i18n.t('doc.soutenance') }}</label>
                   <span>{{ formatDate(doc.dateSoutenance) }}</span>
                 </div>
               }
               @if (doc.mention) {
                 <div class="detail-item">
-                  <label>Mention</label>
+                  <label>{{ i18n.t('doc.mention') }}</label>
                   <span>{{ doc.mention }}</span>
                 </div>
               }
@@ -75,7 +75,7 @@
       <!-- Directeur de thèse -->
       @if (doc.directeur) {
         <div class="masterien-encadrant">
-          <h3>Directeur de thèse</h3>
+          <h3>{{ i18n.t('doc.directeur') }}</h3>
           <div class="encadrant-card" (click)="navigateToChercheur(doc.directeur.id)">
             <div class="card-avatar">
               {{ doc.directeur.prenom.charAt(0) }}{{ doc.directeur.nom.charAt(0) }}
@@ -99,7 +99,7 @@
       <!-- Publications liées -->
       @if (doc.publications && doc.publications.length > 0) {
         <div class="masterien-stage">
-          <h3>📄 Publications liées</h3>
+          <h3>📄 {{ i18n.t('doc.pub_liees') }}</h3>
           <div class="stage-details">
             @for (pub of doc.publications; track pub.id) {
               <div class="stage-item" style="cursor:pointer"
@@ -124,7 +124,7 @@
     </div>
   } @else {
     <div class="loading">
-      <p>Chargement du doctorant...</p>
+      <p>{{ i18n.t('doc.loading') }}</p>
     </div>
   }
 </div>

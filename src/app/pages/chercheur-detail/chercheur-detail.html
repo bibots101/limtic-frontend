@@ -1,10 +1,9 @@
 @if (!chercheur()) {
-  <div class="loading-page">Chargement...</div>
+  <div class="loading-page">{{ i18n.t('general.loading') }}</div>
 } @else {
 
 <div class="profil-page">
 
-  <!-- En-tête chercheur -->
   <div class="profil-header">
     <button class="btn-retour" (click)="retour()">← {{ getRetourText() }}</button>
 
@@ -21,7 +20,6 @@
         @if (chercheur()!.institution) { <p class="profil-institution">{{ chercheur()!.institution }}</p> }
         @if (chercheur()!.specialite)  { <p class="profil-specialite">{{ chercheur()!.specialite }}</p> }
 
-        <!-- Liens externes -->
         <div class="profil-links">
           @if (chercheur()!.googleScholar) {
             <a [href]="chercheur()!.googleScholar" target="_blank" class="ext-link scholar-link">
@@ -34,14 +32,10 @@
             </a>
           }
           @if (chercheur()!.researchGate) {
-            <a [href]="chercheur()!.researchGate" target="_blank" class="ext-link rg-link">
-              RG ResearchGate
-            </a>
+            <a [href]="chercheur()!.researchGate" target="_blank" class="ext-link rg-link">RG ResearchGate</a>
           }
           @if (chercheur()!.linkedin) {
-            <a [href]="chercheur()!.linkedin" target="_blank" class="ext-link li-link">
-              in LinkedIn
-            </a>
+            <a [href]="chercheur()!.linkedin" target="_blank" class="ext-link li-link">in LinkedIn</a>
           }
         </div>
       </div>
@@ -50,59 +44,37 @@
 
   <!-- Onglets -->
   <div class="onglets-bar">
-    <button
-      class="onglet-btn"
-      [class.actif]="ongletActif() === 'profil'"
-      (click)="ongletActif.set('profil')"
-    >Profil</button>
-
-    <button
-      class="onglet-btn"
-      [class.actif]="ongletActif() === 'publications'"
-      (click)="ongletActif.set('publications')"
-    >
-      Publications
+    <button class="onglet-btn" [class.actif]="ongletActif() === 'profil'" (click)="ongletActif.set('profil')">
+      {{ i18n.t('ch.onglet_profil') }}
+    </button>
+    <button class="onglet-btn" [class.actif]="ongletActif() === 'publications'" (click)="ongletActif.set('publications')">
+      {{ i18n.t('ch.onglet_pub') }}
       @if ((chercheur()!.publications?.length ?? 0) > 0) {
         <span class="badge-count">{{ chercheur()!.publications!.length }}</span>
       }
     </button>
-
-    <button
-      class="onglet-btn"
-      [class.actif]="ongletActif() === 'doctorants'"
-      (click)="ongletActif.set('doctorants')"
-    >
-      Doctorants
-      @if (doctorants().length > 0) {
-        <span class="badge-count">{{ doctorants().length }}</span>
-      }
+    <button class="onglet-btn" [class.actif]="ongletActif() === 'doctorants'" (click)="ongletActif.set('doctorants')">
+      {{ i18n.t('ch.onglet_doctorants') }}
+      @if (doctorants().length > 0) { <span class="badge-count">{{ doctorants().length }}</span> }
     </button>
-
-    <button
-      class="onglet-btn"
-      [class.actif]="ongletActif() === 'masteriens'"
-      (click)="ongletActif.set('masteriens')"
-    >
-      Mastériens
-      @if (masteriens().length > 0) {
-        <span class="badge-count">{{ masteriens().length }}</span>
-      }
+    <button class="onglet-btn" [class.actif]="ongletActif() === 'masteriens'" (click)="ongletActif.set('masteriens')">
+      {{ i18n.t('ch.onglet_masteriens') }}
+      @if (masteriens().length > 0) { <span class="badge-count">{{ masteriens().length }}</span> }
     </button>
   </div>
 
-  <!-- ═══════════════ ONGLET PROFIL ═══════════════ -->
+  <!-- ONGLET PROFIL -->
   @if (ongletActif() === 'profil') {
     <div class="onglet-content">
       @if (chercheur()!.biographie) {
         <div class="section-block">
-          <h3>Biographie</h3>
+          <h3>{{ i18n.t('ch.biographie') }}</h3>
           <p class="biographie">{{ chercheur()!.biographie }}</p>
         </div>
       }
-
       @if (chercheur()!.axes?.length) {
         <div class="section-block">
-          <h3>Axes de recherche</h3>
+          <h3>{{ i18n.t('ch.axes') }}</h3>
           <div class="axes-list">
             @for (axe of chercheur()!.axes; track axe.id) {
               <span class="axe-tag">{{ axe.nom }}</span>
@@ -110,166 +82,115 @@
           </div>
         </div>
       }
-
       <div class="section-block infos-contact">
-        <h3>Informations</h3>
-        @if (chercheur()!.bureau)    { <p>🏢 Bureau : {{ chercheur()!.bureau }}</p> }
-        @if (chercheur()!.telephone) { <p>📞 Tél : {{ chercheur()!.telephone }}</p> }
+        <h3>{{ i18n.t('ch.infos') }}</h3>
+        @if (chercheur()!.bureau)    { <p>🏢 {{ i18n.t('ch.bureau') }} : {{ chercheur()!.bureau }}</p> }
+        @if (chercheur()!.telephone) { <p>📞 {{ i18n.t('ch.telephone') }} : {{ chercheur()!.telephone }}</p> }
       </div>
     </div>
   }
 
-  <!-- ═══════════════ ONGLET PUBLICATIONS — Style Google Scholar ═══════════════ -->
+  <!-- ONGLET PUBLICATIONS -->
   @if (ongletActif() === 'publications') {
     <div class="onglet-content scholar-tab">
-
       @if (!chercheur()!.publications?.length) {
-        <p class="empty-msg">Aucune publication renseignée.</p>
+        <p class="empty-msg">{{ i18n.t('ch.aucune_pub') }}</p>
       } @else {
-
-        <!-- Stats style Google Scholar -->
         <div class="scholar-stats">
           <div class="stat-box">
             <span class="stat-val">{{ statsPublications().total }}</span>
-            <span class="stat-key">Publications</span>
+            <span class="stat-key">{{ i18n.t('ch.onglet_pub') }}</span>
           </div>
           <div class="stat-box">
             <span class="stat-val">{{ statsPublications().publiees }}</span>
-            <span class="stat-key">Publiées</span>
+            <span class="stat-key">{{ i18n.t('ch.publiees') }}</span>
           </div>
           @if (statsPublications().ifMoyen !== null) {
             <div class="stat-box">
               <span class="stat-val">{{ statsPublications().ifMoyen | number:'1.2-2' }}</span>
-              <span class="stat-key">IF moyen</span>
+              <span class="stat-key">{{ i18n.t('ch.if_moyen') }}</span>
             </div>
           }
           @if (statsPublications().q1 > 0) {
-            <div class="stat-box q1-box">
-              <span class="stat-val">{{ statsPublications().q1 }}</span>
-              <span class="stat-key">Q1</span>
-            </div>
+            <div class="stat-box q1-box"><span class="stat-val">{{ statsPublications().q1 }}</span><span class="stat-key">Q1</span></div>
           }
           @if (statsPublications().q2 > 0) {
-            <div class="stat-box q2-box">
-              <span class="stat-val">{{ statsPublications().q2 }}</span>
-              <span class="stat-key">Q2</span>
-            </div>
+            <div class="stat-box q2-box"><span class="stat-val">{{ statsPublications().q2 }}</span><span class="stat-key">Q2</span></div>
           }
           @if (statsPublications().astar > 0) {
-            <div class="stat-box astar-box">
-              <span class="stat-val">{{ statsPublications().astar }}</span>
-              <span class="stat-key">CORE A*</span>
-            </div>
+            <div class="stat-box astar-box"><span class="stat-val">{{ statsPublications().astar }}</span><span class="stat-key">CORE A*</span></div>
           }
           @if (statsPublications().a > 0) {
-            <div class="stat-box a-box">
-              <span class="stat-val">{{ statsPublications().a }}</span>
-              <span class="stat-key">CORE A</span>
-            </div>
+            <div class="stat-box a-box"><span class="stat-val">{{ statsPublications().a }}</span><span class="stat-key">CORE A</span></div>
           }
         </div>
 
-        <!-- Histogramme par année (pur CSS) -->
         @if (publicationsParAnnee().length > 1) {
           <div class="annee-chart">
             @for (item of publicationsParAnnee(); track item.annee) {
               <div class="annee-bar-col" [title]="item.count + ' pub. en ' + item.annee">
-                <div
-                  class="annee-bar"
-                  [style.height.px]="item.count * 18"
-                ></div>
+                <div class="annee-bar" [style.height.px]="item.count * 18"></div>
                 <span class="annee-label">{{ item.annee }}</span>
               </div>
             }
           </div>
         }
 
-        <!-- Tri -->
         <div class="scholar-tri-bar">
-          <span class="tri-label">Trier par :</span>
+          <span class="tri-label">{{ i18n.t('ch.tri_label') }}</span>
           <select [(ngModel)]="triPublications" (ngModelChange)="triPublications.set($event)">
-            <option value="annee-desc">Année (récent d'abord)</option>
-            <option value="annee-asc">Année (ancien d'abord)</option>
-            <option value="if-desc">Impact Factor ↓</option>
-            <option value="scimago">Scimago Q1 → Q4</option>
-            <option value="core">CORE A* → C</option>
+            <option value="annee-desc">{{ i18n.t('ch.tri.annee_desc') }}</option>
+            <option value="annee-asc">{{ i18n.t('ch.tri.annee_asc') }}</option>
+            <option value="if-desc">{{ i18n.t('ch.tri.if_desc') }}</option>
+            <option value="scimago">{{ i18n.t('ch.tri.scimago') }}</option>
+            <option value="core">{{ i18n.t('ch.tri.core') }}</option>
           </select>
         </div>
 
-        <!-- Liste publications style Google Scholar -->
         <ol class="scholar-pub-list">
           @for (pub of publicationsTri(); track pub.id; let i = $index) {
             <li class="scholar-pub-item" (click)="naviguerPublication(pub.id)">
               <div class="scholar-pub-rank">{{ i + 1 }}</div>
               <div class="scholar-pub-body">
-
                 <div class="scholar-pub-meta">
                   <span class="pub-type-chip">{{ pub.type }}</span>
                   <span class="pub-year-chip">{{ pub.annee }}</span>
-
-                  <!-- Badges classement RÉELS §3.7 -->
                   @if (getBadgeLabel(pub)) {
-                    <span class="ranking-badge {{ getBadgeClass(pub) }}">
-                      {{ getBadgeLabel(pub) }}
-                    </span>
+                    <span class="ranking-badge {{ getBadgeClass(pub) }}">{{ getBadgeLabel(pub) }}</span>
                   }
                   @if (pub.facteurImpact) {
-                    <span class="if-chip" title="Impact Factor JCR">
-                      IF {{ pub.facteurImpact | number:'1.2-2' }}
-                    </span>
+                    <span class="if-chip" title="Impact Factor JCR">IF {{ pub.facteurImpact | number:'1.2-2' }}</span>
                   }
                   @if (pub.snip) {
                     <span class="snip-chip" title="SNIP">SNIP {{ pub.snip | number:'1.2-2' }}</span>
                   }
                 </div>
-
                 <h4 class="scholar-pub-titre">{{ pub.titre }}</h4>
-
-                @if (pub.journal) {
-                  <p class="scholar-pub-journal">{{ pub.journal }}</p>
-                }
-
+                @if (pub.journal) { <p class="scholar-pub-journal">{{ pub.journal }}</p> }
                 <div class="scholar-pub-actions">
                   @if (pub.doi) {
-                    <a
-                      [href]="'https://doi.org/' + pub.doi"
-                      target="_blank"
-                      class="scholar-link"
-                      (click)="$event.stopPropagation()"
-                    >DOI</a>
+                    <a [href]="'https://doi.org/' + pub.doi" target="_blank" class="scholar-link" (click)="$event.stopPropagation()">DOI</a>
                   }
                   @if (pub.pdfUrl) {
-                    <a
-                      [href]="pub.pdfUrl"
-                      target="_blank"
-                      class="scholar-link pdf-link"
-                      (click)="$event.stopPropagation()"
-                    >📄 PDF</a>
+                    <a [href]="pub.pdfUrl" target="_blank" class="scholar-link pdf-link" (click)="$event.stopPropagation()">📄 PDF</a>
                   }
                   @if (pub.lienUrl) {
-                    <a
-                      [href]="pub.lienUrl"
-                      target="_blank"
-                      class="scholar-link"
-                      (click)="$event.stopPropagation()"
-                    >Lien →</a>
+                    <a [href]="pub.lienUrl" target="_blank" class="scholar-link" (click)="$event.stopPropagation()">{{ i18n.t('pub.lien') }}</a>
                   }
                 </div>
-
               </div>
             </li>
           }
         </ol>
-
       }
     </div>
   }
 
-  <!-- ═══════════════ ONGLET DOCTORANTS ═══════════════ -->
+  <!-- ONGLET DOCTORANTS -->
   @if (ongletActif() === 'doctorants') {
     <div class="onglet-content">
       @if (!doctorants().length) {
-        <p class="empty-msg">Aucun doctorant encadré.</p>
+        <p class="empty-msg">{{ i18n.t('ch.aucun_doc') }}</p>
       } @else {
         <ul class="encadres-list">
           @for (d of doctorants(); track d.id) {
@@ -286,11 +207,11 @@
     </div>
   }
 
-  <!-- ═══════════════ ONGLET MASTERIENS ═══════════════ -->
+  <!-- ONGLET MASTERIENS -->
   @if (ongletActif() === 'masteriens') {
     <div class="onglet-content">
       @if (!masteriens().length) {
-        <p class="empty-msg">Aucun mastérien encadré.</p>
+        <p class="empty-msg">{{ i18n.t('ch.aucun_mas') }}</p>
       } @else {
         <ul class="encadres-list">
           @for (m of masteriens(); track m.id) {

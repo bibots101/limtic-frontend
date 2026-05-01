@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 declare const hcaptcha: any;
 
@@ -18,6 +19,7 @@ export class Contact implements OnInit {
   private sanitizer = inject(DomSanitizer);
   private zone      = inject(NgZone);
   public settings   = inject(LabSettingsService);
+  public i18n       = inject(I18nService);
 
   // Formulaire
   nom     = signal('');
@@ -113,7 +115,7 @@ export class Contact implements OnInit {
   soumettre(): void {
     const token = this.captchaToken() || this.getCaptchaResponse();
     if (!token) {
-      this.erreurMsg.set('Veuillez compléter le captcha.');
+      this.erreurMsg.set(this.i18n.t('contact.captcha_error'));
       return;
     }
     this.captchaToken.set(token);
@@ -133,7 +135,7 @@ export class Contact implements OnInit {
       error: (err) => {
         this.envoi.set('error');
         this.erreurMsg.set(
-          err?.error?.error ?? 'Une erreur est survenue. Veuillez réessayer.'
+          err?.error?.error ?? this.i18n.t('general.erreur')
         );
         if (this.captchaId() !== null) hcaptcha.reset(this.captchaId()!);
         this.captchaToken.set('');

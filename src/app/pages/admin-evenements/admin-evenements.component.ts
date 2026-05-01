@@ -5,6 +5,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 export type StatutEvenement = 'A_VENIR' | 'EN_COURS' | 'TERMINE';
 
@@ -52,6 +53,7 @@ export class AdminEvenementsComponent implements OnInit, OnDestroy {
 
   private sanitizer = inject(DomSanitizer);
   private api       = inject(ApiService);
+  public i18n       = inject(I18nService);
 
   // ── liste ──────────────────────────────────────────────────────────
   evenements    = signal<Evenement[]>([]);
@@ -159,7 +161,11 @@ export class AdminEvenementsComponent implements OnInit, OnDestroy {
   }
 
   labelStatut(s: StatutEvenement) {
-    return { A_VENIR: 'À venir', EN_COURS: 'En cours', TERMINE: 'Terminé' }[s];
+    return {
+      A_VENIR: this.i18n.t('admin.events.filtre_avenir'),
+      EN_COURS: this.i18n.t('admin.events.filtre_encours'),
+      TERMINE: this.i18n.t('admin.events.filtre_termine')
+    }[s];
   }
 
   // ── modal ──────────────────────────────────────────────────────────

@@ -8,38 +8,38 @@
     </div>
     <nav class="sidebar-nav">
       <button [class.active]="activeTab() === 'dashboard'" (click)="setTab('dashboard')">
-        Tableau de bord
+        {{ i18n.t('admin.sidebar.dashboard') }}
       </button>
       <button [class.active]="activeTab() === 'membres'" (click)="setTab('membres')">
-        Membres
+        {{ i18n.t('admin.sidebar.membres') }}
       </button>
       @if (userRole() === 'SUPER_ADMIN') {
         <button [class.active]="activeTab() === 'comptes'" (click)="setTab('comptes')">
-          Comptes
+          {{ i18n.t('admin.sidebar.comptes') }}
         </button>
       }
       <button [class.active]="activeTab() === 'publications'" (click)="setTab('publications')">
-        Publications
+        {{ i18n.t('admin.sidebar.publications') }}
         @if (publicationsEnAttente().length > 0) {
           <span class="nav-badge">{{ publicationsEnAttente().length }}</span>
         }
       </button>
       <button [class.active]="activeTab() === 'evenements'" (click)="setTab('evenements')">
-        Événements
+        {{ i18n.t('admin.sidebar.evenements') }}
       </button>
       <button [class.active]="activeTab() === 'axes'" (click)="setTab('axes')">
-        Axes
+        {{ i18n.t('admin.sidebar.axes') }}
       </button>
       <button [class.active]="activeTab() === 'doctorants'" (click)="setTab('doctorants')">
-        Doctorants
+        {{ i18n.t('admin.sidebar.doctorants') }}
       </button>
       <button [class.active]="activeTab() === 'masteriens'" (click)="setTab('masteriens')">
-        Mastériens
+        {{ i18n.t('admin.sidebar.masteriens') }}
       </button>
       <!-- §4.3.6 — Paramètres généraux -->
       @if (userRole() === 'SUPER_ADMIN') {
         <button [class.active]="activeTab() === 'parametres'" (click)="setTab('parametres')" class="nav-btn-settings">
-          ⚙ Paramètres
+          {{ i18n.t('admin.sidebar.parametres') }}
         </button>
       }
       <!-- Journal d'audit -->
@@ -51,15 +51,15 @@
             <path d="M4.93 4.93a10 10 0 0 0 0 14.14" stroke-dasharray="2 2"/>
           </svg>
         </span>
-        Historique
+        {{ i18n.t('admin.sidebar.audit') }}
       </button>
-      <button class="btn-logout-mobile" (click)="logout()">⏻ Quitter</button>
+      <button class="btn-logout-mobile" (click)="logout()">{{ i18n.t('admin.sidebar.quitter') }}</button>
     </nav>
     <div class="sidebar-footer">
       <span class="admin-email">{{ email() }}</span>
       <span class="admin-role">{{ userRole() }}</span>
-      <a routerLink="/home" class="btn-site-link">Retour au site</a>
-      <button class="btn-logout-side" (click)="logout()">⏻ Déconnexion</button>
+      <a routerLink="/home" class="btn-site-link">{{ i18n.t('admin.sidebar.retour_site') }}</a>
+      <button class="btn-logout-side" (click)="logout()">{{ i18n.t('admin.sidebar.deconnexion') }}</button>
     </div>
   </aside>
 
@@ -67,6 +67,15 @@
   <main class="main-content">
 
     <div class="dashboard-theme-bar">
+      <button class="lang-toggle-btn" (click)="i18n.setLangue(i18n.langue() === 'fr' ? 'en' : 'fr')" title="Changer la langue" style="margin-right: 0.5rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="globe-icon">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span class="lang-text" style="text-transform: uppercase">{{ i18n.langue() }}</span>
+      </button>
+
       <button class="theme-toggle-dashboard" (click)="themeService.toggle()"
               [title]="themeService.theme() === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'">
         {{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}
@@ -84,8 +93,8 @@
     <!-- TAB: DASHBOARD -->
     @if (activeTab() === 'dashboard') {
       <div class="tab-header">
-        <h1>Tableau de bord</h1>
-        <p>Vue d'ensemble du laboratoire {{ settings.acronyme() }}</p>
+        <h1>{{ i18n.t('admin.dash.titre') }}</h1>
+        <p>{{ i18n.t('admin.dash.sous_titre') }} {{ settings.acronyme() }}</p>
       </div>
 
       <!-- Alerte publications en attente -->
@@ -93,8 +102,8 @@
         <div class="alert-pending" (click)="setTab('publications')">
           <span class="alert-icon">⏳</span>
           <div class="alert-text">
-            <strong>{{ publicationsEnAttente().length }} publication(s) en attente de validation</strong>
-            <span>Cliquez pour examiner et valider</span>
+            <strong>{{ publicationsEnAttente().length }} {{ i18n.t('admin.dash.pub_attente') }}</strong>
+            <span>{{ i18n.t('admin.dash.cliquez_examiner') }}</span>
           </div>
           <span class="alert-arrow">→</span>
         </div>
@@ -103,74 +112,74 @@
       <div class="stats-grid">
         <div class="stat-card" (click)="setTab('membres')">
           <div class="stat-num">{{ stats().chercheurs }}</div>
-          <div class="stat-label">Chercheurs</div>
-          <div class="stat-action">Gérer →</div>
+          <div class="stat-label">{{ i18n.t('nav.chercheurs') }}</div>
+          <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
         </div>
         <div class="stat-card" (click)="setTab('publications')">
           <div class="stat-num">{{ stats().publications }}</div>
-          <div class="stat-label">Publications</div>
+          <div class="stat-label">{{ i18n.t('nav.publications') }}</div>
           @if (publicationsEnAttente().length > 0) {
             <div class="stat-pending">{{ publicationsEnAttente().length }} en attente</div>
           } @else {
-            <div class="stat-action">Gérer →</div>
+            <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
           }
         </div>
         <div class="stat-card" (click)="setTab('evenements')">
           <div class="stat-num">{{ stats().evenements }}</div>
-          <div class="stat-label">Événements</div>
-          <div class="stat-action">Gérer →</div>
+          <div class="stat-label">{{ i18n.t('nav.evenements') }}</div>
+          <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
         </div>
   
           <div class="stat-card" (click)="setTab('axes')">
             <div class="stat-num">{{ stats().axes }}</div>
-            <div class="stat-label">Axes</div>
-            <div class="stat-action">Gérer →</div>
+            <div class="stat-label">{{ i18n.t('nav.axes') }}</div>
+            <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
           </div>
          @if (userRole() === 'SUPER_ADMIN') {
           <div class="stat-card" (click)="setTab('comptes')">
             <div class="stat-num">{{ users().length }}</div>
-            <div class="stat-label">Comptes</div>
-            <div class="stat-action">Gérer →</div>
+            <div class="stat-label">{{ i18n.t('admin.sidebar.comptes') }}</div>
+            <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
           </div>
         }
         <div class="stat-card" (click)="setTab('doctorants')">
           <div class="stat-num">{{ stats().doctorants }}</div>
-          <div class="stat-label">Doctorants</div>
-          <div class="stat-action">Gérer →</div>
+          <div class="stat-label">{{ i18n.t('nav.doctorants') }}</div>
+          <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
         </div>
         <div class="stat-card" (click)="setTab('masteriens')">
           <div class="stat-num">{{ stats().masteriens }}</div>
-          <div class="stat-label">Mastériens</div>
-          <div class="stat-action">Gérer →</div>
+          <div class="stat-label">{{ i18n.t('nav.masteriens') }}</div>
+          <div class="stat-action">{{ i18n.t('admin.dash.gerer') }}</div>
         </div>
       </div>
 
       <div class="quick-section">
-        <h2>Accès rapide</h2>
+        <h2>{{ i18n.t('admin.dash.acces_rapide') }}</h2>
         <div class="quick-grid">
           <div class="quick-card" (click)="setTab('publications'); showForm.set('pub')">
-            <span>➕</span> Nouvelle publication
+            <span>➕</span> {{ i18n.t('admin.dash.nouvelle_pub') }}
           </div>
           <div class="quick-card" (click)="setTab('evenements'); showForm.set('event')">
-            <span>➕</span> Nouvel événement
+            <span>➕</span> {{ i18n.t('admin.dash.nouvel_event') }}
           </div>
           
             <div class="quick-card" (click)="setTab('axes'); showForm.set('axe')">
-              <span>➕</span> Nouvel axe
+              <span>➕</span> {{ i18n.t('admin.dash.nouvel_axe') }}
             </div>
           @if (userRole() === 'SUPER_ADMIN') {
             <div class="quick-card" (click)="setTab('comptes'); showForm.set('user')">
-              <span>➕</span> Nouveau compte
+              <span>➕</span> {{ i18n.t('admin.dash.nouveau_compte') }}
             </div>
           }
           <div class="quick-card" (click)="setTab('doctorants'); showForm.set('doc')">
-            <span>➕</span> Nouveau doctorant
+            <span>➕</span> {{ i18n.t('admin.dash.nouveau_doc') }}
           </div>
           <div class="quick-card" (click)="setTab('masteriens'); showForm.set('masterien')">
-            <span>➕</span> Nouveau mastérien
+            <span>➕</span> {{ i18n.t('admin.dash.nouveau_mas') }}
           </div>
           <div class="quick-card" (click)="setTab('membres')">
-            <span>👥</span> Voir tous les membres
+            <span>👥</span> {{ i18n.t('admin.dash.voir_membres') }}
           </div>
         </div>
       </div>
@@ -180,11 +189,11 @@
     @if (activeTab() === 'membres') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Membres</h1>
-          <p>Chercheurs permanents du laboratoire</p>
+          <h1>{{ i18n.t('admin.membres.titre') }}</h1>
+          <p>{{ i18n.t('admin.membres.sous_titre') }}</p>
         </div>
         <div class="membres-actions">
-          <button class="btn-add" (click)="exportChercheursCsv()">⬇ Exporter CSV</button>
+          <button class="btn-add" (click)="exportChercheursCsv()">{{ i18n.t('admin.membres.export_csv') }}</button>
 
           <input
             type="file"
@@ -192,25 +201,25 @@
             id="csvInput"
             class="csv-file-input"
             (change)="onCsvFileSelected($event)" />
-          <label for="csvInput" class="btn-add btn-add-secondary">📄 Choisir CSV</label>
+          <label for="csvInput" class="btn-add btn-add-secondary">{{ i18n.t('admin.membres.choisir_csv') }}</label>
 
           <button class="btn-add" [disabled]="!csvFile()" (click)="importChercheursCsv()">
-            ⬆ Importer CSV
+            {{ i18n.t('admin.membres.import_csv') }}
           </button>
         </div>
       </div>
 
       @if (csvFile()) {
-        <div class="csv-file-name">Fichier sélectionné : {{ csvFile()?.name }}</div>
+        <div class="csv-file-name">{{ i18n.t('admin.membres.fichier_selectionne') }} {{ csvFile()?.name }}</div>
       }
 
       @if (csvImportReport()) {
         <div class="csv-report">
-          <div>Importés : <strong>{{ csvImportReport()?.importes }}</strong></div>
-          <div>Ignorés : <strong>{{ csvImportReport()?.ignores }}</strong></div>
+          <div>{{ i18n.t('admin.membres.importes') }} <strong>{{ csvImportReport()?.importes }}</strong></div>
+          <div>{{ i18n.t('admin.membres.ignores') }} <strong>{{ csvImportReport()?.ignores }}</strong></div>
           @if (csvImportReport()?.erreurs?.length) {
             <div class="csv-errors">
-              <div>Erreurs :</div>
+              <div>{{ i18n.t('admin.membres.erreurs') }}</div>
               <ul>
                 @for (e of csvImportReport()?.erreurs; track e) {
                   <li>{{ e }}</li>
@@ -224,8 +233,8 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Chercheur</th><th>Grade</th><th>Spécialité</th>
-              <th>Institution</th><th>Publications</th><th>Actions</th>
+              <th>{{ i18n.t('admin.membres.col_chercheur') }}</th><th>{{ i18n.t('admin.membres.col_grade') }}</th><th>{{ i18n.t('admin.membres.col_specialite') }}</th>
+              <th>{{ i18n.t('admin.membres.col_institution') }}</th><th>{{ i18n.t('admin.membres.col_publications') }}</th><th>{{ i18n.t('admin.membres.col_actions') }}</th>
             </tr>
           </thead>
           <tbody>
@@ -243,8 +252,8 @@
                 <td><span class="badge-count">{{ c.publications?.length || 0 }}</span></td>
                 <td>
                   <div class="actions-row">
-                    <button class="btn-action btn-view" [routerLink]="['/chercheurs', c.id]">Voir</button>
-                    <button class="btn-action btn-delete" (click)="supprimerChercheur(c.id)">Suppr.</button>
+                    <button class="btn-action btn-view" [routerLink]="['/chercheurs', c.id]">{{ i18n.t('admin.btn.voir') }}</button>
+                    <button class="btn-action btn-delete" (click)="supprimerChercheur(c.id)">{{ i18n.t('admin.btn.supprimer') }}</button>
                   </div>
                 </td>
               </tr>
@@ -258,28 +267,28 @@
     @if (activeTab() === 'comptes') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Comptes</h1>
-          <p>{{ users().length }} compte(s) enregistré(s)</p>
+          <h1>{{ i18n.t('admin.comptes.titre') }}</h1>
+          <p>{{ users().length }} {{ i18n.t('admin.comptes.sous_titre') }}</p>
         </div>
         <button class="btn-add" (click)="showForm.set(showForm() === 'user' ? '' : 'user')">
-          {{ showForm() === 'user' ? '✕ Fermer' : '➕ Nouveau compte' }}
+          {{ showForm() === 'user' ? i18n.t('admin.btn.fermer') : '➕ ' + i18n.t('admin.dash.nouveau_compte') }}
         </button>
       </div>
 
       @if (showForm() === 'user') {
         <div class="form-card">
-          <h2>Créer un compte</h2>
+          <h2>{{ i18n.t('admin.comptes.creer') }}</h2>
           <div class="form-grid">
             <div class="field">
-              <label>Email *</label>
+              <label>{{ i18n.t('admin.comptes.col_email') }} *</label>
               <input [(ngModel)]="newUser.email" placeholder="email@limtic.tn" />
             </div>
             <div class="field">
-              <label>Mot de passe *</label>
+              <label>{{ i18n.t('auth.password') }} *</label>
               <input type="password" [(ngModel)]="newUser.motDePasse" placeholder="••••••••" />
             </div>
             <div class="field">
-              <label>Rôle</label>
+              <label>{{ i18n.t('admin.comptes.col_role') }}</label>
               <select [(ngModel)]="newUser.role">
                 <option value="CHERCHEUR">Chercheur</option>
                 <option value="ADMIN">Admin</option>
@@ -287,27 +296,15 @@
                 <option value="SUPER_ADMIN">Super Admin</option>
               </select>
             </div>
-            <div class="field">
-              <label>DOI</label>
-              <input [(ngModel)]="newPub.doi" placeholder="10.1000/xyz123" />
-            </div>
-            <div class="field">
-              <label>Lien PDF</label>
-              <input [(ngModel)]="newPub.pdfUrl" placeholder="https://..." />
-            </div>
-            <div class="field full">
-              <label>Mots-clés</label>
-              <input [(ngModel)]="newPub.motsCles" placeholder="IA, NLP, deep learning..." />
-            </div>
           </div>
-          <button class="btn-submit" (click)="creerCompte()">Créer le compte</button>
+          <button class="btn-submit" (click)="creerCompte()">{{ i18n.t('admin.comptes.creer') }}</button>
         </div>
       }
 
       <div class="table-container">
         <table class="data-table">
           <thead>
-            <tr><th>Email</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr>
+            <tr><th>{{ i18n.t('admin.comptes.col_email') }}</th><th>{{ i18n.t('admin.comptes.col_role') }}</th><th>{{ i18n.t('admin.comptes.col_statut') }}</th><th>{{ i18n.t('admin.membres.col_actions') }}</th></tr>
           </thead>
           <tbody>
             @for (u of users(); track u.id) {
@@ -315,7 +312,7 @@
                 <td class="cell-title">
                   {{ u.email }}
                   @if (u.email === email()) {
-                    <strong style="margin-left: 0.5rem; color: var(--accent); font-size: 0.85em;">(Moi)</strong>
+                    <strong style="margin-left: 0.5rem; color: var(--accent); font-size: 0.85em;">{{ i18n.t('admin.comptes.moi') }}</strong>
                   }
                 </td>
                 <td>
@@ -328,15 +325,15 @@
                 </td>
                 <td>
                   <span class="badge-status" [class.status-on]="u.actif" [class.status-off]="!u.actif">
-                    {{ u.actif ? 'Actif' : 'Désactivé' }}
+                    {{ u.actif ? i18n.t('admin.comptes.actif') : i18n.t('admin.comptes.desactive') }}
                   </span>
                 </td>
                 <td>
                   <div class="actions-row">
                     <button class="btn-action btn-view" (click)="toggleActif(u.id)" [disabled]="u.email === email()">
-                      {{ u.actif ? 'Désactiver' : 'Activer' }}
+                      {{ u.actif ? i18n.t('admin.btn.desactiver') : i18n.t('admin.btn.activer') }}
                     </button>
-                    <button class="btn-action btn-delete" (click)="supprimerUser(u.id)" [disabled]="u.email === email()">Suppr.</button>
+                    <button class="btn-action btn-delete" (click)="supprimerUser(u.id)" [disabled]="u.email === email()">{{ i18n.t('admin.btn.supprimer') }}</button>
                   </div>
                 </td>
               </tr>
@@ -350,18 +347,18 @@
     @if (activeTab() === 'publications') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Publications</h1>
-          <p>{{ publications().length }} publication(s) au total</p>
+          <h1>{{ i18n.t('admin.pub.titre') }}</h1>
+          <p>{{ publications().length }} {{ i18n.t('admin.pub.sous_titre') }}</p>
         </div>
         <button class="btn-add" (click)="showForm.set(showForm() === 'pub' ? '' : 'pub')">
-          {{ showForm() === 'pub' ? '✕ Fermer' : '➕ Nouvelle publication' }}
+          {{ showForm() === 'pub' ? i18n.t('admin.btn.fermer') : '➕ ' + i18n.t('admin.dash.nouvelle_pub') }}
         </button>
       </div>
 
       <!-- Section publications en attente -->
       @if (publicationsEnAttente().length > 0) {
         <div class="pending-section">
-          <h2 class="pending-title">⏳ Publications en attente de validation ({{ publicationsEnAttente().length }})</h2>
+          <h2 class="pending-title">⏳ {{ i18n.t('admin.pub.attente') }} ({{ publicationsEnAttente().length }})</h2>
           <div class="pending-list">
             @for (p of publicationsEnAttente(); track p.id) {
               <div class="pending-card">
@@ -377,8 +374,8 @@
                   }
                 </div>
                 <div class="pending-actions">
-                  <button class="btn-valider" (click)="validerPublication(p.id)">✅ Valider</button>
-                  <button class="btn-rejeter" (click)="rejeterPublication(p.id)">❌ Rejeter</button>
+                  <button class="btn-valider" (click)="validerPublication(p.id)">{{ i18n.t('admin.btn.valider') }}</button>
+                  <button class="btn-rejeter" (click)="rejeterPublication(p.id)">{{ i18n.t('admin.btn.rejeter') }}</button>
                 </div>
               </div>
             }
@@ -388,14 +385,14 @@
 
       @if (showForm() === 'pub') {
         <div class="form-card">
-          <h2>Ajouter une publication</h2>
+          <h2>{{ i18n.t('admin.pub.ajouter') }}</h2>
           <div class="form-grid">
             <div class="field full">
-              <label>Titre *</label>
+              <label>{{ i18n.t('admin.pub.titre_champ') }} *</label>
               <input [(ngModel)]="newPub.titre" placeholder="Titre de la publication" />
             </div>
             <div class="field">
-              <label>Type</label>
+              <label>{{ i18n.t('admin.pub.type') }}</label>
               <select [(ngModel)]="newPub.type">
                 <option value="Journal">Article de journal</option>
                 <option value="Conference">Conférence internationale</option>
@@ -404,33 +401,33 @@
               </select>
             </div>
             <div class="field">
-              <label>Année</label>
+              <label>{{ i18n.t('admin.pub.annee') }}</label>
               <input type="number" [(ngModel)]="newPub.annee" />
             </div>
             <div class="field">
-              <label>Journal / Conférence</label>
+              <label>{{ i18n.t('admin.pub.journal') }}</label>
               <input [(ngModel)]="newPub.journal" placeholder="ex. IEEE, ACM SIGCHI..." />
             </div>
             <div class="field full">
-              <label>Résumé</label>
-              <textarea [(ngModel)]="newPub.resume" rows="3" placeholder="Résumé de la publication..."></textarea>
+              <label>{{ i18n.t('admin.pub.resume') }}</label>
+              <textarea [(ngModel)]="newPub.resume" rows="3" placeholder="..."></textarea>
             </div>
 
             <!-- §3.7.2 CDC — DOI -->
             <div class="field">
-              <label>DOI</label>
+              <label>{{ i18n.t('admin.pub.doi') }}</label>
               <input [(ngModel)]="newPub.doi" placeholder="ex. 10.1000/xyz123" />
             </div>
 
             <!-- §3.7.2 CDC — URL externe -->
             <div class="field">
-              <label>URL externe</label>
+              <label>{{ i18n.t('admin.pub.url') }}</label>
               <input [(ngModel)]="newPub.lienUrl" placeholder="https://..." />
             </div>
 
             <!-- §3.7.2 CDC — Upload PDF + prévisualisation -->
             <div class="field full">
-              <label>Fichier PDF</label>
+              <label>{{ i18n.t('admin.pub.pdf') }}</label>
               <div class="pdf-upload-zone">
                 <input type="file" accept="application/pdf" id="pdfInput"
                        class="pdf-file-input" (change)="onPdfFileSelected($event)" />
@@ -438,14 +435,14 @@
                   @if (newPubPdfFile) {
                     <span class="pdf-selected">📄 {{ newPubPdfFile.name }}</span>
                   } @else {
-                    <span class="pdf-placeholder">📎 Cliquez pour choisir un PDF</span>
+                    <span class="pdf-placeholder">📎 {{ i18n.t('admin.pub.pdf_choisir') }}</span>
                   }
                 </label>
                 @if (newPubPdfFile) {
-                  <button class="pdf-clear" (click)="clearPdfSelection()">✕ Retirer</button>
+                  <button class="pdf-clear" (click)="clearPdfSelection()">{{ i18n.t('admin.pub.pdf_retirer') }}</button>
                 }
               </div>
-              <span class="field-hint">Le fichier sera uploadé après la création de la publication.</span>
+              <span class="field-hint">{{ i18n.t('admin.pub.pdf_hint') }}</span>
 
               <!-- ── Prévisualisation inline du PDF sélectionné ── -->
               @if (newPubPdfPreviewUrl) {
@@ -470,7 +467,7 @@
             </div>
 
             <div class="field full">
-              <label>Mots-clés</label>
+              <label>{{ i18n.t('admin.pub.mots_cles') }}</label>
               <input [(ngModel)]="newPub.motsCles" placeholder="IA, NLP, deep learning..." />
             </div>
 
@@ -479,14 +476,13 @@
                  Source de référence : Scimago SJR, CORE, JCR/Clarivate
                  ═══════════════════════════════════════════════════════════════ -->
             <div class="field full ranking-section-header">
-              <label class="ranking-title">Classement / Score de la venue</label>
-              <span class="ranking-hint">Renseignez le classement selon la source officielle (Scimago, CORE, JCR…)</span>
+              <label class="ranking-title">{{ i18n.t('admin.pub.classement_titre') }}</label>
             </div>
 
             <!-- Scimago Quartile — pour les journaux -->
             <div class="field">
               <label>
-                Quartile Scimago (SJR)
+                {{ i18n.t('admin.pub.quartile') }}
                 <a href="https://www.scimagojr.com" target="_blank" class="source-link" title="Voir Scimago Journal Rank">↗</a>
               </label>
               <select [(ngModel)]="newPub.scimagoQuartile">
@@ -501,7 +497,7 @@
             <!-- CORE Ranking — pour les conférences -->
             <div class="field">
               <label>
-                Classement CORE (Conférences)
+                {{ i18n.t('admin.pub.core') }}
                 <a href="http://portal.core.edu.au/conf-ranks/" target="_blank" class="source-link" title="Voir CORE Portal">↗</a>
               </label>
               <select [(ngModel)]="newPub.classementCORE">
@@ -516,7 +512,7 @@
             <!-- Impact Factor JCR -->
             <div class="field">
               <label>
-                Impact Factor JCR
+                {{ i18n.t('admin.pub.if') }}
                 <a href="https://jcr.clarivate.com" target="_blank" class="source-link" title="Voir Clarivate JCR">↗</a>
               </label>
               <input type="number" step="0.01" min="0"
@@ -527,7 +523,7 @@
             <!-- SNIP (Scopus) -->
             <div class="field">
               <label>
-                SNIP (Scopus/Elsevier)
+                {{ i18n.t('admin.pub.snip') }}
                 <a href="https://www.journalindicators.com" target="_blank" class="source-link" title="Voir Journal Indicators">↗</a>
               </label>
               <input type="number" step="0.01" min="0"
@@ -537,27 +533,27 @@
 
             <!-- Source de référence (libre) -->
             <div class="field full">
-              <label>Source de référence (précision libre)</label>
+              <label>{{ i18n.t('admin.pub.source') }}</label>
               <input [(ngModel)]="newPub.sourceClassement"
                      placeholder="ex. Scimago 2024, CORE 2023, JCR Q1 Clarivate..." />
-              <span class="field-hint">Indiquez l'année et la source consultée pour faciliter la vérification.</span>
+              <span class="field-hint">{{ i18n.t('admin.pub.source_hint') }}</span>
             </div>
           </div>
-          <button class="btn-submit" (click)="ajouterPublication()">💾 Enregistrer la publication</button>
+          <button class="btn-submit" (click)="ajouterPublication()">{{ i18n.t('admin.pub.btn_ajouter') }}</button>
         </div>
       }
 
       <!-- ── Formulaire d'édition de publication ── -->
       @if (editingPublication()) {
         <div class="form-card edit-card">
-          <h2>Modifier la publication</h2>
+          <h2>{{ i18n.t('chercheur.mes_pubs.modifier') }}</h2>
           <div class="form-grid">
             <div class="field full">
-              <label>Titre *</label>
-              <input [(ngModel)]="editingPublication().titre" placeholder="Titre de la publication" />
+              <label>{{ i18n.t('admin.pub.form_titre') }} *</label>
+              <input [(ngModel)]="editingPublication().titre" placeholder="{{ i18n.t('admin.pub.form_titre') }}" />
             </div>
             <div class="field">
-              <label>Type</label>
+              <label>{{ i18n.t('admin.pub.form_type') }}</label>
               <select [(ngModel)]="editingPublication().type">
                 <option value="Journal">Article de journal</option>
                 <option value="Conference">Conférence internationale</option>
@@ -567,27 +563,27 @@
               </select>
             </div>
             <div class="field">
-              <label>Année</label>
+              <label>{{ i18n.t('admin.pub.form_annee') }}</label>
               <input type="number" [(ngModel)]="editingPublication().annee" />
             </div>
             <div class="field">
-              <label>Journal / Conférence</label>
+              <label>{{ i18n.t('admin.pub.form_journal') }}</label>
               <input [(ngModel)]="editingPublication().journal" placeholder="IEEE, ACM…" />
             </div>
             <div class="field">
-              <label>DOI</label>
+              <label>{{ i18n.t('admin.pub.form_doi') }}</label>
               <input [(ngModel)]="editingPublication().doi" placeholder="ex. 10.1000/xyz123" />
             </div>
             <div class="field">
-              <label>URL externe</label>
+              <label>{{ i18n.t('admin.pub.form_url') }}</label>
               <input [(ngModel)]="editingPublication().lienUrl" placeholder="https://…" />
             </div>
             <div class="field">
-              <label>Mots-clés</label>
+              <label>{{ i18n.t('admin.pub.form_mots_cles') }}</label>
               <input [(ngModel)]="editingPublication().motsCles" placeholder="IA, ML, NLP…" />
             </div>
             <div class="field">
-              <label>Statut</label>
+              <label>{{ i18n.t('admin.pub.form_statut') }}</label>
               <select [(ngModel)]="editingPublication().statut">
                 <option value="BROUILLON">Brouillon</option>
                 <option value="SOUMIS">Soumis</option>
@@ -595,26 +591,26 @@
               </select>
             </div>
             <div class="field full">
-              <label>Résumé</label>
-              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="Résumé…"></textarea>
+              <label>{{ i18n.t('admin.pub.form_resume') }}</label>
+              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="{{ i18n.t('admin.pub.form_resume') }}…"></textarea>
             </div>
 
                         <!-- §3.7.2 CDC — PDF dans le formulaire d'édition -->
             <div class="field full">
-              <label>Fichier PDF</label>
+              <label>{{ i18n.t('chercheur.pub.pdf') }}</label>
 
               <!-- PDF viewer unique (existant ou nouveau) -->
               @if (!editRemovePdf && editPdfViewerUrl()) {
                 <div class="pdf-existing-row">
                   <span class="pdf-existing-label">
-                    📄 {{ editPubPdfFile ? 'Nouveau PDF' : 'PDF actuel' }}
+                    📄 {{ editPubPdfFile ? i18n.t('chercheur.mes_pubs.nouveau_pdf') : i18n.t('chercheur.mes_pubs.pdf_actuel') }}
                   </span>
                   <a [href]="editPubPdfFile ? editPdfBlobUrl : getFullPdfUrl(editingPublication().pdfUrl)"
-                     target="_blank" class="btn-pdf-open">↗ Ouvrir</a>
+                     target="_blank" class="btn-pdf-open">{{ i18n.t('chercheur.pub.ouvrir') }}</a>
                   @if (editPubPdfFile) {
-                    <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                    <button class="pdf-clear" (click)="clearEditPdfSelection()">{{ i18n.t('chercheur.pub.retirer') }}</button>
                   } @else {
-                    <button class="pdf-clear" (click)="markRemoveEditPdf()">✕ Supprimer</button>
+                    <button class="pdf-clear" (click)="markRemoveEditPdf()">{{ i18n.t('chercheur.mes_pubs.supprimer') }}</button>
                   }
                 </div>
                 <div class="pdf-preview-panel" style="margin-top:0.75rem;">
@@ -629,8 +625,8 @@
 
               @if (editRemovePdf && !editPubPdfFile) {
                 <div class="pdf-remove-notice">
-                  ⚠️ Le PDF sera supprimé à l'enregistrement.
-                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">Annuler la suppression</button>
+                  {{ i18n.t('chercheur.mes_pubs.suppression_notice') }}
+                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">{{ i18n.t('chercheur.mes_pubs.annuler_suppression') }}</button>
                 </div>
               }
 
@@ -642,62 +638,62 @@
                   @if (editPubPdfFile) {
                     <span class="pdf-selected">📄 {{ editPubPdfFile.name }}</span>
                   } @else {
-                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? 'Remplacer le PDF…' : 'Choisir un PDF…' }}</span>
+                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? i18n.t('chercheur.mes_pubs.choisir_nouveau') : i18n.t('chercheur.pub.choisir_pdf') }}</span>
                   }
                 </label>
                 @if (editPubPdfFile) {
-                  <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                  <button class="pdf-clear" (click)="clearEditPdfSelection()">{{ i18n.t('chercheur.pub.retirer') }}</button>
                 }
               </div>
-              <span class="field-hint">Vous pouvez remplacer le PDF existant ou en supprimer un.</span>
+              <span class="field-hint">{{ i18n.t('chercheur.mes_pubs.remplacer') }}</span>
 
             </div>
 
             <!-- §3.7.2 CDC — Classement -->
             <div class="field full ranking-section-header">
-              <label class="ranking-title">Classement / Score de la venue</label>
+              <label class="ranking-title">{{ i18n.t('chercheur.pub.classement_titre') }}</label>
             </div>
             <div class="field">
-              <label>Quartile Scimago (SJR)</label>
+              <label>{{ i18n.t('chercheur.pub.sjr') }}</label>
               <select [(ngModel)]="editingPublication().scimagoQuartile">
-                <option value="">— Non renseigné —</option>
-                <option value="Q1">Q1 — Top 25 %</option>
-                <option value="Q2">Q2 — Top 50 %</option>
-                <option value="Q3">Q3 — Top 75 %</option>
-                <option value="Q4">Q4 — Reste</option>
+                <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+                <option value="Q1">{{ i18n.t('chercheur.pub.q1') }}</option>
+                <option value="Q2">{{ i18n.t('chercheur.pub.q2') }}</option>
+                <option value="Q3">{{ i18n.t('chercheur.pub.q3') }}</option>
+                <option value="Q4">{{ i18n.t('chercheur.pub.q4') }}</option>
               </select>
             </div>
             <div class="field">
-              <label>Classement CORE (Conférences)</label>
+              <label>{{ i18n.t('chercheur.pub.core') }}</label>
               <select [(ngModel)]="editingPublication().classementCORE">
-                <option value="">— Non renseigné —</option>
-                <option value="A*">A* — Excellence</option>
-                <option value="A">A — Très bonne</option>
-                <option value="B">B — Bonne</option>
-                <option value="C">C — Reconnue</option>
+                <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+                <option value="A*">{{ i18n.t('chercheur.pub.core_astar') }}</option>
+                <option value="A">{{ i18n.t('chercheur.pub.core_a') }}</option>
+                <option value="B">{{ i18n.t('chercheur.pub.core_b') }}</option>
+                <option value="C">{{ i18n.t('chercheur.pub.core_c') }}</option>
               </select>
             </div>
             <div class="field">
-              <label>Impact Factor JCR</label>
+              <label>{{ i18n.t('chercheur.pub.jcr') }}</label>
               <input type="number" step="0.01" min="0"
                      [(ngModel)]="editingPublication().facteurImpact"
                      placeholder="ex. 4.58" />
             </div>
             <div class="field">
-              <label>SNIP (Scopus/Elsevier)</label>
+              <label>{{ i18n.t('chercheur.pub.snip') }}</label>
               <input type="number" step="0.01" min="0"
                      [(ngModel)]="editingPublication().snip"
                      placeholder="ex. 1.23" />
             </div>
             <div class="field full">
-              <label>Source de référence</label>
+              <label>{{ i18n.t('chercheur.pub.source') }}</label>
               <input [(ngModel)]="editingPublication().sourceClassement"
                      placeholder="ex. Scimago 2024, CORE 2023…" />
             </div>
           </div>
           <div class="edit-actions">
-            <button class="btn-submit" (click)="saveEditPublication()">Enregistrer la publication</button>
-            <button class="btn-cancel" (click)="cancelEditPublication()">Annuler</button>
+            <button class="btn-submit" (click)="saveEditPublication()">{{ i18n.t('chercheur.pub.btn_enregistrer') }}</button>
+            <button class="btn-cancel" (click)="cancelEditPublication()">{{ i18n.t('general.annuler') }}</button>
           </div>
         </div>
       }
@@ -772,44 +768,44 @@
     @if (activeTab() === 'axes') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Axes</h1>
-          <p>{{ axes().length }} axe(s) de recherche</p>
+          <h1>{{ i18n.t('admin.axe.titre') }}</h1>
+          <p>{{ axes().length }} {{ i18n.t('admin.axe.sous_titre') }}</p>
         </div>
         <button class="btn-add" (click)="showForm.set(showForm() === 'axe' ? '' : 'axe')">
-          {{ showForm() === 'axe' ? '✕ Fermer' : '➕ Nouvel axe' }}
+          {{ showForm() === 'axe' ? i18n.t('admin.btn.fermer') : '➕ ' + i18n.t('admin.dash.nouvel_axe') }}
         </button>
       </div>
 
       @if (showForm() === 'axe') {
         <div class="form-card">
-          <h2>Créer un axe de recherche</h2>
+          <h2>{{ i18n.t('admin.axe.creer') }}</h2>
           <div class="form-grid">
             <div class="field full">
-              <label>Nom de l'axe *</label>
+              <label>{{ i18n.t('admin.axe.nom') }} *</label>
               <input [(ngModel)]="newAxe.nom" placeholder="ex. Intelligence Artificielle" />
             </div>
             <div class="field full">
-              <label>Description</label>
-              <textarea [(ngModel)]="newAxe.description" rows="3" placeholder="Description de l'axe..."></textarea>
+              <label>{{ i18n.t('admin.axe.desc') }}</label>
+              <textarea [(ngModel)]="newAxe.description" rows="3" placeholder="..."></textarea>
             </div>
             <div class="field">
-              <label>Responsable</label>
+              <label>{{ i18n.t('admin.axe.responsable') }}</label>
               <select [(ngModel)]="newAxe.responsableId">
-                <option value="">Aucun</option>
+                <option value="">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
             </div>
           </div>
-          <button class="btn-submit" (click)="ajouterAxe()">Créer l'axe</button>
+          <button class="btn-submit" (click)="ajouterAxe()">{{ i18n.t('admin.axe.btn_ajouter') }}</button>
         </div>
       }
 
       <div class="table-container">
         <table class="data-table">
           <thead>
-            <tr><th>Nom</th><th>Description</th><th>Responsable</th><th>Membres</th><th>Actions</th></tr>
+            <tr><th>{{ i18n.t('admin.axe.col_nom') }}</th><th>{{ i18n.t('admin.axe.col_desc') }}</th><th>{{ i18n.t('admin.axe.col_resp') }}</th><th>{{ i18n.t('admin.axe.col_membres') }}</th><th>{{ i18n.t('admin.axe.col_actions') }}</th></tr>
           </thead>
           <tbody>
             @for (axe of axes(); track axe.id) {
@@ -829,8 +825,8 @@
                 <td><span class="badge-count">{{ axe.chercheurs?.length || 0 }}</span></td>
                 <td>
                   <div class="actions-row">
-                    <button class="btn-action btn-edit" (click)="startEditAxe(axe)">Éditer</button>
-                    <button class="btn-action btn-delete" (click)="supprimerAxe(axe.id)">Suppr.</button>
+                    <button class="btn-action btn-edit" (click)="startEditAxe(axe)">{{ i18n.t('admin.btn.editer') }}</button>
+                    <button class="btn-action btn-delete" (click)="supprimerAxe(axe.id)">{{ i18n.t('admin.btn.supprimer') }}</button>
                   </div>
                 </td>
               </tr>
@@ -841,20 +837,20 @@
 
       @if (editingAxe()) {
         <div class="form-card">
-          <h2>Modifier l'axe</h2>
+          <h2>{{ i18n.t('admin.axe.modifier') }}</h2>
           <div class="form-grid">
             <div class="field full">
-              <label>Nom de l'axe *</label>
+              <label>{{ i18n.t('admin.axe.nom') }} *</label>
               <input [(ngModel)]="editingAxe().nom" />
             </div>
             <div class="field full">
-              <label>Description</label>
+              <label>{{ i18n.t('admin.axe.desc') }}</label>
               <textarea [(ngModel)]="editingAxe().description" rows="3"></textarea>
             </div>
             <div class="field">
-              <label>Responsable</label>
+              <label>{{ i18n.t('admin.axe.responsable') }}</label>
               <select [(ngModel)]="editingAxe().responsableId">
-                <option value="">Aucun</option>
+                <option value="">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
@@ -862,25 +858,25 @@
             </div>
           </div>
           <div class="form-actions">
-            <button class="btn-submit" (click)="saveEditAxe()">Enregistrer</button>
-            <button class="btn-cancel" (click)="cancelEditAxe()">Annuler</button>
+            <button class="btn-submit" (click)="saveEditAxe()">{{ i18n.t('chercheur.pub.btn_enregistrer') }}</button>
+            <button class="btn-cancel" (click)="cancelEditAxe()">{{ i18n.t('general.annuler') }}</button>
           </div>
         </div>
       }
 
       <div class="section-card">
-        <h3>Associer des chercheurs aux axes</h3>
+        <h3>{{ i18n.t('admin.axe.associer_titre') }}</h3>
         <div class="assoc-grid">
           @for (axe of axes(); track axe.id) {
             <div class="assoc-item">
               <strong>{{ axe.nom }}</strong>
               <select (change)="setAssocChercheur(axe.id, $event)">
-                <option value="">Choisir un chercheur</option>
+                <option value="">{{ i18n.t('admin.axe.choisir') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
-              <button class="btn-assoc" (click)="associerChercheur(axe.id)" [disabled]="!getAssocChercheur(axe.id)">Associer</button>
+              <button class="btn-assoc" (click)="associerChercheur(axe.id)" [disabled]="!getAssocChercheur(axe.id)">{{ i18n.t('admin.axe.associer_btn') }}</button>
             </div>
           }
         </div>
@@ -891,49 +887,49 @@
     @if (activeTab() === 'doctorants') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Doctorants</h1>
-          <p>{{ doctorants().length }} doctorant(s) enregistré(s)</p>
+          <h1>{{ i18n.t('admin.doc.titre') }}</h1>
+          <p>{{ doctorants().length }} {{ i18n.t('admin.doc.sous_titre') }}</p>
         </div>
         <button class="btn-add" (click)="showForm.set(showForm() === 'doc' ? '' : 'doc')">
-          {{ showForm() === 'doc' ? '✕ Fermer' : '➕ Nouveau doctorant' }}
+          {{ showForm() === 'doc' ? i18n.t('admin.btn.fermer') : '➕ ' + i18n.t('admin.dash.nouveau_doc') }}
         </button>
       </div>
 
       @if (showForm() === 'doc') {
         <div class="form-card">
-          <h2>Ajouter un doctorant</h2>
+          <h2>{{ i18n.t('admin.doc.ajouter') }}</h2>
           <div class="form-grid">
-            <div class="field"><label>Nom *</label><input [(ngModel)]="newDoctorant.nom" /></div>
-            <div class="field"><label>Prénom *</label><input [(ngModel)]="newDoctorant.prenom" /></div>
-            <div class="field full"><label>Sujet de thèse</label><input [(ngModel)]="newDoctorant.sujetThese" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.nom') }} *</label><input [(ngModel)]="newDoctorant.nom" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.prenom') }} *</label><input [(ngModel)]="newDoctorant.prenom" /></div>
+            <div class="field full"><label>{{ i18n.t('admin.doc.sujet') }}</label><input [(ngModel)]="newDoctorant.sujetThese" /></div>
             <div class="field">
-              <label>Directeur</label>
+              <label>{{ i18n.t('admin.doc.directeur') }}</label>
               <select [(ngModel)]="newDoctorant.directeurId">
-                <option [value]="null">Aucun</option>
+                <option [value]="null">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
             </div>
-            <div class="field"><label>Date d'inscription</label><input type="date" [(ngModel)]="newDoctorant.dateInscription" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.inscription') }}</label><input type="date" [(ngModel)]="newDoctorant.dateInscription" /></div>
             <div class="field">
-              <label>Statut</label>
+              <label>{{ i18n.t('admin.doc.statut') }}</label>
               <select [(ngModel)]="newDoctorant.statut">
-                <option value="EN_COURS">En cours</option>
-                <option value="SOUTENU">Soutenu</option>
+                <option value="EN_COURS">{{ i18n.t('admin.doc.encours') }}</option>
+                <option value="SOUTENU">{{ i18n.t('admin.doc.soutenu') }}</option>
               </select>
             </div>
-            <div class="field"><label>Mention</label><input [(ngModel)]="newDoctorant.mention" /></div>
-            <div class="field"><label>Photo URL</label><input [(ngModel)]="newDoctorant.photoUrl" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.mention') }}</label><input [(ngModel)]="newDoctorant.mention" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.photo') }}</label><input [(ngModel)]="newDoctorant.photoUrl" /></div>
           </div>
-          <button class="btn-submit" (click)="ajouterDoctorant()">Enregistrer</button>
+          <button class="btn-submit" (click)="ajouterDoctorant()">{{ i18n.t('admin.btn.enregistrer') }}</button>
         </div>
       }
 
       <div class="table-container">
         <table class="data-table">
           <thead>
-            <tr><th>Doctorant</th><th>Sujet</th><th>Directeur</th><th>Inscription</th><th>Statut</th><th>Actions</th></tr>
+            <tr><th>{{ i18n.t('admin.doc.col_doc') }}</th><th>{{ i18n.t('admin.doc.col_sujet') }}</th><th>{{ i18n.t('admin.doc.col_dir') }}</th><th>{{ i18n.t('admin.doc.col_insc') }}</th><th>{{ i18n.t('admin.doc.col_statut') }}</th><th>{{ i18n.t('admin.doc.col_actions') }}</th></tr>
           </thead>
           <tbody>
             @for (d of doctorants(); track d.id) {
@@ -949,13 +945,13 @@
                 <td class="cell-muted">{{ d.dateInscription || '-' }}</td>
                 <td>
                   <span class="badge-status" [class.status-on]="d.statut === 'EN_COURS'" [class.status-off]="d.statut === 'SOUTENU'">
-                    {{ d.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}
+                    {{ d.statut === 'EN_COURS' ? i18n.t('admin.doc.encours') : i18n.t('admin.doc.soutenu') }}
                   </span>
                 </td>
                 <td>
                   <div class="actions-row">
-                    <button class="btn-action btn-edit" (click)="startEditDoctorant(d)">Éditer</button>
-                    <button class="btn-action btn-delete" (click)="supprimerDoctorant(d.id)">Suppr.</button>
+                    <button class="btn-action btn-edit" (click)="startEditDoctorant(d)">{{ i18n.t('admin.btn.editer') }}</button>
+                    <button class="btn-action btn-delete" (click)="supprimerDoctorant(d.id)">{{ i18n.t('admin.btn.supprimer') }}</button>
                   </div>
                 </td>
               </tr>
@@ -966,35 +962,35 @@
 
       @if (editingDoctorant()) {
         <div class="form-card">
-          <h2>Modifier le doctorant</h2>
+          <h2>{{ i18n.t('admin.doc.modifier') }}</h2>
           <div class="form-grid">
-            <div class="field"><label>Nom *</label><input [(ngModel)]="editingDoctorant().nom" /></div>
-            <div class="field"><label>Prénom *</label><input [(ngModel)]="editingDoctorant().prenom" /></div>
-            <div class="field full"><label>Sujet de thèse</label><input [(ngModel)]="editingDoctorant().sujetThese" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.nom') }} *</label><input [(ngModel)]="editingDoctorant().nom" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.prenom') }} *</label><input [(ngModel)]="editingDoctorant().prenom" /></div>
+            <div class="field full"><label>{{ i18n.t('admin.doc.sujet') }}</label><input [(ngModel)]="editingDoctorant().sujetThese" /></div>
             <div class="field">
-              <label>Directeur</label>
+              <label>{{ i18n.t('admin.doc.directeur') }}</label>
               <select [(ngModel)]="editingDoctorant().directeurId">
-                <option [value]="null">Aucun</option>
+                <option [value]="null">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
             </div>
-            <div class="field"><label>Date d'inscription</label><input type="date" [(ngModel)]="editingDoctorant().dateInscription" /></div>
-            <div class="field"><label>Date de soutenance</label><input type="date" [(ngModel)]="editingDoctorant().dateSoutenance" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.inscription') }}</label><input type="date" [(ngModel)]="editingDoctorant().dateInscription" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.soutenance') }}</label><input type="date" [(ngModel)]="editingDoctorant().dateSoutenance" /></div>
             <div class="field">
-              <label>Statut</label>
+              <label>{{ i18n.t('admin.doc.statut') }}</label>
               <select [(ngModel)]="editingDoctorant().statut">
-                <option value="EN_COURS">En cours</option>
-                <option value="SOUTENU">Soutenu</option>
+                <option value="EN_COURS">{{ i18n.t('admin.doc.encours') }}</option>
+                <option value="SOUTENU">{{ i18n.t('admin.doc.soutenu') }}</option>
               </select>
             </div>
-            <div class="field"><label>Mention</label><input [(ngModel)]="editingDoctorant().mention" /></div>
-            <div class="field"><label>Photo URL</label><input [(ngModel)]="editingDoctorant().photoUrl" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.mention') }}</label><input [(ngModel)]="editingDoctorant().mention" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.photo') }}</label><input [(ngModel)]="editingDoctorant().photoUrl" /></div>
           </div>
           <div class="form-actions">
-            <button class="btn-submit" (click)="saveEditDoctorant()">Enregistrer</button>
-            <button class="btn-cancel" (click)="cancelEditDoctorant()">Annuler</button>
+            <button class="btn-submit" (click)="saveEditDoctorant()">{{ i18n.t('admin.btn.enregistrer') }}</button>
+            <button class="btn-cancel" (click)="cancelEditDoctorant()">{{ i18n.t('admin.btn.annuler') }}</button>
           </div>
         </div>
       }
@@ -1004,47 +1000,47 @@
     @if (activeTab() === 'masteriens') {
       <div class="tab-header-row">
         <div>
-          <h1>Gestion des Mastériens</h1>
-          <p>{{ masteriens().length }} mastérien(s) enregistré(s)</p>
+          <h1>{{ i18n.t('admin.mas.titre') }}</h1>
+          <p>{{ masteriens().length }} {{ i18n.t('admin.mas.sous_titre') }}</p>
         </div>
         <button class="btn-add" (click)="showForm.set(showForm() === 'master' ? '' : 'master')">
-          {{ showForm() === 'master' ? '✕ Fermer' : '➕ Nouveau mastérien' }}
+          {{ showForm() === 'master' ? i18n.t('admin.btn.fermer') : '➕ ' + i18n.t('admin.dash.nouveau_mas') }}
         </button>
       </div>
 
       @if (showForm() === 'master') {
         <div class="form-card">
-          <h2>Ajouter un mastérien</h2>
+          <h2>{{ i18n.t('admin.mas.ajouter') }}</h2>
           <div class="form-grid">
-            <div class="field"><label>Nom *</label><input [(ngModel)]="newMasterien.nom" /></div>
-            <div class="field"><label>Prénom *</label><input [(ngModel)]="newMasterien.prenom" /></div>
-            <div class="field full"><label>Sujet de mémoire</label><input [(ngModel)]="newMasterien.sujetMemoire" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.nom') }} *</label><input [(ngModel)]="newMasterien.nom" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.prenom') }} *</label><input [(ngModel)]="newMasterien.prenom" /></div>
+            <div class="field full"><label>{{ i18n.t('admin.mas.sujet') }}</label><input [(ngModel)]="newMasterien.sujetMemoire" /></div>
             <div class="field">
-              <label>Encadrant</label>
+              <label>{{ i18n.t('admin.mas.encadrant') }}</label>
               <select [(ngModel)]="newMasterien.encadrantId">
-                <option [value]="null">Aucun</option>
+                <option [value]="null">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
             </div>
-            <div class="field"><label>Promotion</label><input [(ngModel)]="newMasterien.promotion" /></div>
+            <div class="field"><label>{{ i18n.t('admin.mas.promo') }}</label><input [(ngModel)]="newMasterien.promotion" /></div>
             <div class="field">
-              <label>Statut</label>
+              <label>{{ i18n.t('admin.doc.statut') }}</label>
               <select [(ngModel)]="newMasterien.statut">
-                <option value="EN_COURS">En cours</option>
-                <option value="DIPLOME">Diplômé</option>
+                <option value="EN_COURS">{{ i18n.t('admin.doc.encours') }}</option>
+                <option value="DIPLOME">{{ i18n.t('admin.mas.diplome') }}</option>
               </select>
             </div>
           </div>
-          <button class="btn-submit" (click)="ajouterMasterien()">Enregistrer</button>
+          <button class="btn-submit" (click)="ajouterMasterien()">{{ i18n.t('admin.btn.enregistrer') }}</button>
         </div>
       }
 
       <div class="table-container">
         <table class="data-table">
           <thead>
-            <tr><th>Mastérien</th><th>Sujet</th><th>Encadrant</th><th>Promotion</th><th>Statut</th><th>Actions</th></tr>
+            <tr><th>{{ i18n.t('admin.mas.col_mas') }}</th><th>{{ i18n.t('admin.mas.col_sujet') }}</th><th>{{ i18n.t('admin.mas.col_enc') }}</th><th>{{ i18n.t('admin.mas.col_promo') }}</th><th>{{ i18n.t('admin.doc.col_statut') }}</th><th>{{ i18n.t('admin.doc.col_actions') }}</th></tr>
           </thead>
           <tbody>
             @for (m of masteriens(); track m.id) {
@@ -1060,13 +1056,13 @@
                 <td class="cell-muted">{{ m.promotion || '-' }}</td>
                 <td>
                   <span class="badge-status" [class.status-on]="m.statut === 'EN_COURS'" [class.status-off]="m.statut === 'DIPLOME'">
-                    {{ m.statut === 'EN_COURS' ? 'En cours' : 'Diplômé' }}
+                    {{ m.statut === 'EN_COURS' ? i18n.t('admin.doc.encours') : i18n.t('admin.mas.diplome') }}
                   </span>
                 </td>
                 <td>
                   <div class="actions-row">
-                    <button class="btn-action btn-edit" (click)="startEditMasterien(m)">Éditer</button>
-                    <button class="btn-action btn-delete" (click)="supprimerMasterien(m.id)">Suppr.</button>
+                    <button class="btn-action btn-edit" (click)="startEditMasterien(m)">{{ i18n.t('admin.btn.editer') }}</button>
+                    <button class="btn-action btn-delete" (click)="supprimerMasterien(m.id)">{{ i18n.t('admin.btn.supprimer') }}</button>
                   </div>
                 </td>
               </tr>
@@ -1077,32 +1073,32 @@
 
       @if (editingMasterien()) {
         <div class="form-card">
-          <h2>Modifier le mastérien</h2>
+          <h2>{{ i18n.t('admin.mas.modifier') }}</h2>
           <div class="form-grid">
-            <div class="field"><label>Nom *</label><input [(ngModel)]="editingMasterien().nom" /></div>
-            <div class="field"><label>Prénom *</label><input [(ngModel)]="editingMasterien().prenom" /></div>
-            <div class="field full"><label>Sujet de mémoire</label><input [(ngModel)]="editingMasterien().sujetMemoire" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.nom') }} *</label><input [(ngModel)]="editingMasterien().nom" /></div>
+            <div class="field"><label>{{ i18n.t('admin.doc.prenom') }} *</label><input [(ngModel)]="editingMasterien().prenom" /></div>
+            <div class="field full"><label>{{ i18n.t('admin.mas.sujet') }}</label><input [(ngModel)]="editingMasterien().sujetMemoire" /></div>
             <div class="field">
-              <label>Encadrant</label>
+              <label>{{ i18n.t('admin.mas.encadrant') }}</label>
               <select [(ngModel)]="editingMasterien().encadrantId">
-                <option [value]="null">Aucun</option>
+                <option [value]="null">{{ i18n.t('admin.axe.aucun') }}</option>
                 @for (c of chercheurs(); track c.id) {
                   <option [value]="c.id">{{ c.prenom }} {{ c.nom }}</option>
                 }
               </select>
             </div>
-            <div class="field"><label>Promotion</label><input [(ngModel)]="editingMasterien().promotion" /></div>
+            <div class="field"><label>{{ i18n.t('admin.mas.promo') }}</label><input [(ngModel)]="editingMasterien().promotion" /></div>
             <div class="field">
-              <label>Statut</label>
+              <label>{{ i18n.t('admin.doc.statut') }}</label>
               <select [(ngModel)]="editingMasterien().statut">
-                <option value="EN_COURS">En cours</option>
-                <option value="DIPLOME">Diplômé</option>
+                <option value="EN_COURS">{{ i18n.t('admin.doc.encours') }}</option>
+                <option value="DIPLOME">{{ i18n.t('admin.mas.diplome') }}</option>
               </select>
             </div>
           </div>
           <div class="form-actions">
-            <button class="btn-submit" (click)="saveEditMasterien()">Enregistrer</button>
-            <button class="btn-cancel" (click)="cancelEditMasterien()">Annuler</button>
+            <button class="btn-submit" (click)="saveEditMasterien()">{{ i18n.t('admin.btn.enregistrer') }}</button>
+            <button class="btn-cancel" (click)="cancelEditMasterien()">{{ i18n.t('admin.btn.annuler') }}</button>
           </div>
         </div>
       }
@@ -1115,8 +1111,8 @@
     @if (activeTab() === 'parametres') {
 
       <div class="tab-header">
-        <h1>⚙ Paramètres généraux</h1>
-        <p>Configuration du laboratoire, logo, couleurs du thème et métadonnées SEO</p>
+        <h1>{{ i18n.t('admin.param.titre') }}</h1>
+        <p>{{ i18n.t('admin.param.sous_titre') }}</p>
       </div>
 
       @if (parametresLoading()) {
@@ -1135,8 +1131,8 @@
                     (click)="toggleParamsSection('identite')">
               <span class="params-section-icon">🏛</span>
               <div class="params-accordion-title">
-                <span>Identité du laboratoire</span>
-                <small>Nom, acronyme et informations générales affichés sur le site public</small>
+                <span>{{ i18n.t('admin.param.identite_titre') }}</span>
+                <small>{{ i18n.t('admin.param.identite_desc') }}</small>
               </div>
               <span class="params-accordion-chevron">{{ activeParamsSection() === 'identite' ? '▲' : '▼' }}</span>
             </button>
@@ -1145,35 +1141,35 @@
               <div class="params-accordion-body">
                 <div class="form-grid params-grid">
                   <div class="field">
-                    <label>Nom complet *</label>
+                    <label>{{ i18n.t('admin.param.nom_labo') }} *</label>
                     <input [(ngModel)]="laboForm.nom"
                            placeholder="ex. Laboratoire d'Informatique et TIC" />
                   </div>
                   <div class="field">
-                    <label>Acronyme</label>
+                    <label>{{ i18n.t('admin.param.acronyme') }}</label>
                     <input [(ngModel)]="laboForm.acronyme"
                            placeholder="ex. LIMTIC" />
                   </div>
                   <div class="field">
-                    <label>Email de contact</label>
+                    <label>{{ i18n.t('admin.param.email') }}</label>
                     <input type="email" [(ngModel)]="laboForm.email"
                            placeholder="contact@limtic.tn" />
                   </div>
                   <div class="field">
-                    <label>Téléphone</label>
+                    <label>{{ i18n.t('admin.param.tel') }}</label>
                     <input [(ngModel)]="laboForm.telephone"
                            placeholder="+216 XX XXX XXX" />
                   </div>
                   <div class="field full">
-                    <label>Adresse</label>
+                    <label>{{ i18n.t('admin.param.adresse') }}</label>
                     <input [(ngModel)]="laboForm.adresse"
                            placeholder="Campus universitaire, Tunis" />
                   </div>
                   <div class="field full">
-                    <label>Description courte</label>
+                    <label>{{ i18n.t('admin.param.desc_courte') }}</label>
                     <textarea [(ngModel)]="laboForm.description"
                               rows="3"
-                              placeholder="Présentation du laboratoire visible sur la page d'accueil…"></textarea>
+                              placeholder="..."></textarea>
                   </div>
                 </div>
               </div>
@@ -1186,8 +1182,8 @@
                     (click)="toggleParamsSection('logos')">
               <span class="params-section-icon">🖼</span>
               <div class="params-accordion-title">
-                <span>Logos du laboratoire</span>
-                <small>Deux logos séparés pour les thèmes sombre et clair</small>
+                <span>{{ i18n.t('admin.param.logos_titre') }}</span>
+                <small>{{ i18n.t('admin.param.logos_desc') }}</small>
               </div>
               <span class="params-accordion-chevron">{{ activeParamsSection() === 'logos' ? '▲' : '▼' }}</span>
             </button>
@@ -1196,7 +1192,7 @@
               <div class="params-accordion-body">
                 <div class="logo-grid">
                   <div class="logo-block">
-                    <h3>Logo thème clair</h3>
+                    <h3>{{ i18n.t('admin.param.logo_clair') }}</h3>
                     <div class="logo-upload-area">
                       <div class="logo-preview-box">
                         @if (logoPreviewUrlLight()) {
@@ -1204,7 +1200,7 @@
                         } @else {
                           <div class="logo-preview-placeholder">
                             <span>🌞</span>
-                            <small>Aucun logo</small>
+                            <small>{{ i18n.t('admin.param.aucun_logo') }}</small>
                           </div>
                         }
                       </div>
@@ -1215,26 +1211,26 @@
                                class="logo-file-input"
                                (change)="onLogoFileSelected('light', $event)" />
                         <label for="logoInputLight" class="btn-logo-choose">
-                          📁 Choisir un fichier
+                          {{ i18n.t('admin.param.choisir_fichier') }}
                         </label>
                         @if (logoUrlCouranteLight()) {
-                          <button class="btn-logo-delete" (click)="supprimerLogo('light')">✕ Supprimer le logo</button>
+                          <button class="btn-logo-delete" (click)="supprimerLogo('light')">{{ i18n.t('admin.param.supprimer_logo') }}</button>
                         }
                         @if (logoLightFile) {
                           <div class="logo-file-info">
                             <span class="logo-file-name">📄 {{ logoLightFile.name }}</span>
-                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('light')">✕ Annuler</button>
+                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('light')">{{ i18n.t('admin.param.annuler_logo') }}</button>
                           </div>
                         }
                         @if (!logoPreviewUrlLight() && !logoLightFile) {
-                          <p class="logo-hint">Aucun logo sélectionné — le logo actuel sera conservé.</p>
+                          <p class="logo-hint">{{ i18n.t('admin.param.logo_hint') }}</p>
                         }
                       </div>
                     </div>
                   </div>
 
                   <div class="logo-block">
-                    <h3>Logo thème sombre</h3>
+                    <h3>{{ i18n.t('admin.param.logo_sombre') }}</h3>
                     <div class="logo-upload-area">
                       <div class="logo-preview-box">
                         @if (logoPreviewUrlDark()) {
@@ -1242,7 +1238,7 @@
                         } @else {
                           <div class="logo-preview-placeholder">
                             <span>🌙</span>
-                            <small>Aucun logo</small>
+                            <small>{{ i18n.t('admin.param.aucun_logo') }}</small>
                           </div>
                         }
                       </div>
@@ -1253,19 +1249,19 @@
                                class="logo-file-input"
                                (change)="onLogoFileSelected('dark', $event)" />
                         <label for="logoInputDark" class="btn-logo-choose">
-                          📁 Choisir un fichier
+                          {{ i18n.t('admin.param.choisir_fichier') }}
                         </label>
                         @if (logoUrlCouranteDark()) {
-                          <button class="btn-logo-delete" (click)="supprimerLogo('dark')">✕ Supprimer le logo</button>
+                          <button class="btn-logo-delete" (click)="supprimerLogo('dark')">{{ i18n.t('admin.param.supprimer_logo') }}</button>
                         }
                         @if (logoDarkFile) {
                           <div class="logo-file-info">
                             <span class="logo-file-name">📄 {{ logoDarkFile.name }}</span>
-                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('dark')">✕ Annuler</button>
+                            <button class="btn-logo-cancel" (click)="annulerLogoSelection('dark')">{{ i18n.t('admin.param.annuler_logo') }}</button>
                           </div>
                         }
                         @if (!logoPreviewUrlDark() && !logoDarkFile) {
-                          <p class="logo-hint">Aucun logo sélectionné — le logo actuel sera conservé.</p>
+                          <p class="logo-hint">{{ i18n.t('admin.param.logo_hint') }}</p>
                         }
                       </div>
                     </div>
@@ -1281,8 +1277,8 @@
                     (click)="toggleParamsSection('couleurs')">
               <span class="params-section-icon">🎨</span>
               <div class="params-accordion-title">
-                <span>Couleurs du thème</span>
-                <small>Les modifications s'appliquent en temps réel au thème actif</small>
+                <span>{{ i18n.t('admin.param.theme_titre') }}</span>
+                <small>{{ i18n.t('admin.param.theme_desc') }}</small>
               </div>
               <span class="params-accordion-chevron">{{ activeParamsSection() === 'couleurs' ? '▲' : '▼' }}</span>
             </button>
@@ -1317,7 +1313,7 @@
                         }
                       </div>
                       <button class="btn-colors-reset" (click)="resetCouleursDefaut(section.key)">
-                        ↺ Réinitialiser les couleurs par défaut
+                        {{ i18n.t('admin.param.reset_couleurs') }}
                       </button>
                     </div>
                   }
@@ -1332,8 +1328,8 @@
                     (click)="toggleParamsSection('smtp')">
               <span class="params-section-icon">✉️</span>
               <div class="params-accordion-title">
-                <span>Paramètres SMTP</span>
-                <small>Adresse destinataire et mot de passe applicatif</small>
+                <span>{{ i18n.t('admin.param.smtp_titre') }}</span>
+                <small>{{ i18n.t('admin.param.smtp_desc') }}</small>
               </div>
               <span class="params-accordion-chevron">{{ activeParamsSection() === 'smtp' ? '▲' : '▼' }}</span>
             </button>
@@ -1342,29 +1338,29 @@
               <div class="params-accordion-body">
                 <div class="form-grid params-grid">
                   <div class="field">
-                    <label>Serveur SMTP</label>
+                    <label>{{ i18n.t('admin.param.smtp_serveur') }}</label>
                     <input [(ngModel)]="smtpForm.host"
                            placeholder="smtp.gmail.com" />
                   </div>
                   <div class="field">
-                    <label>Port SMTP</label>
+                    <label>{{ i18n.t('admin.param.smtp_port') }}</label>
                     <input type="number" [(ngModel)]="smtpForm.port"
                            placeholder="587" min="1" />
                   </div>
                   <div class="field">
-                    <label>Utilisateur SMTP</label>
+                    <label>{{ i18n.t('admin.param.smtp_user') }}</label>
                     <input type="email" [(ngModel)]="smtpForm.username"
                            placeholder="user@domaine.tn" />
                   </div>
                   <div class="field">
-                    <label>Destinataire</label>
+                    <label>{{ i18n.t('admin.param.smtp_dest') }}</label>
                     <input type="email" [(ngModel)]="smtpForm.destinataire"
                            placeholder="contact@limtic.tn" />
                   </div>
                   <div class="field">
-                    <label>Mot de passe SMTP</label>
+                    <label>{{ i18n.t('admin.param.smtp_pass') }}</label>
                     <input type="password" [(ngModel)]="smtpForm.password"
-                           placeholder="Laissez vide pour ne pas changer" />
+                           placeholder="..." />
                   </div>
                 </div>
               </div>
@@ -1377,8 +1373,8 @@
                     (click)="toggleParamsSection('seo')">
               <span class="params-section-icon">🔍</span>
               <div class="params-accordion-title">
-                <span>Métadonnées SEO</span>
-                <small>Titre, description et mots-clés pour chaque page publique du site</small>
+                <span>{{ i18n.t('admin.param.seo_titre') }}</span>
+                <small>{{ i18n.t('admin.param.seo_desc') }}</small>
               </div>
               <span class="params-accordion-chevron">{{ activeParamsSection() === 'seo' ? '▲' : '▼' }}</span>
             </button>
@@ -1390,8 +1386,8 @@
           <div class="params-section-header">
             <span class="params-section-icon">🔍</span>
             <div>
-              <h2>Métadonnées SEO</h2>
-              <p>Titre, description et mots-clés pour chaque page publique du site</p>
+              <h2>{{ i18n.t('admin.param.seo_titre') }}</h2>
+              <p>{{ i18n.t('admin.param.seo_desc') }}</p>
             </div>
           </div>
 
@@ -1408,7 +1404,7 @@
                   <span class="seo-page-label">{{ page.label }}</span>
                   <span class="seo-status-badge"
                         [class.filled]="seoForm[page.key].titre || seoForm[page.key].description">
-                    {{ (seoForm[page.key].titre || seoForm[page.key].description) ? 'Configuré' : 'Non configuré' }}
+                    {{ (seoForm[page.key].titre || seoForm[page.key].description) ? i18n.t('admin.param.seo_configure') : i18n.t('admin.param.seo_non_configure') }}
                   </span>
                   <span class="seo-chevron">{{ seoPageActive() === page.key ? '▲' : '▼' }}</span>
                 </button>
@@ -1419,7 +1415,7 @@
                     <div class="form-grid params-grid">
 
                       <div class="field full">
-                        <label>Titre de la page
+                        <label>{{ i18n.t('admin.param.seo_titre_page') }}
                           <span class="seo-counter"
                                 [class.warn]="seoForm[page.key].titre.length > 60">
                             {{ seoForm[page.key].titre.length }}/60
@@ -1429,11 +1425,11 @@
                                [name]="'seo-titre-' + page.key"
                                maxlength="80"
                                placeholder="ex. LIMTIC — Accueil" />
-                        <span class="field-hint">Affiché dans l'onglet du navigateur et les résultats Google (recommandé : 50–60 car.)</span>
+                        <span class="field-hint">{{ i18n.t('admin.param.seo_hint_titre') }}</span>
                       </div>
 
                       <div class="field full">
-                        <label>Description
+                        <label>{{ i18n.t('admin.param.seo_desc_page') }}
                           <span class="seo-counter"
                                 [class.warn]="seoForm[page.key].description.length > 160">
                             {{ seoForm[page.key].description.length }}/160
@@ -1443,16 +1439,16 @@
                                   [name]="'seo-desc-' + page.key"
                                   rows="3"
                                   maxlength="300"
-                                  placeholder="Courte description visible dans les résultats de recherche…"></textarea>
-                        <span class="field-hint">Recommandé : 120–160 caractères pour un bon affichage dans Google.</span>
+                                  placeholder="..."></textarea>
+                        <span class="field-hint">{{ i18n.t('admin.param.seo_hint_desc') }}</span>
                       </div>
 
                       <div class="field full">
-                        <label>Mots-clés <span class="field-optional">(séparés par des virgules)</span></label>
+                        <label>{{ i18n.t('admin.param.seo_mots_cles') }}</label>
                         <input [(ngModel)]="seoForm[page.key].motsCles"
                                [name]="'seo-kw-' + page.key"
                                placeholder="ex. laboratoire, informatique, recherche, Tunis" />
-                        <span class="field-hint">Les moteurs de recherche modernes les utilisent peu, mais ils restent utiles pour la cohérence sémantique.</span>
+                        <span class="field-hint">{{ i18n.t('admin.param.seo_hint_mots_cles') }}</span>
                       </div>
 
                     </div>
@@ -1475,9 +1471,9 @@
                   [disabled]="parametresSaving()"
                   (click)="sauvegarderParametres()">
             @if (parametresSaving()) {
-              <span class="params-spinner params-spinner-sm"></span> Enregistrement…
+              <span class="params-spinner params-spinner-sm"></span> {{ i18n.t('admin.param.btn_saving') }}
             } @else {
-              💾 Enregistrer tous les paramètres
+              {{ i18n.t('admin.param.btn_save') }}
             }
           </button>
         </div>
@@ -1498,13 +1494,13 @@
                 <path d="M4.93 4.93a10 10 0 0 0 0 14.14" stroke-dasharray="2 2"/>
               </svg>
             </span>
-            Journal d'audit
+            {{ i18n.t('admin.audit.titre') }}
           </h1>
-          <p>{{ auditLogs().length }} événement(s) enregistré(s) — toutes les actions importantes du système</p>
+          <p>{{ auditLogs().length }} {{ i18n.t('admin.audit.sous_titre') }}</p>
         </div>
         <div class="audit-header-actions">
           <button class="btn-add" (click)="loadAuditLogs()" [disabled]="auditLoading()">
-            @if (auditLoading()) { ⏳ } @else { ↺ } Actualiser
+            @if (auditLoading()) { ⏳ } @else { ↺ } {{ i18n.t('admin.audit.actualiser') }}
           </button>
         </div>
       </div>
@@ -1512,9 +1508,9 @@
       <!-- Filtres -->
       <div class="audit-filters">
         <div class="audit-filter-group">
-          <label>Action</label>
+          <label>{{ i18n.t('admin.audit.filtre_action') }}</label>
           <select [(ngModel)]="auditFilterAction" (change)="applyAuditFilters()">
-            <option value="">Toutes</option>
+            <option value="">{{ i18n.t('admin.audit.filtre_toutes') }}</option>
             <option value="LOGIN">LOGIN</option>
             <option value="LOGOUT">LOGOUT</option>
             <option value="CREATE">CREATE</option>
@@ -1527,9 +1523,9 @@
           </select>
         </div>
         <div class="audit-filter-group">
-          <label>Entité</label>
+          <label>{{ i18n.t('admin.audit.filtre_entite') }}</label>
           <select [(ngModel)]="auditFilterEntite" (change)="applyAuditFilters()">
-            <option value="">Toutes</option>
+            <option value="">{{ i18n.t('admin.audit.filtre_toutes') }}</option>
             <option value="Publication">Publication</option>
             <option value="Chercheur">Chercheur</option>
             <option value="Evenement">Evenement</option>
@@ -1540,26 +1536,26 @@
           </select>
         </div>
         <div class="audit-filter-group">
-          <label>Utilisateur (email)</label>
-          <input type="text" [(ngModel)]="auditFilterUser" (input)="applyAuditFilters()" placeholder="Filtrer par email…" />
+          <label>{{ i18n.t('admin.audit.filtre_user') }}</label>
+          <input type="text" [(ngModel)]="auditFilterUser" (input)="applyAuditFilters()" placeholder="{{ i18n.t('admin.audit.filtre_user_placeholder') }}" />
         </div>
         <div class="audit-filter-group">
-          <label>Résultat</label>
+          <label>{{ i18n.t('admin.audit.filtre_resultat') }}</label>
           <select [(ngModel)]="auditFilterSucces" (change)="applyAuditFilters()">
-            <option value="">Tous</option>
-            <option value="true">Succès</option>
-            <option value="false">Échec</option>
+            <option value="">{{ i18n.t('admin.audit.filtre_tous') }}</option>
+            <option value="true">{{ i18n.t('admin.audit.filtre_succes') }}</option>
+            <option value="false">{{ i18n.t('admin.audit.filtre_echec') }}</option>
           </select>
         </div>
         @if (auditFilterAction || auditFilterEntite || auditFilterUser || auditFilterSucces) {
-          <button class="btn-audit-clear" (click)="clearAuditFilters()">✕ Effacer les filtres</button>
+          <button class="btn-audit-clear" (click)="clearAuditFilters()">{{ i18n.t('admin.audit.effacer_filtres') }}</button>
         }
       </div>
 
       @if (auditLoading()) {
         <div class="audit-loading">
           <div class="audit-spinner"></div>
-          Chargement du journal…
+          {{ i18n.t('admin.audit.chargement') }}
         </div>
       }
 
@@ -1572,7 +1568,7 @@
                 <polyline points="12 6 12 12 8 14"/>
               </svg>
             </span>
-            <p>Aucun événement trouvé dans le journal.</p>
+            <p>{{ i18n.t('admin.audit.aucun') }}</p>
           </div>
         }
 
@@ -1580,15 +1576,15 @@
           <div class="audit-stats-row">
             <div class="audit-stat">
               <span class="audit-stat-num">{{ filteredAuditLogs().length }}</span>
-              <span class="audit-stat-label">Événements</span>
+              <span class="audit-stat-label">{{ i18n.t('admin.audit.stat_evenements') }}</span>
             </div>
             <div class="audit-stat">
               <span class="audit-stat-num audit-stat-success">{{ auditSuccessCount() }}</span>
-              <span class="audit-stat-label">Succès</span>
+              <span class="audit-stat-label">{{ i18n.t('admin.audit.stat_succes') }}</span>
             </div>
             <div class="audit-stat">
               <span class="audit-stat-num audit-stat-fail">{{ auditFailCount() }}</span>
-              <span class="audit-stat-label">Échecs</span>
+              <span class="audit-stat-label">{{ i18n.t('admin.audit.stat_echecs') }}</span>
             </div>
           </div>
 
@@ -1596,13 +1592,13 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Action</th>
-                  <th>Entité</th>
-                  <th>Utilisateur</th>
-                  <th>Détails</th>
-                  <th>IP</th>
-                  <th>Statut</th>
+                  <th>{{ i18n.t('admin.audit.col_date') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_action') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_entite') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_user') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_details') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_ip') }}</th>
+                  <th>{{ i18n.t('admin.audit.col_statut') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -1634,14 +1630,14 @@
                           <span class="audit-email">{{ log.userEmail }}</span>
                         </div>
                       } @else {
-                        <span class="cell-muted">Anonyme</span>
+                        <span class="cell-muted">{{ i18n.t('admin.audit.anonyme') }}</span>
                       }
                     </td>
                     <td class="audit-details">{{ log.details || '—' }}</td>
                     <td class="audit-ip">{{ log.ipAddress || '—' }}</td>
                     <td>
                       <span class="audit-status-badge" [class.audit-success]="log.succes" [class.audit-fail]="!log.succes">
-                        {{ log.succes ? '✓ OK' : '✗ KO' }}
+                        {{ log.succes ? i18n.t('admin.audit.ok') : i18n.t('admin.audit.ko') }}
                       </span>
                     </td>
                   </tr>
@@ -1662,7 +1658,7 @@
               }
               <button class="audit-page-btn" [disabled]="auditPage() >= auditTotalPages() - 1" (click)="auditPageSet(auditPage() + 1)">›</button>
               <button class="audit-page-btn" [disabled]="auditPage() >= auditTotalPages() - 1" (click)="auditPageSet(auditTotalPages() - 1)">»</button>
-              <span class="audit-page-info">Page {{ auditPage() + 1 }} / {{ auditTotalPages() }}</span>
+              <span class="audit-page-info">{{ i18n.t('admin.audit.page_info') }} {{ auditPage() + 1 }} / {{ auditTotalPages() }}</span>
             </div>
           }
         }

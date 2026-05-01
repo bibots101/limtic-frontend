@@ -4,6 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { Publication, Evenement } from '../../models/chercheur.model';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,7 @@ import { LabSettingsService } from '../../services/lab-settings.service';
 export class HomeComponent implements OnInit {
   private api = inject(ApiService);
   public settings = inject(LabSettingsService);
+  public i18n = inject(I18nService);
 
   statsLoading      = signal(true);
   statsChercheurs   = signal(0);

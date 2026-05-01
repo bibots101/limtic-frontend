@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-doctorant-detail',
@@ -15,7 +16,8 @@ export class DoctorantDetail implements OnInit {
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public i18n: I18nService
   ) {}
 
   ngOnInit() {

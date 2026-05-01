@@ -1,5 +1,5 @@
 <div class="masterien-detail-container">
-  <button class="btn-retour" (click)="retour()">← Retour aux masteriens</button>
+  <button class="btn-retour" (click)="retour()">← {{ i18n.t('mas.retour') }}</button>
 
   @if (masterien(); as mst) {
     <div class="masterien-content">
@@ -17,10 +17,10 @@
             <h1>{{ mst.prenom }} {{ mst.nom }}</h1>
             <div class="masterien-meta">
               <span class="statut-badge" [class]="mst.statut === 'TERMINE' ? 'soutenu-badge' : 'en-cours'">
-                {{ mst.statut === 'TERMINE' ? 'Mémoire soutenu' : 'En cours' }}
+                {{ mst.statut === 'TERMINE' ? ('🎓 ' + i18n.t('mas.statut.diplome')) : ('🔄 ' + i18n.t('mas.statut.en_cours')) }}
               </span>
               @if (mst.promotion) {
-                <span class="promo-badge">Promotion {{ mst.promotion }}</span>
+                <span class="promo-badge">{{ i18n.t('mas.promotion') }} {{ mst.promotion }}</span>
               }
             </div>
           </div>
@@ -30,22 +30,22 @@
       <!-- Mémoire / sujet -->
       @if (mst.sujetMemoire) {
         <div class="masterien-stage">
-          <h3>Mémoire de master</h3>
+          <h3>{{ i18n.t('mas.memoire') }}</h3>
           <div class="stage-details">
             <div class="stage-item">
-              <label>Sujet du mémoire</label>
+              <label>{{ i18n.t('mas.sujet') }}</label>
               <p>{{ mst.sujetMemoire }}</p>
             </div>
             <div class="details-grid">
               @if (mst.statut) {
                 <div class="detail-item">
-                  <label>Statut</label>
-                  <span>{{ mst.statut }}</span>
+                  <label>{{ i18n.t('doc.statut_label') }}</label>
+                  <span>{{ mst.statut === 'TERMINE' ? i18n.t('mas.statut.diplome') : i18n.t('mas.statut.en_cours') }}</span>
                 </div>
               }
               @if (mst.promotion) {
                 <div class="detail-item">
-                  <label>Promotion</label>
+                  <label>{{ i18n.t('mas.promotion') }}</label>
                   <span>{{ mst.promotion }}</span>
                 </div>
               }
@@ -57,7 +57,7 @@
       <!-- Encadrant -->
       @if (mst.encadrant) {
         <div class="masterien-encadrant">
-          <h3>Encadrant</h3>
+          <h3>{{ i18n.t('mas.encadrant') }}</h3>
           <div class="encadrant-card" (click)="navigateToChercheur(mst.encadrant.id)">
             <div class="card-avatar">
               {{ mst.encadrant.prenom.charAt(0) }}{{ mst.encadrant.nom.charAt(0) }}
@@ -80,6 +80,6 @@
 
     </div>
   } @else {
-    <div class="loading"><p>Chargement du masterien...</p></div>
+    <div class="loading"><p>{{ i18n.t('mas.loading') }}</p></div>
   }
 </div>

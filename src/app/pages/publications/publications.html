@@ -1,48 +1,42 @@
 <div class="page">
   <div class="page-header">
-    <h1>Publications</h1>
-    <p>{{ publicationsFiltrees().length }} publication(s) — Travaux scientifiques du laboratoire {{ settings.acronyme() }}</p>
+    <h1>{{ i18n.t('pub.titre') }}</h1>
+    <p>{{ publicationsFiltrees().length }} publication(s) — {{ i18n.t('pub.travaux') }} {{ settings.acronyme() }}</p>
   </div>
 
-  <!-- Barre de recherche + filtres -->
   <div class="filters-bar">
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input
-        type="text"
-        placeholder="Rechercher par titre, journal, résumé, mots-clés..."
-        [ngModel]="recherche()"
-        (ngModelChange)="recherche.set($event)"
-      />
+      <input type="text" [placeholder]="i18n.t('pub.recherche')"
+        [ngModel]="recherche()" (ngModelChange)="recherche.set($event)" />
     </div>
 
     <div class="filters-row">
       <select [ngModel]="filtreType()" (ngModelChange)="filtreType.set($event)">
-        <option value="">Tous les types</option>
-        <option value="Journal">Journal</option>
-        <option value="Conference">Conférence Internationale</option>
-        <option value="Conference Nationale">Conf. Nationale</option>
-        <option value="Book Chapter">Chapitre de livre</option>
-        <option value="Thesis">Thèse</option>
+        <option value="">{{ i18n.t('pub.type.all') }}</option>
+        <option value="Journal">{{ i18n.t('pub.type.journal') }}</option>
+        <option value="Conference">{{ i18n.t('pub.type.conf_int') }}</option>
+        <option value="Conference Nationale">{{ i18n.t('pub.type.conf_nat') }}</option>
+        <option value="Book Chapter">{{ i18n.t('pub.type.book') }}</option>
+        <option value="Thesis">{{ i18n.t('pub.type.thesis') }}</option>
       </select>
 
       <select [ngModel]="filtreAnnee()" (ngModelChange)="filtreAnnee.set($event)">
-        <option value="">Toutes les années</option>
+        <option value="">{{ i18n.t('pub.annee.all') }}</option>
         @for (a of annees(); track a) {
           <option [value]="a">{{ a }}</option>
         }
       </select>
 
       <select [ngModel]="filtreAxe()" (ngModelChange)="filtreAxe.set($event)">
-        <option value="">Tous les axes</option>
+        <option value="">{{ i18n.t('pub.axe.all') }}</option>
         @for (axe of axes(); track axe) {
           <option [value]="axe">{{ axe }}</option>
         }
       </select>
 
-      <!-- ── Filtre classement RÉEL (§3.7) ── -->
       <select [ngModel]="filtreClassement()" (ngModelChange)="filtreClassement.set($event)">
-        <option value="">Tous classements</option>
+        <option value="">{{ i18n.t('pub.classement.all') }}</option>
         <optgroup label="Scimago">
           <option value="Q1">Q1</option>
           <option value="Q2">Q2</option>
@@ -55,102 +49,71 @@
           <option value="B">B</option>
         </optgroup>
         <optgroup label="Impact Factor">
-          <option value="avecIF">Avec IF renseigné</option>
+          <option value="avecIF">{{ i18n.t('pub.classement.with_if') }}</option>
         </optgroup>
       </select>
 
-      <!-- Tri -->
       <select [ngModel]="triPar()" (ngModelChange)="triPar.set($event)">
-        <option value="annee-desc">Année ↓</option>
-        <option value="annee-asc">Année ↑</option>
-        <option value="titre">Titre A→Z</option>
-        <option value="if-desc">Impact Factor ↓</option>
-        <option value="scimago">Scimago (Q1 → Q4)</option>
-        <option value="core">CORE (A* → C)</option>
+        <option value="annee-desc">{{ i18n.t('pub.tri.annee_desc') }}</option>
+        <option value="annee-asc">{{ i18n.t('pub.tri.annee_asc') }}</option>
+        <option value="titre">{{ i18n.t('pub.tri.titre') }}</option>
+        <option value="if-desc">{{ i18n.t('pub.tri.if_desc') }}</option>
+        <option value="scimago">{{ i18n.t('pub.tri.scimago') }}</option>
+        <option value="core">{{ i18n.t('pub.tri.core') }}</option>
       </select>
 
-      <button class="btn-reset" (click)="resetFiltres()">✕ Réinitialiser</button>
+      <button class="btn-reset" (click)="resetFiltres()">{{ i18n.t('pub.reset') }}</button>
     </div>
 
     <div class="export-row">
-      <button class="btn-export bibtex" (click)="exportBibtex()">⬇ BibTeX</button>
-      <button class="btn-export csv" (click)="exportCsv()">⬇ CSV</button>
+      <button class="btn-export bibtex" (click)="exportBibtex()">{{ i18n.t('pub.export.bibtex') }}</button>
+      <button class="btn-export csv" (click)="exportCsv()">{{ i18n.t('pub.export.csv') }}</button>
     </div>
   </div>
 
-  <!-- Liste publications -->
   <div class="pub-list">
     @for (p of publicationsFiltrees(); track p.id) {
       <div class="pub-card" [routerLink]="['/publications', p.id]">
         <div class="pub-header">
           <span class="pub-type-badge">{{ p.type }}</span>
           <span class="pub-year">{{ p.annee }}</span>
-
-          <!-- Badges de classement RÉELS §3.7 — ne dépendent plus des mots-clés -->
           @if (getBadgeLabel(p)) {
-            <span class="ranking-badge {{ getBadgeClass(p) }}">
-              {{ getBadgeLabel(p) }}
-            </span>
+            <span class="ranking-badge {{ getBadgeClass(p) }}">{{ getBadgeLabel(p) }}</span>
           }
-
-          <!-- Impact Factor affiché si disponible -->
           @if (p.facteurImpact) {
-            <span class="if-badge" title="Impact Factor JCR">
-              IF {{ p.facteurImpact | number:'1.2-2' }}
-            </span>
+            <span class="if-badge" title="Impact Factor JCR">IF {{ p.facteurImpact | number:'1.2-2' }}</span>
           }
-
-          <!-- SNIP si disponible -->
           @if (p.snip) {
-            <span class="snip-badge" title="Source Normalized Impact per Paper">
-              SNIP {{ p.snip | number:'1.2-2' }}
-            </span>
+            <span class="snip-badge" title="Source Normalized Impact per Paper">SNIP {{ p.snip | number:'1.2-2' }}</span>
           }
         </div>
-
         <h3 class="pub-title">{{ p.titre }}</h3>
-
-        @if (p.journal) {
-          <p class="pub-journal">{{ p.journal }}</p>
-        }
-
+        @if (p.journal) { <p class="pub-journal">{{ p.journal }}</p> }
         @if (p.chercheurs?.length) {
-          <p class="pub-authors">
-            {{ p.chercheurs!.map(c => c.prenom + ' ' + c.nom).join(', ') }}
-          </p>
+          <p class="pub-authors">{{ p.chercheurs!.map(c => c.prenom + ' ' + c.nom).join(', ') }}</p>
         }
-
         @if (p.resume) {
           <p class="pub-resume">{{ p.resume | slice:0:160 }}{{ p.resume.length > 160 ? '…' : '' }}</p>
         }
-
         <div class="pub-footer">
           @if (p.doi) {
-            <a class="pub-doi" [href]="'https://doi.org/' + p.doi" target="_blank" (click)="$event.stopPropagation()">
-              DOI →
-            </a>
+            <a class="pub-doi" [href]="'https://doi.org/' + p.doi" target="_blank" (click)="$event.stopPropagation()">DOI →</a>
           }
           @if (p.lienUrl) {
-            <a class="pub-link" [href]="p.lienUrl" target="_blank" (click)="$event.stopPropagation()">
-              Lien →
-            </a>
+            <a class="pub-link" [href]="p.lienUrl" target="_blank" (click)="$event.stopPropagation()">{{ i18n.t('pub.lien') }}</a>
           }
           @if (p.pdfUrl) {
-            <a class="pub-pdf" [href]="p.pdfUrl" target="_blank" (click)="$event.stopPropagation()">
-              📄 PDF
-            </a>
+            <a class="pub-pdf" [href]="p.pdfUrl" target="_blank" (click)="$event.stopPropagation()">📄 PDF</a>
           }
-          @if (p.axe) {
-            <span class="pub-axe">{{ p.axe.nom }}</span>
-          }
+          @if (p.axe) { <span class="pub-axe">{{ p.axe.nom }}</span> }
         </div>
       </div>
     }
 
     @if (publicationsFiltrees().length === 0) {
       <div class="empty-state">
-        <p>Aucune publication ne correspond aux filtres sélectionnés.</p>
-        <button (click)="resetFiltres()">Réinitialiser les filtres</button>
+        <p>{{ i18n.t('pub.vide') }}</p>
+        <button (click)="resetFiltres()">{{ i18n.t('pub.reset_btn') }}</button>
       </div>
     }
   </div>

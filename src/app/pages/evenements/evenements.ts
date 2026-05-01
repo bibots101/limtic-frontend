@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Evenement } from '../../models/chercheur.model';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-evenements',
@@ -67,7 +68,7 @@ export class Evenements implements OnInit {
     this.evenements().filter(e => this.getStatut(e.dateEvenement) === 'passe').length
   );
 
-  constructor(private api: ApiService, public settings: LabSettingsService) {}
+  constructor(private api: ApiService, public settings: LabSettingsService, public i18n: I18nService) {}
 
   ngOnInit() {
     this.api.getEvenements().subscribe(data => this.evenements.set(data));

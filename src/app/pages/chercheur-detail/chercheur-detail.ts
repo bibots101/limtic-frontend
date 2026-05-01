@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { Chercheur, Publication } from '../../models/chercheur.model';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-chercheur-detail',
@@ -84,7 +85,8 @@ export class ChercheurDetail implements OnInit {
   constructor(
     private api:   ApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public i18n: I18nService
   ) {}
 
   ngOnInit() {
@@ -112,9 +114,9 @@ export class ChercheurDetail implements OnInit {
 
   getRetourText(): string {
     const from = this.route.snapshot.queryParamMap.get('from');
-    if (from === 'doctorant-detail') return 'Retour aux doctorants';
-    if (from === 'masterien-detail') return 'Retour aux mastériens';
-    return this.isAdmin ? 'Retour au dashboard' : 'Retour aux chercheurs';
+    if (from === 'doctorant-detail') return this.i18n.t('ch.retour_doctorants');
+    if (from === 'masterien-detail') return this.i18n.t('ch.retour_masteriens');
+    return this.isAdmin ? this.i18n.t('ch.retour_dashboard') : this.i18n.t('ch.retour_chercheurs');
   }
 
   naviguerPublication(id: number) { this.router.navigate(['/publications', id]); }

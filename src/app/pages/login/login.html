@@ -3,7 +3,7 @@
     <div class="auth-header">
       <span class="auth-logo">⬡</span>
       <h1>{{ settings.acronyme() }}</h1>
-      <p>Connexion à votre espace</p>
+      <p>{{ i18n.t('auth.espace') }}</p>
     </div>
 
     <div class="auth-form">
@@ -12,20 +12,20 @@
       }
 
       <div class="field">
-        <label>Email</label>
+        <label>{{ i18n.t('auth.email') }}</label>
         <input type="email" [(ngModel)]="email" placeholder="votre@email.tn" />
       </div>
 
       <div class="field">
-        <label>Mot de passe</label>
+        <label>{{ i18n.t('auth.password') }}</label>
         <input type="password" [(ngModel)]="motDePasse" placeholder="••••••••" />
       </div>
 
       <button class="btn-submit" (click)="onSubmit()" [disabled]="loading()">
-        {{ loading() ? 'Connexion...' : 'Se connecter' }}
+        {{ loading() ? i18n.t('auth.connexion_encours') : i18n.t('auth.se_connecter') }}
       </button>
 
-      <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+      <a routerLink="/forgot-password" class="forgot-link">{{ i18n.t('auth.mot_passe_oublie') }}</a>
       
     </div>
   </div>

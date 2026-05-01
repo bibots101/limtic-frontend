@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-masteriens',
@@ -20,7 +21,7 @@ export class Masteriens implements OnInit {
   filterStatut    = '';
   filterPromotion = '';
 
-  constructor(private api: ApiService, public settings: LabSettingsService) {}
+  constructor(private api: ApiService, public settings: LabSettingsService, public i18n: I18nService) {}
 
   ngOnInit() {
     this.api.getMasteriens().subscribe({

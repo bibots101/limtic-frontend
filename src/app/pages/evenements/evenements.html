@@ -1,76 +1,63 @@
 <div class="page">
   <div class="page-header">
-    <h1>Événements</h1>
-    <p>Séminaires, workshops et soutenances du laboratoire {{ settings.acronyme() }}</p>
+    <h1>{{ i18n.t('evt.titre') }}</h1>
+    <p>{{ i18n.t('evt.sous_titre') }} {{ settings.acronyme() }}</p>
   </div>
 
-  <!-- Stats rapides -->
   <div class="stats-row">
     <div class="stat-pill avenir" (click)="filtreStatut.set('avenir')">
-      📅 {{ aVenir() }} à venir
+      📅 {{ aVenir() }} {{ i18n.t('evt.avenir') }}
     </div>
     <div class="stat-pill passe" (click)="filtreStatut.set('passe')">
-      🕐 {{ passes() }} passés
+      🕐 {{ passes() }} {{ i18n.t('evt.passes') }}
     </div>
     <div class="stat-pill tous" (click)="filtreStatut.set('tous')">
       📋 {{ evenements().length }} total
     </div>
   </div>
 
-  <!-- Filtres -->
   <div class="filters-bar">
     <div class="filters-row">
       <div class="filter-group">
-        <label>Statut</label>
+        <label>{{ i18n.t('evt.statut') }}</label>
         <div class="btn-group">
-          <button
-            [class.active]="filtreStatut() === 'tous'"
-            (click)="filtreStatut.set('tous')">
-            Tous
+          <button [class.active]="filtreStatut() === 'tous'" (click)="filtreStatut.set('tous')">
+            {{ i18n.t('evt.tous') }}
           </button>
-          <button
-            [class.active]="filtreStatut() === 'avenir'"
-            (click)="filtreStatut.set('avenir')">
-            À venir
+          <button [class.active]="filtreStatut() === 'avenir'" (click)="filtreStatut.set('avenir')">
+            {{ i18n.t('evt.avenir') }}
           </button>
-          <button
-            [class.active]="filtreStatut() === 'passe'"
-            (click)="filtreStatut.set('passe')">
-            Passés
+          <button [class.active]="filtreStatut() === 'passe'" (click)="filtreStatut.set('passe')">
+            {{ i18n.t('evt.passes') }}
           </button>
         </div>
       </div>
 
       <div class="filter-group">
-        <label>Type</label>
+        <label>{{ i18n.t('evt.type') }}</label>
         <select [ngModel]="filtreType()" (ngModelChange)="filtreType.set($event)">
-          <option value="">Tous les types</option>
+          <option value="">{{ i18n.t('evt.type.all') }}</option>
           @for (t of types(); track t) {
             <option [value]="t">{{ t }}</option>
           }
         </select>
       </div>
 
-      <button class="btn-reset" (click)="resetFiltres()">✕ Réinitialiser</button>
+      <button class="btn-reset" (click)="resetFiltres()">✕ {{ i18n.t('evt.reset') }}</button>
     </div>
   </div>
 
-  <!-- Liste événements -->
   <div class="events-grid">
     @for (e of evenementsFiltres(); track e.id) {
       <div class="event-card" [class.event-passe]="getStatut(e.dateEvenement) === 'passe'" [routerLink]="['/evenements', e.id]">
-
-        <!-- Badge statut -->
         <div class="statut-badge" [class]="getStatut(e.dateEvenement) === 'avenir' ? 'badge-avenir' : 'badge-passe'">
-          {{ getStatut(e.dateEvenement) === 'avenir' ? '🟢 À venir' : '⚫ Passé' }}
+          {{ getStatut(e.dateEvenement) === 'avenir' ? i18n.t('evt.badge_avenir') : i18n.t('evt.badge_passe') }}
         </div>
-
         <div class="event-date">
           <span class="day">{{ e.dateEvenement | slice:8:10 }}</span>
           <span class="month">{{ e.dateEvenement | slice:5:7 }}</span>
           <span class="year">{{ e.dateEvenement | slice:0:4 }}</span>
         </div>
-
         <div class="event-body">
           <span class="event-type">{{ e.type }}</span>
           <h3>{{ e.titre }}</h3>
@@ -92,8 +79,8 @@
     @if (evenementsFiltres().length === 0) {
       <div class="empty-state">
         <span>📭</span>
-        <p>Aucun événement pour ce filtre.</p>
-        <button class="btn-reset" (click)="resetFiltres()">Réinitialiser</button>
+        <p>{{ i18n.t('evt.vide') }}</p>
+        <button class="btn-reset" (click)="resetFiltres()">{{ i18n.t('evt.reset') }}</button>
       </div>
     }
   </div>

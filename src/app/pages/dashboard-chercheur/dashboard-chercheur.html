@@ -14,30 +14,30 @@
     <nav class="sidebar-nav">
       <button [class.active]="activeTab() === 'profil'"
               (click)="activeTab.set('profil')">
-        Mon Profil
+        {{ i18n.t('chercheur.dash.profil') }}
       </button>
       <button [class.active]="activeTab() === 'publications'"
               (click)="activeTab.set('publications')">
-        Mes Publications
+        {{ i18n.t('chercheur.dash.mes_pubs') }}
         @if (pubSoumises() > 0) {
           <span class="nav-badge-orange">{{ pubSoumises() }}</span>
         }
       </button>
       <button [class.active]="activeTab() === 'ajouter'"
               (click)="activeTab.set('ajouter')">
-        Ajouter publication
+        {{ i18n.t('chercheur.dash.ajouter_pub') }}
       </button>
       <button [class.active]="activeTab() === 'encadrements'"
               (click)="activeTab.set('encadrements')">
-        Mes encadrements
+        {{ i18n.t('chercheur.dash.mes_encadrements') }}
       </button>
-      <button class="btn-logout-mobile" (click)="logout()">⏻ Quitter</button>
+      <button class="btn-logout-mobile" (click)="logout()">{{ i18n.t('chercheur.dash.quitter') }}</button>
     </nav>
     <div class="sidebar-footer">
       <span class="user-email">{{ email() }}</span>
       <span class="user-role">CHERCHEUR</span>
-      <a routerLink="/home" class="btn-site-link" (click)="fermerTout()">Retour au site</a>
-      <button class="btn-logout-side" (click)="logout()">⏻ Déconnexion</button>
+      <a routerLink="/home" class="btn-site-link" (click)="fermerTout()">{{ i18n.t('chercheur.dash.retour') }}</a>
+      <button class="btn-logout-side" (click)="logout()">{{ i18n.t('chercheur.dash.quitter') }}</button>
     </div>
   </aside>
 
@@ -50,11 +50,21 @@
 
     <div class="dash-header">
       <div>
-        <h1>Mon Espace Chercheur</h1>
-        <p class="dash-sub">Bienvenue, {{ email() }}</p>
+        <h1>{{ i18n.t('chercheur.dash.titre') }}</h1>
+        <p class="dash-sub">{{ i18n.t('chercheur.dash.bienvenue') }}, {{ email() }}</p>
       </div>
       <div class="header-actions">
         <span class="role-badge">{{ role() }}</span>
+        
+        <button class="lang-toggle-btn" (click)="i18n.setLangue(i18n.langue() === 'fr' ? 'en' : 'fr')" title="Changer la langue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="globe-icon">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="lang-text" style="text-transform: uppercase">{{ i18n.langue() }}</span>
+        </button>
+
         <button class="theme-toggle-dashboard" (click)="themeService.toggle()"
                 [title]="themeService.theme() === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'">
           {{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}
@@ -65,60 +75,59 @@
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-num">{{ publications().length }}</div>
-        <div class="stat-label">Publications totales</div>
+        <div class="stat-label">{{ i18n.t('chercheur.dash.pubs_totales') }}</div>
       </div>
       <div class="stat-card">
         <div class="stat-num statut-brouillon-num">{{ pubBrouillons() }}</div>
-        <div class="stat-label">Brouillons</div>
+        <div class="stat-label">{{ i18n.t('chercheur.dash.brouillons') }}</div>
       </div>
       <div class="stat-card">
         <div class="stat-num statut-soumis-num">{{ pubSoumises() }}</div>
-        <div class="stat-label">En attente</div>
+        <div class="stat-label">{{ i18n.t('chercheur.dash.en_attente') }}</div>
       </div>
       <div class="stat-card">
         <div class="stat-num statut-publie-num">{{ pubPubliees() }}</div>
-        <div class="stat-label">Publiées</div>
+        <div class="stat-label">{{ i18n.t('chercheur.dash.publiees') }}</div>
       </div>
     </div>
 
     <!-- ── TAB : PROFIL ─────────────────────────────────── -->
     @if (activeTab() === 'profil') {
       <div class="tab-header">
-        <h1>Mon Profil</h1>
+        <h1>{{ i18n.t('chercheur.dash.profil') }}</h1>
         <p>{{ profil().prenom }} {{ profil().nom }}</p>
       </div>
 
       <div class="form-card">
-        <h2>Informations générales</h2>
+        <h2>{{ i18n.t('chercheur.profil.infos_gen') }}</h2>
         <div class="form-grid">
           <div class="field">
-            <label>Grade</label>
+            <label>{{ i18n.t('chercheur.profil.grade') }}</label>
             <input [(ngModel)]="editProfil.grade" placeholder="ex. Maître de conférences" />
           </div>
           <div class="field">
-            <label>Spécialité</label>
+            <label>{{ i18n.t('chercheur.profil.specialite') }}</label>
             <input [(ngModel)]="editProfil.specialite" placeholder="ex. Intelligence Artificielle" />
           </div>
           <div class="field">
-            <label>Institution</label>
+            <label>{{ i18n.t('chercheur.profil.institution') }}</label>
             <input [(ngModel)]="editProfil.institution" placeholder="ex. ISI El Manar" />
           </div>
           <div class="field">
-            <label>Bureau</label>
+            <label>{{ i18n.t('chercheur.profil.bureau') }}</label>
             <input [(ngModel)]="editProfil.bureau" placeholder="ex. Bureau 204" />
           </div>
           <div class="field">
-            <label>Téléphone</label>
+            <label>{{ i18n.t('chercheur.profil.tel') }}</label>
             <input [(ngModel)]="editProfil.telephone" placeholder="ex. +216 71 XXX XXX" />
           </div>
           <div class="field full">
-            <label>Biographie</label>
-            <textarea [(ngModel)]="editProfil.biographie" rows="4"
-              placeholder="Décrivez vos activités de recherche..."></textarea>
+            <label>{{ i18n.t('chercheur.profil.bio') }}</label>
+            <textarea [(ngModel)]="editProfil.biographie" rows="4"></textarea>
           </div>
         </div>
 
-        <h2 style="margin-top: 1.5rem; margin-bottom: 1rem">Liens externes</h2>
+        <h2 style="margin-top: 1.5rem; margin-bottom: 1rem">{{ i18n.t('chercheur.profil.liens') }}</h2>
         <div class="form-grid">
           <div class="field">
             <label>Google Scholar</label>
@@ -137,21 +146,21 @@
             <input [(ngModel)]="editProfil.linkedin" placeholder="https://linkedin.com/in/..." />
           </div>
         </div>
-        <button class="btn-submit" (click)="sauvegarderProfil()">Sauvegarder le profil</button>
+        <button class="btn-submit" (click)="sauvegarderProfil()">{{ i18n.t('chercheur.profil.btn_sauvegarder') }}</button>
       </div>
     }
 
     <!-- ── TAB : AJOUTER PUBLICATION ────────────────────── -->
     @if (activeTab() === 'ajouter') {
       <div class="form-card">
-        <h2>Nouvelle Publication</h2>
+        <h2>{{ i18n.t('chercheur.pub.nouvelle') }}</h2>
         <div class="form-grid">
           <div class="field full">
-            <label>Titre *</label>
-            <input [(ngModel)]="newPub.titre" placeholder="Titre de la publication" />
+            <label>{{ i18n.t('chercheur.pub.titre') }} *</label>
+            <input [(ngModel)]="newPub.titre" placeholder="{{ i18n.t('chercheur.pub.titre') }}" />
           </div>
           <div class="field">
-            <label>Type</label>
+            <label>{{ i18n.t('chercheur.pub.type') }}</label>
             <select [(ngModel)]="newPub.type">
               <option value="Journal">Article de journal</option>
               <option value="Conference">Conférence internationale</option>
@@ -159,33 +168,33 @@
             </select>
           </div>
           <div class="field">
-            <label>Année</label>
+            <label>{{ i18n.t('chercheur.pub.annee') }}</label>
             <input type="number" [(ngModel)]="newPub.annee" />
           </div>
           <div class="field">
-            <label>Journal / Conférence</label>
+            <label>{{ i18n.t('chercheur.pub.journal') }}</label>
             <input [(ngModel)]="newPub.journal" placeholder="IEEE, ACM..." />
           </div>
           <div class="field full">
-            <label>Résumé</label>
-            <textarea [(ngModel)]="newPub.resume" placeholder="Résumé de la publication..." rows="3"></textarea>
+            <label>{{ i18n.t('chercheur.pub.resume') }}</label>
+            <textarea [(ngModel)]="newPub.resume" placeholder="{{ i18n.t('chercheur.pub.resume') }}..." rows="3"></textarea>
           </div>
 
           <!-- §3.7.2 CDC — DOI -->
           <div class="field">
-            <label>DOI</label>
+            <label>{{ i18n.t('chercheur.pub.doi') }}</label>
             <input [(ngModel)]="newPub.doi" placeholder="ex. 10.1000/xyz123" />
           </div>
 
           <!-- §3.7.2 CDC — URL externe -->
           <div class="field">
-            <label>URL externe</label>
+            <label>{{ i18n.t('chercheur.pub.url') }}</label>
             <input [(ngModel)]="newPub.lienUrl" placeholder="https://..." />
           </div>
 
           <!-- §3.7.2 CDC — Upload PDF + prévisualisation -->
           <div class="field full">
-            <label>Fichier PDF</label>
+            <label>{{ i18n.t('chercheur.pub.pdf') }}</label>
             <div class="pdf-upload-zone">
               <input type="file" accept="application/pdf" id="pdfInputChercheur"
                      class="pdf-file-input" (change)="onPdfFileSelected($event)" />
@@ -193,23 +202,23 @@
                 @if (newPubPdfFile) {
                   <span class="pdf-selected">📄 {{ newPubPdfFile.name }}</span>
                 } @else {
-                  <span class="pdf-placeholder">📎 Cliquez pour choisir un PDF</span>
+                  <span class="pdf-placeholder">{{ i18n.t('chercheur.pub.choisir_pdf') }}</span>
                 }
               </label>
               @if (newPubPdfFile) {
-                <button class="pdf-clear" (click)="clearPdfSelection()">✕ Retirer</button>
+                <button class="pdf-clear" (click)="clearPdfSelection()">{{ i18n.t('chercheur.pub.retirer') }}</button>
               }
             </div>
-            <span class="field-hint">Le fichier sera uploadé après enregistrement.</span>
+            <span class="field-hint">{{ i18n.t('chercheur.pub.hint_pdf') }}</span>
 
             <!-- ── Prévisualisation inline du PDF sélectionné ── -->
             @if (newPubPdfPreviewUrl) {
               <div class="pdf-preview-panel">
                 <div class="pdf-preview-header">
-                  <span class="pdf-preview-title">👁 Prévisualisation — {{ newPubPdfFile?.name }}</span>
+                  <span class="pdf-preview-title">{{ i18n.t('chercheur.pub.previsu') }} — {{ newPubPdfFile?.name }}</span>
                   <div class="pdf-preview-actions">
                     <a [href]="pdfBlobUrl" target="_blank" class="btn-pdf-open">
-                      ↗ Ouvrir dans un onglet
+                      {{ i18n.t('chercheur.pub.ouvrir') }}
                     </a>
                     <button class="pdf-preview-close" (click)="clearPdfSelection()">✕</button>
                   </div>
@@ -229,44 +238,44 @@
                Source de référence : Scimago SJR, CORE, JCR/Clarivate
                ═══════════════════════════════════════════════════════════════ -->
           <div class="field full ranking-section-header">
-            <label class="ranking-title">Classement / Score de la venue</label>
-            <span class="ranking-hint">Renseignez le classement selon la source officielle (Scimago, CORE, JCR…)</span>
+            <label class="ranking-title">{{ i18n.t('chercheur.pub.classement_titre') }}</label>
+            <span class="ranking-hint">{{ i18n.t('chercheur.pub.classement_hint') }}</span>
           </div>
 
           <!-- Scimago Quartile — pour les journaux -->
           <div class="field">
             <label>
-              Quartile Scimago (SJR)
+              {{ i18n.t('chercheur.pub.sjr') }}
               <a href="https://www.scimagojr.com" target="_blank" class="source-link" title="Voir Scimago Journal Rank">↗</a>
             </label>
             <select [(ngModel)]="newPub.scimagoQuartile">
-              <option value="">— Non renseigné —</option>
-              <option value="Q1">Q1 — Top 25 %</option>
-              <option value="Q2">Q2 — Top 50 %</option>
-              <option value="Q3">Q3 — Top 75 %</option>
-              <option value="Q4">Q4 — Reste</option>
+              <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+              <option value="Q1">{{ i18n.t('chercheur.pub.q1') }}</option>
+              <option value="Q2">{{ i18n.t('chercheur.pub.q2') }}</option>
+              <option value="Q3">{{ i18n.t('chercheur.pub.q3') }}</option>
+              <option value="Q4">{{ i18n.t('chercheur.pub.q4') }}</option>
             </select>
           </div>
 
           <!-- CORE Ranking — pour les conférences -->
           <div class="field">
             <label>
-              Classement CORE (Conférences)
+              {{ i18n.t('chercheur.pub.core') }}
               <a href="http://portal.core.edu.au/conf-ranks/" target="_blank" class="source-link" title="Voir CORE Portal">↗</a>
             </label>
             <select [(ngModel)]="newPub.classementCORE">
-              <option value="">— Non renseigné —</option>
-              <option value="A*">A* — Excellence</option>
-              <option value="A">A — Très bonne</option>
-              <option value="B">B — Bonne</option>
-              <option value="C">C — Reconnue</option>
+              <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+              <option value="A*">{{ i18n.t('chercheur.pub.core_astar') }}</option>
+              <option value="A">{{ i18n.t('chercheur.pub.core_a') }}</option>
+              <option value="B">{{ i18n.t('chercheur.pub.core_b') }}</option>
+              <option value="C">{{ i18n.t('chercheur.pub.core_c') }}</option>
             </select>
           </div>
 
           <!-- Impact Factor JCR -->
           <div class="field">
             <label>
-              Impact Factor JCR
+              {{ i18n.t('chercheur.pub.jcr') }}
               <a href="https://jcr.clarivate.com" target="_blank" class="source-link" title="Voir Clarivate JCR">↗</a>
             </label>
             <input type="number" step="0.01" min="0"
@@ -277,7 +286,7 @@
           <!-- SNIP (Scopus) -->
           <div class="field">
             <label>
-              SNIP (Scopus/Elsevier)
+              {{ i18n.t('chercheur.pub.snip') }}
               <a href="https://www.journalindicators.com" target="_blank" class="source-link" title="Voir Journal Indicators">↗</a>
             </label>
             <input type="number" step="0.01" min="0"
@@ -287,33 +296,33 @@
 
           <!-- Source de référence (libre) -->
           <div class="field full">
-            <label>Source de référence (précision libre)</label>
+            <label>{{ i18n.t('chercheur.pub.source') }}</label>
             <input [(ngModel)]="newPub.sourceClassement"
-                   placeholder="ex. Scimago 2024, CORE 2023, JCR Q1 Clarivate..." />
-            <span class="field-hint">Indiquez l'année et la source consultée pour faciliter la vérification.</span>
+                   placeholder="ex. Scimago 2024, CORE 2023..." />
+            <span class="field-hint">{{ i18n.t('chercheur.pub.source_hint') }}</span>
           </div>
         </div>
 
         <div class="statut-choix">
-          <p class="statut-choix-label">Que voulez-vous faire ?</p>
+          <p class="statut-choix-label">{{ i18n.t('chercheur.pub.action_titre') }}</p>
           <div class="statut-choix-btns">
             <button class="btn-choix"
                     [class.selected]="newPub.statut === 'BROUILLON'"
                     (click)="newPub.statut = 'BROUILLON'">
-              Enregistrer en brouillon
-              <span>Vous pourrez soumettre plus tard</span>
+              {{ i18n.t('chercheur.pub.brouillon_btn') }}
+              <span>{{ i18n.t('chercheur.pub.brouillon_desc') }}</span>
             </button>
             <button class="btn-choix btn-choix-submit"
                     [class.selected]="newPub.statut === 'SOUMIS'"
                     (click)="newPub.statut = 'SOUMIS'">
-              Soumettre à validation
-              <span>L'admin devra valider</span>
+              {{ i18n.t('chercheur.pub.soumettre_btn') }}
+              <span>{{ i18n.t('chercheur.pub.soumettre_desc') }}</span>
             </button>
           </div>
         </div>
 
         <button class="btn-submit" (click)="ajouterPublication()">
-          {{ newPub.statut === 'SOUMIS' ? 'Soumettre' : 'Enregistrer' }}
+          {{ newPub.statut === 'SOUMIS' ? i18n.t('chercheur.pub.btn_soumettre') : i18n.t('chercheur.pub.btn_enregistrer') }}
         </button>
       </div>
     }
@@ -321,39 +330,39 @@
     <!-- ── TAB : MES PUBLICATIONS ──────────────────────── -->
     @if (activeTab() === 'publications') {
       <div class="tab-header">
-        <h2>Mes Publications</h2>
-        <p>{{ publications().length }} publication(s) enregistrée(s)</p>
+        <h2>{{ i18n.t('chercheur.dash.mes_pubs') }}</h2>
+        <p>{{ publications().length }} {{ i18n.t('chercheur.mes_pubs.enregistrees') }}</p>
       </div>
 
       <div class="workflow-info">
         <div class="workflow-step">
-          <span class="wf-badge statut-brouillon">Brouillon</span>
+          <span class="wf-badge statut-brouillon">{{ i18n.t('chercheur.mes_pubs.wf_brouillon') }}</span>
           <span class="wf-arrow">→</span>
-          <span class="wf-desc">Soumettez pour validation</span>
+          <span class="wf-desc">{{ i18n.t('chercheur.mes_pubs.wf_brouillon_desc') }}</span>
         </div>
         <div class="workflow-step">
-          <span class="wf-badge statut-soumis">Soumis</span>
+          <span class="wf-badge statut-soumis">{{ i18n.t('chercheur.mes_pubs.wf_soumis') }}</span>
           <span class="wf-arrow">→</span>
-          <span class="wf-desc">En attente de l'admin</span>
+          <span class="wf-desc">{{ i18n.t('chercheur.mes_pubs.wf_soumis_desc') }}</span>
         </div>
         <div class="workflow-step">
-          <span class="wf-badge statut-publie">Publié</span>
+          <span class="wf-badge statut-publie">{{ i18n.t('chercheur.mes_pubs.wf_publie') }}</span>
           <span class="wf-arrow">→</span>
-          <span class="wf-desc">Visible publiquement</span>
+          <span class="wf-desc">{{ i18n.t('chercheur.mes_pubs.wf_publie_desc') }}</span>
         </div>
       </div>
 
       <!-- ── Formulaire d'édition de publication (affiché au-dessus du tableau) ── -->
       @if (editingPublication()) {
         <div class="form-card edit-card">
-          <h2>Modifier la publication</h2>
+          <h2>{{ i18n.t('chercheur.mes_pubs.modifier') }}</h2>
           <div class="form-grid">
             <div class="field full">
-              <label>Titre *</label>
-              <input [(ngModel)]="editingPublication().titre" placeholder="Titre de la publication" />
+              <label>{{ i18n.t('chercheur.pub.titre') }} *</label>
+              <input [(ngModel)]="editingPublication().titre" placeholder="{{ i18n.t('chercheur.pub.titre') }}" />
             </div>
             <div class="field">
-              <label>Type</label>
+              <label>{{ i18n.t('chercheur.pub.type') }}</label>
               <select [(ngModel)]="editingPublication().type">
                 <option value="Journal">Article de journal</option>
                 <option value="Conference">Conférence internationale</option>
@@ -363,19 +372,19 @@
               </select>
             </div>
             <div class="field">
-              <label>Année</label>
+              <label>{{ i18n.t('chercheur.pub.annee') }}</label>
               <input type="number" [(ngModel)]="editingPublication().annee" />
             </div>
             <div class="field">
-              <label>Journal / Conférence</label>
+              <label>{{ i18n.t('chercheur.pub.journal') }}</label>
               <input [(ngModel)]="editingPublication().journal" placeholder="IEEE, ACM…" />
             </div>
             <div class="field">
-              <label>DOI</label>
+              <label>{{ i18n.t('chercheur.pub.doi') }}</label>
               <input [(ngModel)]="editingPublication().doi" placeholder="ex. 10.1000/xyz123" />
             </div>
             <div class="field">
-              <label>URL externe</label>
+              <label>{{ i18n.t('chercheur.pub.url') }}</label>
               <input [(ngModel)]="editingPublication().lienUrl" placeholder="https://…" />
             </div>
             <div class="field">
@@ -383,26 +392,26 @@
               <input [(ngModel)]="editingPublication().motsCles" placeholder="IA, ML, NLP…" />
             </div>
             <div class="field full">
-              <label>Résumé</label>
-              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="Résumé…"></textarea>
+              <label>{{ i18n.t('chercheur.pub.resume') }}</label>
+              <textarea [(ngModel)]="editingPublication().resume" rows="3" placeholder="{{ i18n.t('chercheur.pub.resume') }}…"></textarea>
             </div>
 
             <!-- §3.7.2 CDC — PDF dans le formulaire d'édition -->
             <div class="field full">
-              <label>Fichier PDF</label>
+              <label>{{ i18n.t('chercheur.pub.pdf') }}</label>
 
               <!-- PDF viewer unique (existant ou nouveau) -->
               @if (!editRemovePdf && editPdfViewerUrl()) {
                 <div class="pdf-existing-row">
                   <span class="pdf-existing-label">
-                    📄 {{ editPubPdfFile ? 'Nouveau PDF' : 'PDF actuel' }}
+                    📄 {{ editPubPdfFile ? i18n.t('chercheur.mes_pubs.nouveau_pdf') : i18n.t('chercheur.mes_pubs.pdf_actuel') }}
                   </span>
                   <a [href]="editPubPdfFile ? editPdfBlobUrl : getFullPdfUrl(editingPublication().pdfUrl)"
-                     target="_blank" class="btn-pdf-open">↗ Ouvrir</a>
+                     target="_blank" class="btn-pdf-open">{{ i18n.t('chercheur.pub.ouvrir') }}</a>
                   @if (editPubPdfFile) {
-                    <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                    <button class="pdf-clear" (click)="clearEditPdfSelection()">{{ i18n.t('chercheur.pub.retirer') }}</button>
                   } @else {
-                    <button class="pdf-clear" (click)="markRemoveEditPdf()">✕ Supprimer</button>
+                    <button class="pdf-clear" (click)="markRemoveEditPdf()">{{ i18n.t('chercheur.mes_pubs.supprimer') }}</button>
                   }
                 </div>
                 <div class="pdf-preview-panel" style="margin-top:0.75rem;">
@@ -417,8 +426,8 @@
 
               @if (editRemovePdf && !editPubPdfFile) {
                 <div class="pdf-remove-notice">
-                  ⚠️ Le PDF sera supprimé à l'enregistrement.
-                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">Annuler la suppression</button>
+                  {{ i18n.t('chercheur.mes_pubs.suppression_notice') }}
+                  <button class="btn-pdf-undo" (click)="undoRemoveEditPdf()">{{ i18n.t('chercheur.mes_pubs.annuler_suppression') }}</button>
                 </div>
               }
 
@@ -430,62 +439,62 @@
                   @if (editPubPdfFile) {
                     <span class="pdf-selected">📄 {{ editPubPdfFile.name }}</span>
                   } @else {
-                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? 'Remplacer le PDF…' : 'Choisir un PDF…' }}</span>
+                    <span class="pdf-placeholder">📎 {{ editingPublication().pdfUrl ? i18n.t('chercheur.mes_pubs.choisir_nouveau') : i18n.t('chercheur.pub.choisir_pdf') }}</span>
                   }
                 </label>
                 @if (editPubPdfFile) {
-                  <button class="pdf-clear" (click)="clearEditPdfSelection()">✕ Retirer</button>
+                  <button class="pdf-clear" (click)="clearEditPdfSelection()">{{ i18n.t('chercheur.pub.retirer') }}</button>
                 }
               </div>
-              <span class="field-hint">Vous pouvez remplacer le PDF existant ou en supprimer un.</span>
+              <span class="field-hint">{{ i18n.t('chercheur.mes_pubs.remplacer') }}</span>
 
             </div>
             
             <!-- §3.7.2 CDC — Classement -->
             <div class="field full ranking-section-header">
-              <label class="ranking-title">Classement / Score de la venue</label>
+              <label class="ranking-title">{{ i18n.t('chercheur.pub.classement_titre') }}</label>
             </div>
             <div class="field">
-              <label>Quartile Scimago (SJR)</label>
+              <label>{{ i18n.t('chercheur.pub.sjr') }}</label>
               <select [(ngModel)]="editingPublication().scimagoQuartile">
-                <option value="">— Non renseigné —</option>
-                <option value="Q1">Q1 — Top 25 %</option>
-                <option value="Q2">Q2 — Top 50 %</option>
-                <option value="Q3">Q3 — Top 75 %</option>
-                <option value="Q4">Q4 — Reste</option>
+                <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+                <option value="Q1">{{ i18n.t('chercheur.pub.q1') }}</option>
+                <option value="Q2">{{ i18n.t('chercheur.pub.q2') }}</option>
+                <option value="Q3">{{ i18n.t('chercheur.pub.q3') }}</option>
+                <option value="Q4">{{ i18n.t('chercheur.pub.q4') }}</option>
               </select>
             </div>
             <div class="field">
-              <label>Classement CORE (Conférences)</label>
+              <label>{{ i18n.t('chercheur.pub.core') }}</label>
               <select [(ngModel)]="editingPublication().classementCORE">
-                <option value="">— Non renseigné —</option>
-                <option value="A*">A* — Excellence</option>
-                <option value="A">A — Très bonne</option>
-                <option value="B">B — Bonne</option>
-                <option value="C">C — Reconnue</option>
+                <option value="">{{ i18n.t('chercheur.pub.non_renseigne') }}</option>
+                <option value="A*">{{ i18n.t('chercheur.pub.core_astar') }}</option>
+                <option value="A">{{ i18n.t('chercheur.pub.core_a') }}</option>
+                <option value="B">{{ i18n.t('chercheur.pub.core_b') }}</option>
+                <option value="C">{{ i18n.t('chercheur.pub.core_c') }}</option>
               </select>
             </div>
             <div class="field">
-              <label>Impact Factor JCR</label>
+              <label>{{ i18n.t('chercheur.pub.jcr') }}</label>
               <input type="number" step="0.01" min="0"
                      [(ngModel)]="editingPublication().facteurImpact"
                      placeholder="ex. 4.58" />
             </div>
             <div class="field">
-              <label>SNIP (Scopus/Elsevier)</label>
+              <label>{{ i18n.t('chercheur.pub.snip') }}</label>
               <input type="number" step="0.01" min="0"
                      [(ngModel)]="editingPublication().snip"
                      placeholder="ex. 1.23" />
             </div>
             <div class="field full">
-              <label>Source de référence</label>
+              <label>{{ i18n.t('chercheur.pub.source') }}</label>
               <input [(ngModel)]="editingPublication().sourceClassement"
                      placeholder="ex. Scimago 2024, CORE 2023…" />
             </div>
           </div>
           <div class="edit-actions">
-            <button class="btn-submit" (click)="saveEditPublication()">Enregistrer la publication</button>
-            <button class="btn-cancel" (click)="cancelEditPublication()">Annuler</button>
+            <button class="btn-submit" (click)="saveEditPublication()">{{ i18n.t('chercheur.pub.btn_enregistrer') }}</button>
+            <button class="btn-cancel" (click)="cancelEditPublication()">{{ i18n.t('general.annuler') }}</button>
           </div>
         </div>
       }
@@ -494,10 +503,10 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>Titre</th>
-              <th>Type</th>
-              <th>Journal / Conf.</th>
-              <th>Année</th>
+              <th>{{ i18n.t('chercheur.pub.titre') }}</th>
+              <th>{{ i18n.t('chercheur.pub.type') }}</th>
+              <th>{{ i18n.t('chercheur.pub.journal') }}</th>
+              <th>{{ i18n.t('chercheur.pub.annee') }}</th>
               <th>Classement</th>
               <th>Statut</th>
               <th>Actions</th>
@@ -543,19 +552,19 @@
                   <div class="actions-row">
                     @if (p.statut === 'BROUILLON' || !p.statut) {
                       <button class="btn-action btn-edit" (click)="startEditPublication(p); $event.stopPropagation()">
-                        Éditer
+                        {{ i18n.t('chercheur.mes_pubs.btn_editer') }}
                       </button>
                       <button class="btn-action btn-soumettre" (click)="soumettre(p.id); $event.stopPropagation()">
-                        Soumettre
+                        {{ i18n.t('chercheur.pub.btn_soumettre') }}
                       </button>
                     }
                     @if (p.statut === 'SOUMIS') {
                       <button class="btn-action btn-retirer" (click)="retirerSoumission(p.id); $event.stopPropagation()">
-                        ↩ Retirer
+                        {{ i18n.t('chercheur.mes_pubs.btn_retirer') }}
                       </button>
                     }
                     @if (p.statut === 'PUBLIE') {
-                      <span class="pub-ok">Publié</span>
+                      <span class="pub-ok">{{ i18n.t('chercheur.dash.publiees') }}</span>
                     }
                   </div>
                 </td>
@@ -570,8 +579,8 @@
 @if (activeTab() === 'encadrements') {
 
   <div class="tab-header">
-    <h1>🎓 Mes Encadrements</h1>
-    <p>Gérez vos doctorants et mastériens</p>
+    <h1>{{ i18n.t('chercheur.enc.titre') }}</h1>
+    <p>{{ i18n.t('chercheur.enc.desc') }}</p>
   </div>
 
   @if (encMsg()) {
@@ -581,13 +590,13 @@
   <div class="encadrements-layout">
     <!-- Colonne gauche : Mes encadrements actuels -->
     <div class="enc-col enc-col-current">
-      <h2>📚 Mes Encadrements Actuels</h2>
+      <h2>{{ i18n.t('chercheur.enc.actuels') }}</h2>
 
       <!-- Doctorants encadrés -->
       <div class="enc-section">
-        <h3>Doctorants ({{ mesDoctorants().length }})</h3>
+        <h3>{{ i18n.t('chercheur.enc.doctorants') }} ({{ mesDoctorants().length }})</h3>
         @if (mesDoctorants().length === 0) {
-          <p class="empty-msg">Aucun doctorant encadré</p>
+          <p class="empty-msg">{{ i18n.t('chercheur.enc.aucun_doc') }}</p>
         } @else {
           <div class="enc-list">
             @for (d of mesDoctorants(); track d.id) {
@@ -595,7 +604,7 @@
                 <div class="enc-avatar">{{ d.prenom?.[0] }}{{ d.nom?.[0] }}</div>
                 <div class="enc-info">
                   <strong>{{ d.prenom }} {{ d.nom }}</strong>
-                  <p>{{ d.sujetThese || 'Sujet non spécifié' }}</p>
+                  <p>{{ d.sujetThese || i18n.t('chercheur.enc.sujet_non') }}</p>
                   <span class="enc-statut" [class.enc-en-cours]="d.statut === 'EN_COURS'"
                         [class.enc-soutenu]="d.statut === 'SOUTENU'">
                     {{ d.statut === 'EN_COURS' ? 'En cours' : 'Soutenu' }}
@@ -610,9 +619,9 @@
 
       <!-- Mastériens encadrés -->
       <div class="enc-section">
-        <h3>Mastériens ({{ mesMasteriens().length }})</h3>
+        <h3>{{ i18n.t('chercheur.enc.masteriens') }} ({{ mesMasteriens().length }})</h3>
         @if (mesMasteriens().length === 0) {
-          <p class="empty-msg">Aucun mastérien encadré</p>
+          <p class="empty-msg">{{ i18n.t('chercheur.enc.aucun_mas') }}</p>
         } @else {
           <div class="enc-list">
             @for (m of mesMasteriens(); track m.id) {
@@ -622,7 +631,7 @@
                 </div>
                 <div class="enc-info">
                   <strong>{{ m.prenom }} {{ m.nom }}</strong>
-                  <p>{{ m.sujetMemoire || 'Sujet non spécifié' }}</p>
+                  <p>{{ m.sujetMemoire || i18n.t('chercheur.enc.sujet_non') }}</p>
                   @if (m.promotion) {
                     <span class="enc-promo">Promotion {{ m.promotion }}</span>
                   }
@@ -641,17 +650,17 @@
 
     <!-- Colonne droite : Ajouter des encadrements -->
     <div class="enc-col enc-col-add">
-      <h2>➕ Ajouter un Encadrement</h2>
+      <h2>{{ i18n.t('chercheur.enc.ajouter') }}</h2>
 
       <!-- Onglets pour choisir le type -->
       <div class="enc-tabs">
         <button [class.active]="encTab() === 'doctorants'"
                 (click)="encTab.set('doctorants')">
-          🎓 Doctorants
+          🎓 {{ i18n.t('chercheur.enc.doctorants') }}
         </button>
         <button [class.active]="encTab() === 'masteriens'"
                 (click)="encTab.set('masteriens')">
-          📚 Mastériens
+          📚 {{ i18n.t('chercheur.enc.masteriens') }}
         </button>
       </div>
 
@@ -659,11 +668,11 @@
       <div class="enc-tab-content">
         @if (encTab() === 'doctorants') {
           <div class="enc-add-section">
-            <h3>Doctorants Disponibles</h3>
-            <p class="enc-desc">Sélectionnez un doctorant sans directeur pour l'encadrer</p>
+            <h3>{{ i18n.t('chercheur.enc.dispos_doc') }}</h3>
+            <p class="enc-desc">{{ i18n.t('chercheur.enc.dispos_doc_desc') }}</p>
 
             @if (doctorantsDispos().length === 0) {
-              <p class="empty-msg">Aucun doctorant disponible</p>
+              <p class="empty-msg">{{ i18n.t('chercheur.enc.aucun_doc_dispo') }}</p>
             } @else {
               <div class="enc-available-list">
                 @for (d of doctorantsDispos(); track d.id) {
@@ -671,12 +680,12 @@
                     <div class="enc-avatar">{{ d.prenom?.[0] }}{{ d.nom?.[0] }}</div>
                     <div class="enc-info">
                       <strong>{{ d.prenom }} {{ d.nom }}</strong>
-                      <p>{{ d.sujetThese || 'Sujet non spécifié' }}</p>
+                      <p>{{ d.sujetThese || i18n.t('chercheur.enc.sujet_non') }}</p>
                       @if (d.dateInscription) {
-                        <span class="enc-date">Inscrit en {{ d.dateInscription }}</span>
+                        <span class="enc-date">{{ i18n.t('chercheur.enc.inscrit') }} {{ d.dateInscription }}</span>
                       }
                     </div>
-                    <button class="btn-assign" (click)="assignerDoctorant(d.id)">➕ Assigner</button>
+                    <button class="btn-assign" (click)="assignerDoctorant(d.id)">{{ i18n.t('chercheur.enc.btn_assigner') }}</button>
                   </div>
                 }
               </div>
@@ -686,25 +695,27 @@
 
         @if (encTab() === 'masteriens') {
           <div class="enc-add-section">
-            <h3>Mastériens Disponibles</h3>
-            <p class="enc-desc">Sélectionnez un mastérien sans encadrant pour l'encadrer</p>
+            <h3>{{ i18n.t('chercheur.enc.dispos_mas') }}</h3>
+            <p class="enc-desc">{{ i18n.t('chercheur.enc.dispos_mas_desc') }}</p>
 
             @if (masteriensDispos().length === 0) {
-              <p class="empty-msg">Aucun mastérien disponible</p>
+              <p class="empty-msg">{{ i18n.t('chercheur.enc.aucun_mas_dispo') }}</p>
             } @else {
               <div class="enc-available-list">
                 @for (m of masteriensDispos(); track m.id) {
-                  <div class="enc-avatar" style="background: linear-gradient(135deg, #34d399, #059669)">
-                    {{ m.prenom?.[0] }}{{ m.nom?.[0] }}
+                  <div class="enc-available-item">
+                    <div class="enc-avatar" style="background: linear-gradient(135deg, #34d399, #059669)">
+                      {{ m.prenom?.[0] }}{{ m.nom?.[0] }}
+                    </div>
+                    <div class="enc-info">
+                      <strong>{{ m.prenom }} {{ m.nom }}</strong>
+                      <p>{{ m.sujetMemoire || i18n.t('chercheur.enc.sujet_non') }}</p>
+                      @if (m.promotion) {
+                        <span class="enc-promo">Promotion {{ m.promotion }}</span>
+                      }
+                    </div>
+                    <button class="btn-assign" (click)="assignerMasterien(m.id)">{{ i18n.t('chercheur.enc.btn_assigner') }}</button>
                   </div>
-                  <div class="enc-info">
-                    <strong>{{ m.prenom }} {{ m.nom }}</strong>
-                    <p>{{ m.sujetMemoire || 'Sujet non spécifié' }}</p>
-                    @if (m.promotion) {
-                      <span class="enc-promo">Promotion {{ m.promotion }}</span>
-                    }
-                  </div>
-                  <button class="btn-assign" (click)="assignerMasterien(m.id)">➕ Assigner</button>
                 }
               </div>
             }

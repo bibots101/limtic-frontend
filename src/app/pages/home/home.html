@@ -1,12 +1,12 @@
 <!-- Hero -->
 <div class="hero">
   <div class="hero-content">
-    <div class="hero-badge">Laboratoire de Recherche</div>
+    <div class="hero-badge">{{ i18n.t('home.badge') }}</div>
     <h1>{{ nomLabo() }}</h1>
     <p class="hero-sub hero-description">{{ descriptionLabo() }}</p>
     <div class="hero-actions">
-      <a routerLink="/chercheurs" class="btn-primary">Nos Chercheurs</a>
-      <a routerLink="/publications" class="btn-outline btn-outline-hero">Publications</a>
+      <a routerLink="/chercheurs" class="btn-primary">{{ i18n.t('home.nos_chercheurs') }}</a>
+      <a routerLink="/publications" class="btn-outline btn-outline-hero">{{ i18n.t('nav.publications') }}</a>
     </div>
   </div>
   <div class="hero-visual">
@@ -22,27 +22,26 @@
 </div>
 
 <!-- Statistiques -->
-
 <div class="stats-bar">
   <div class="stat">
     <span class="stat-num">{{ statsChercheurs() }}</span>
-    <span class="stat-label">Chercheurs</span>
+    <span class="stat-label">{{ i18n.t('home.stat_chercheurs') }}</span>
   </div>
   <div class="stat">
     <span class="stat-num">{{ statsPublications() }}</span>
-    <span class="stat-label">Publications</span>
+    <span class="stat-label">{{ i18n.t('home.stat_publications') }}</span>
   </div>
   <div class="stat">
     <span class="stat-num">{{ statsDoctorants() }}</span>
-    <span class="stat-label">Doctorants</span>
+    <span class="stat-label">{{ i18n.t('home.stat_doctorants') }}</span>
   </div>
   <div class="stat">
     <span class="stat-num">{{ statsMasteriens() }}</span>
-    <span class="stat-label">Mastériens</span>
+    <span class="stat-label">{{ i18n.t('home.stat_masteriens') }}</span>
   </div>
   <div class="stat">
     <span class="stat-num">{{ statsEvenements() }}</span>
-    <span class="stat-label">Événements</span>
+    <span class="stat-label">{{ i18n.t('home.stat_evenements') }}</span>
   </div>
 </div>
 
@@ -50,36 +49,32 @@
 <div class="sections">
   <div class="section-card feature-card" routerLink="/chercheurs">
     <div class="card-icon">👨‍🔬</div>
-    <h3>Chercheurs</h3>
-    <p class="card-description">Découvrez les membres de notre équipe de recherche et leurs spécialités.</p>
-    <span class="card-link">Voir tous →</span>
+    <h3>{{ i18n.t('nav.chercheurs') }}</h3>
+    <p class="card-description">{{ i18n.t('home.chercheurs_desc') }}</p>
+    <span class="card-link">{{ i18n.t('home.voir_all') }}</span>
   </div>
   <div class="section-card feature-card" routerLink="/publications">
     <div class="card-icon">📄</div>
-    <h3>Publications</h3>
-    <p class="card-description">Accédez aux travaux scientifiques publiés par notre laboratoire.</p>
-    <span class="card-link">Voir toutes →</span>
+    <h3>{{ i18n.t('nav.publications') }}</h3>
+    <p class="card-description">{{ i18n.t('home.publications_desc') }}</p>
+    <span class="card-link">{{ i18n.t('home.voir_all_f') }}</span>
   </div>
   <div class="section-card feature-card" routerLink="/evenements">
     <div class="card-icon">📅</div>
-    <h3>Événements</h3>
-    <p class="card-description">Séminaires, workshops et soutenances à venir au {{ settings.acronyme() }}.</p>
-    <span class="card-link">Voir tous →</span>
+    <h3>{{ i18n.t('nav.evenements') }}</h3>
+    <p class="card-description">{{ i18n.t('home.evenements_desc') }}</p>
+    <span class="card-link">{{ i18n.t('home.voir_all') }}</span>
   </div>
   <div class="section-card feature-card" routerLink="/outils">
     <div class="card-icon">🛠️</div>
-    <h3>Outils</h3>
-    <p class="card-description">Logiciels et outils développés par notre laboratoire.</p>
-    <span class="card-link">Voir tous →</span>
+    <h3>{{ i18n.t('nav.outils') }}</h3>
+    <p class="card-description">{{ i18n.t('home.outils_desc') }}</p>
+    <span class="card-link">{{ i18n.t('home.voir_all') }}</span>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     FIL D'ACTUALITÉS DYNAMIQUE
-     Remplace les cards statiques du CDC §3.x
-     ═══════════════════════════════════════════════════════════════ -->
 <div class="actualites-section">
-  <h2 class="section-title">Actualités du laboratoire</h2>
+  <h2 class="section-title">{{ i18n.t('home.actualites') }}</h2>
 
   @if (actualitesLoading()) {
     <div class="loading-row">
@@ -90,14 +85,14 @@
   } @else {
     <div class="actualites-grid">
 
-      <!-- ── Dernières publications ──────────────────────────── -->
+      <!-- Dernières publications -->
       <div class="actualites-col">
         <h3 class="col-title">
-          <span class="col-icon">📄</span> Dernières publications
+          <span class="col-icon">📄</span> {{ i18n.t('home.dernieres_pub') }}
         </h3>
 
         @if (dernieresPublications().length === 0) {
-          <p class="empty-msg">Aucune publication récente.</p>
+          <p class="empty-msg">{{ i18n.t('home.aucune_pub') }}</p>
         }
 
         @for (pub of dernieresPublications(); track pub.id) {
@@ -105,8 +100,6 @@
             <div class="actu-meta">
               <span class="actu-type">{{ pub.type }}</span>
               <span class="actu-annee">{{ pub.annee }}</span>
-
-              <!-- Badge classement RÉEL (§3.7) — plus de simulation par mot-clé -->
               @if (getBadgeClassement(pub); as badge) {
                 <span class="ranking-badge {{ badge.classe }}">{{ badge.label }}</span>
               }
@@ -122,29 +115,25 @@
         }
 
         <a routerLink="/publications" class="voir-tout-lien">
-          Toutes les publications →
+          {{ i18n.t('home.toutes_pub') }}
         </a>
       </div>
 
-      <!-- ── Prochains événements ────────────────────────────── -->
+      <!-- Prochains événements -->
       <div class="actualites-col">
         <h3 class="col-title">
-          <span class="col-icon">📅</span> Prochains événements
+          <span class="col-icon">📅</span> {{ i18n.t('home.prochains_evt') }}
         </h3>
 
         @if (prochainsEvenements().length === 0) {
-          <p class="empty-msg">Aucun événement planifié prochainement.</p>
+          <p class="empty-msg">{{ i18n.t('home.aucun_evt') }}</p>
         }
 
         @for (evt of prochainsEvenements(); track evt.id) {
           <div class="actu-card evt-card" [routerLink]="['/evenements', evt.id]">
             <div class="evt-date-block">
-              <span class="evt-jour">
-                {{ evt.dateEvenement | date:'dd' }}
-              </span>
-              <span class="evt-mois">
-                {{ evt.dateEvenement | date:'MMM' | uppercase }}
-              </span>
+              <span class="evt-jour">{{ evt.dateEvenement | date:'dd' }}</span>
+              <span class="evt-mois">{{ evt.dateEvenement | date:'MMM' | uppercase }}</span>
             </div>
             <div class="evt-info">
               <h4 class="actu-titre">{{ evt.titre }}</h4>
@@ -159,7 +148,7 @@
         }
 
         <a routerLink="/evenements" class="voir-tout-lien">
-          Tous les événements →
+          {{ i18n.t('home.tous_evt') }}
         </a>
       </div>
 

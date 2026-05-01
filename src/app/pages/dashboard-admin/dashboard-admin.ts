@@ -8,6 +8,7 @@ import { ThemeService } from '../../services/theme.service';
 import { LabSettingsService } from '../../services/lab-settings.service';
 import { SafePipe } from '../../pipes/Safepipe';
 import { AdminEvenementsComponent } from '../admin-evenements/admin-evenements.component';
+import { I18nService } from '../../i18n/i18n.service';
 
 // ── Types internes pour §4.3.6 ────────────────────────────────────────────────
 
@@ -372,7 +373,8 @@ export class DashboardAdmin implements OnInit {
     private api: ApiService,
     private sanitizer: DomSanitizer,
     public themeService: ThemeService,
-    public settings: LabSettingsService
+    public settings: LabSettingsService,
+    public i18n: I18nService
   ) {
     effect(() => {
       const currentTheme = this.themeService.theme();

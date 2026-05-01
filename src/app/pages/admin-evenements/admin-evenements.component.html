@@ -3,21 +3,21 @@
   <!-- EN-TÊTE -->
   <div class="ev-header">
     <div>
-      <h1>Événements</h1>
-      <p class="subtitle">{{ evenementsFiltres().length }} affiché(s)</p>
+      <h1>{{ i18n.t('admin.events.titre') }}</h1>
+      <p class="subtitle">{{ evenementsFiltres().length }} {{ i18n.t('admin.events.affiches') }}</p>
     </div>
-    <button class="btn-primary" (click)="ouvrirCreation()">+ Nouvel événement</button>
+    <button class="btn-primary" (click)="ouvrirCreation()">{{ i18n.t('admin.events.btn_nouveau') }}</button>
   </div>
 
   <!-- FILTRES STATUT -->
   <div class="ev-filters">
-    <button class="chip" [class.active]="filtreStatut() === ''"        (click)="filtreStatut.set('')">Tous</button>
-    <button class="chip a-venir"  [class.active]="filtreStatut() === 'A_VENIR'"  (click)="filtreStatut.set('A_VENIR')">À venir</button>
-    <button class="chip en-cours" [class.active]="filtreStatut() === 'EN_COURS'" (click)="filtreStatut.set('EN_COURS')">En cours</button>
-    <button class="chip termine"  [class.active]="filtreStatut() === 'TERMINE'"  (click)="filtreStatut.set('TERMINE')">Terminé</button>
+    <button class="chip" [class.active]="filtreStatut() === ''"        (click)="filtreStatut.set('')">{{ i18n.t('admin.events.filtre_tous') }}</button>
+    <button class="chip a-venir"  [class.active]="filtreStatut() === 'A_VENIR'"  (click)="filtreStatut.set('A_VENIR')">{{ i18n.t('admin.events.filtre_avenir') }}</button>
+    <button class="chip en-cours" [class.active]="filtreStatut() === 'EN_COURS'" (click)="filtreStatut.set('EN_COURS')">{{ i18n.t('admin.events.filtre_encours') }}</button>
+    <button class="chip termine"  [class.active]="filtreStatut() === 'TERMINE'"  (click)="filtreStatut.set('TERMINE')">{{ i18n.t('admin.events.filtre_termine') }}</button>
   </div>
 
-  @if (loading()) { <div class="ev-loading">Chargement...</div> }
+  @if (loading()) { <div class="ev-loading">{{ i18n.t('admin.events.chargement') }}</div> }
 
   <!-- GRILLE -->
   <div class="ev-grid">
@@ -50,13 +50,13 @@
         </div>
 
         <div class="ev-actions">
-          <button class="btn-icon" (click)="ouvrirEdition(ev)" title="Modifier">Modifier</button>
-          <button class="btn-icon btn-del" (click)="demanderSuppression(ev.id!)" title="Supprimer">Supprimer</button>
+          <button class="btn-icon" (click)="ouvrirEdition(ev)" title="{{ i18n.t('admin.btn.editer') }}">{{ i18n.t('admin.btn.editer') }}</button>
+          <button class="btn-icon btn-del" (click)="demanderSuppression(ev.id!)" title="{{ i18n.t('admin.btn.supprimer') }}">{{ i18n.t('admin.btn.supprimer') }}</button>
         </div>
       </div>
     }
     @if (!loading() && evenementsFiltres().length === 0) {
-      <div class="ev-empty">Aucun événement.</div>
+      <div class="ev-empty">{{ i18n.t('admin.events.aucun') }}</div>
     }
   </div>
 
@@ -66,7 +66,7 @@
       <div class="modal" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
-          <h2>{{ modeEdition() ? 'Modifier' : 'Créer' }} un événement</h2>
+          <h2>{{ modeEdition() ? i18n.t('admin.events.modal_modifier') : i18n.t('admin.events.modal_creer') }}</h2>
           <button class="btn-close" (click)="fermerModal()">✕</button>
         </div>
 
@@ -74,68 +74,68 @@
 
           <!-- Titre -->
           <div class="fg">
-            <label>Titre <span class="req">*</span></label>
-            <input [(ngModel)]="form.titre" placeholder="Titre de l'événement" />
+            <label>{{ i18n.t('admin.events.form_titre') }} <span class="req">*</span></label>
+            <input [(ngModel)]="form.titre" placeholder="{{ i18n.t('admin.events.form_titre_ph') }}" />
           </div>
 
           <!-- Dates -->
           <div class="fg-row">
             <div class="fg">
-              <label>Date de début <span class="req">*</span></label>
+              <label>{{ i18n.t('admin.events.form_debut') }} <span class="req">*</span></label>
               <input type="date" [(ngModel)]="form.dateEvenement" />
             </div>
             <div class="fg">
-              <label>Date de fin <span class="req">*</span></label>
+              <label>{{ i18n.t('admin.events.form_fin') }} <span class="req">*</span></label>
               <input type="date" [(ngModel)]="form.dateFin" />
             </div>
           </div>
 
           <!-- Lieu -->
           <div class="fg">
-            <label>Lieu</label>
-            <input [(ngModel)]="form.lieu" placeholder="Salle, adresse..." />
+            <label>{{ i18n.t('admin.events.form_lieu') }}</label>
+            <input [(ngModel)]="form.lieu" placeholder="{{ i18n.t('admin.events.form_lieu_ph') }}" />
           </div>
 
           <!-- Type -->
           <div class="fg">
-            <label>Type</label>
-            <input [(ngModel)]="form.type" placeholder="Ex: Séminaire, Soutenance, Workshop" />
+            <label>{{ i18n.t('admin.events.form_type') }}</label>
+            <input [(ngModel)]="form.type" placeholder="{{ i18n.t('admin.events.form_type_ph') }}" />
           </div>
 
           <!-- Programme PDF -->
           <div class="fg">
-            <label>URL du programme PDF</label>
+            <label>{{ i18n.t('admin.events.form_prog_url') }}</label>
             <input [(ngModel)]="form.programmeUrl" placeholder="https://..." />
           </div>
 
           <!-- Programme scientifique riche -->
           <div class="fg">
-            <label>Texte du programme scientifique</label>
+            <label>{{ i18n.t('admin.events.form_prog_texte') }}</label>
             <div class="quill-wrap"><div id="quill-programme"></div></div>
           </div>
 
           <!-- Intervenants invités -->
           <div class="fg">
-            <label>Intervenants invités</label>
+            <label>{{ i18n.t('admin.events.form_interv') }}</label>
             <div class="intervenants-list">
               @if (form.intervenants && form.intervenants.length > 0) {
                 @for (inv of form.intervenants; track inv.id; let i = $index) {
                   <div class="intervenant-row">
-                    <input name="intervenant-prenom-{{i}}" [(ngModel)]="inv.prenom" placeholder="Prénom" />
-                    <input name="intervenant-nom-{{i}}" [(ngModel)]="inv.nom" placeholder="Nom" />
-                    <input name="intervenant-affiliation-{{i}}" [(ngModel)]="inv.affiliation" placeholder="Affiliation" />
-                    <input name="intervenant-titre-{{i}}" [(ngModel)]="inv.titrePresentation" placeholder="Titre de l'intervention" />
+                    <input name="intervenant-prenom-{{i}}" [(ngModel)]="inv.prenom" placeholder="{{ i18n.t('admin.events.form_interv_prenom') }}" />
+                    <input name="intervenant-nom-{{i}}" [(ngModel)]="inv.nom" placeholder="{{ i18n.t('admin.events.form_interv_nom') }}" />
+                    <input name="intervenant-affiliation-{{i}}" [(ngModel)]="inv.affiliation" placeholder="{{ i18n.t('admin.events.form_interv_aff') }}" />
+                    <input name="intervenant-titre-{{i}}" [(ngModel)]="inv.titrePresentation" placeholder="{{ i18n.t('admin.events.form_interv_titre') }}" />
                     <button type="button" class="btn-small btn-remove" (click)="supprimerIntervenant(i)">✕</button>
                   </div>
                 }
               }
-              <button type="button" class="btn-add" (click)="ajouterIntervenant()">Ajouter un intervenant</button>
+              <button type="button" class="btn-add" (click)="ajouterIntervenant()">{{ i18n.t('admin.events.form_interv_add') }}</button>
             </div>
           </div>
 
           <!-- Statut calculé (lecture seule) -->
           <div class="fg">
-            <label>Statut (mis à jour automatiquement)</label>
+            <label>{{ i18n.t('admin.events.form_statut') }}</label>
             <span class="badge badge-{{ statutCalcule(form).toLowerCase().replace('_','-') }}">
               {{ labelStatut(statutCalcule(form)) }}
             </span>
@@ -143,17 +143,17 @@
 
           <!-- Éditeur Quill -->
           <div class="fg">
-            <label>Description</label>
+            <label>{{ i18n.t('admin.events.form_desc') }}</label>
             <div class="quill-wrap"><div id="quill-editor"></div></div>
           </div>
 
           <!-- Upload images -->
           <div class="fg">
-            <label>Images</label>
+            <label>{{ i18n.t('admin.events.form_img') }}</label>
             <label class="upload-zone">
               <input type="file" accept="image/*" multiple hidden (change)="onFileSelect($event)" />
-              <span>📁 Cliquer ou déposer des images</span>
-              <small>PNG, JPG, WEBP — upload multiple</small>
+              <span>{{ i18n.t('admin.events.form_img_dep') }}</span>
+              <small>{{ i18n.t('admin.events.form_img_ext') }}</small>
             </label>
 
             @if (form.images.length > 0) {
@@ -171,20 +171,20 @@
                       <button class="gal-remove" (click)="supprimerImage(i)">✕</button>
                       <span class="gal-handle">⠿</span>
                     </div>
-                    <input class="gal-legende" [(ngModel)]="img.legende" placeholder="Légende..." />
+                    <input class="gal-legende" [(ngModel)]="img.legende" placeholder="{{ i18n.t('admin.events.form_img_leg') }}" />
                   </div>
                 }
               </div>
-              <p class="gallery-tip">⟺ Glissez les vignettes pour réordonner</p>
+              <p class="gallery-tip">{{ i18n.t('admin.events.form_img_tip') }}</p>
             }
           </div>
 
         </div><!-- /modal-body -->
 
         <div class="modal-footer">
-          <button class="btn-secondary" (click)="fermerModal()" [disabled]="enregistrement()">Annuler</button>
+          <button class="btn-secondary" (click)="fermerModal()" [disabled]="enregistrement()">{{ i18n.t('admin.events.btn_annuler') }}</button>
           <button class="btn-primary"   (click)="enregistrer()" [disabled]="enregistrement()">
-            {{ enregistrement() ? 'Enregistrement...' : (modeEdition() ? 'Mettre à jour' : "Créer l'événement") }}
+            {{ enregistrement() ? i18n.t('admin.events.btn_enregistrer') : (modeEdition() ? i18n.t('admin.events.btn_maj') : i18n.t('admin.events.btn_creer')) }}
           </button>
         </div>
 
@@ -196,11 +196,11 @@
   @if (confirmSupprId !== null) {
     <div class="overlay" (click)="annulerSuppression()">
       <div class="modal modal-sm" (click)="$event.stopPropagation()">
-        <h3>Supprimer cet événement ?</h3>
-        <p>Cette action est irréversible.</p>
+        <h3>{{ i18n.t('admin.events.suppr_titre') }}</h3>
+        <p>{{ i18n.t('admin.events.suppr_desc') }}</p>
         <div class="confirm-actions">
-          <button class="btn-secondary" (click)="annulerSuppression()">Annuler</button>
-          <button class="btn-danger"    (click)="confirmerSuppression()">Supprimer</button>
+          <button class="btn-secondary" (click)="annulerSuppression()">{{ i18n.t('admin.events.btn_annuler') }}</button>
+          <button class="btn-danger"    (click)="confirmerSuppression()">{{ i18n.t('admin.btn.supprimer') }}</button>
         </div>
       </div>
     </div>

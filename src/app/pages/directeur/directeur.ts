@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-directeur',
@@ -8,6 +9,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './directeur.css'
 })
 export class Directeur {
+  public i18n = inject(I18nService);
   directeur = {
     prenom: 'Salah',
     nom: 'SALHI',

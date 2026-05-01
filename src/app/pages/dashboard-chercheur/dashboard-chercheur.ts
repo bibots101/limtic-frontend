@@ -6,6 +6,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService } from '../../services/api.service';
 import { ThemeService } from '../../services/theme.service';
 import { Publication } from '../../models/chercheur.model';
+import { I18nService } from '../../i18n/i18n.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard-chercheur',
@@ -74,6 +76,8 @@ export class DashboardChercheur implements OnInit {
   pubBrouillons = computed(() => this.publications().filter(p => p.statut === 'BROUILLON' || !p.statut).length);
   pubSoumises   = computed(() => this.publications().filter(p => p.statut === 'SOUMIS').length);
   pubPubliees   = computed(() => this.publications().filter(p => p.statut === 'PUBLIE').length);
+
+  public i18n = inject(I18nService);
 
   constructor(private router: Router, private api: ApiService, private sanitizer: DomSanitizer, public themeService: ThemeService) {}
 

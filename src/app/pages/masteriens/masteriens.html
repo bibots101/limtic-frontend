@@ -1,24 +1,24 @@
 <div class="page">
   <div class="page-header">
-    <h1>Étudiants en Mastère</h1>
-    <p>Étudiants encadrés au laboratoire {{ settings.acronyme() }}</p>
+    <h1>{{ i18n.t('mas.titre') }}</h1>
+    <p>{{ i18n.t('mas.sous_titre') }} {{ settings.acronyme() }}</p>
   </div>
 
   <div class="filters">
     <input [(ngModel)]="filterEncadrant" (ngModelChange)="applyFilters()"
-           placeholder="Filtrer par encadrant..." class="filter-input" />
+           [placeholder]="i18n.t('mas.recherche_encadrant')" class="filter-input" />
     <select [(ngModel)]="filterStatut" (ngModelChange)="applyFilters()" class="filter-select">
-      <option value="">Tous les statuts</option>
-      <option value="EN_COURS">En cours</option>
-      <option value="DIPLOME">Diplômé</option>
+      <option value="">{{ i18n.t('mas.statut.all') }}</option>
+      <option value="EN_COURS">{{ i18n.t('mas.statut.en_cours') }}</option>
+      <option value="DIPLOME">{{ i18n.t('mas.statut.diplome') }}</option>
     </select>
     <input [(ngModel)]="filterPromotion" (ngModelChange)="applyFilters()"
-           placeholder="Promotion (ex: 2023-2024)" class="filter-input" />
-    <button class="btn-reset" (click)="resetFilters()">✕ Réinitialiser</button>
+           [placeholder]="i18n.t('mas.recherche_promotion')" class="filter-input" />
+    <button class="btn-reset" (click)="resetFilters()">✕ {{ i18n.t('general.reset') }}</button>
   </div>
 
   @if (loading()) {
-    <div class="loading-state">Chargement...</div>
+    <div class="loading-state">{{ i18n.t('general.loading') }}</div>
   }
 
   <div class="cards-grid">
@@ -32,30 +32,30 @@
             <span class="badge-statut"
               [class.en-cours]="m.statut === 'EN_COURS'"
               [class.diplome-badge]="m.statut === 'DIPLOME'">
-              {{ m.statut === 'EN_COURS' ? 'En cours' : 'Diplômé' }}
+              {{ m.statut === 'EN_COURS' ? i18n.t('mas.statut.en_cours') : i18n.t('mas.statut.diplome') }}
             </span>
           </div>
         </div>
 
-        <p class="sujet">📄 {{ m.sujetMemoire || 'Sujet non renseigné' }}</p>
+        <p class="sujet">📄 {{ m.sujetMemoire || i18n.t('mas.sujet_non_renseigne') }}</p>
 
         @if (m.encadrant) {
           <div class="encadrant">
-            <span class="label">Encadrant :</span>
-            <a [routerLink]="['/chercheurs', m.encadrant.id]" [queryParams]="{from: 'masteriens'}" class="link">
+            <span class="label">{{ i18n.t('mas.encadrant') }} :</span>
+            <a [routerLink]="['/chercheurs', m.encadrant.id]" [queryParams]="{from: 'masteriens'}" class="link" (click)="$event.stopPropagation()">
               {{ m.encadrant.prenom }} {{ m.encadrant.nom }}
             </a>
           </div>
         }
 
         @if (m.promotion) {
-          <div class="meta">🎓 Promotion : {{ m.promotion }}</div>
+          <div class="meta">🎓 {{ i18n.t('mas.promotion') }} : {{ m.promotion }}</div>
         }
       </div>
     }
 
     @if (!loading() && filtered().length === 0) {
-      <div class="empty-state">Aucun mastérien trouvé.</div>
+      <div class="empty-state">{{ i18n.t('mas.vide') }}</div>
     }
   </div>
 </div>

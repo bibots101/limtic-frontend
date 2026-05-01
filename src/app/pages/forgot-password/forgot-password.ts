@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LabSettingsService } from '../../services/lab-settings.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 import { environment } from '../../../environments/environment';
 
@@ -17,7 +18,7 @@ export class ForgotPassword {
   erreur = signal('');
   loading = signal(false);
 
-  constructor(private router: Router, public settings: LabSettingsService) {}
+  constructor(private router: Router, public settings: LabSettingsService, public i18n: I18nService) {}
 
   onSubmit() {
     if (!this.email) { this.erreur.set('Veuillez entrer votre email.'); return; }
