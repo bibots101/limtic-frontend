@@ -95,7 +95,8 @@
         <div class="dropdown-menu">
           <div class="dropdown-header"
             style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-subtle); margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-muted);">
-            {{ i18n.t('nav.connecte_as') }} <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole() }}</span>
+            {{ i18n.t('nav.connecte_as') }} <span class="user-badge" style="margin-left: 0.25rem;">{{ userRole()
+              }}</span>
           </div>
           <a [routerLink]="userRole() === 'ADMIN' || userRole() === 'SUPER_ADMIN' ? '/dashboard-admin' : '/dashboard-chercheur'"
             (click)="fermerTout()">
@@ -156,6 +157,88 @@
   </div>
 
 </nav>
-}
 
 <router-outlet />
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <!-- Section 1: Logo & Lab Info -->
+    <div class="footer-section lab-info">
+      <div class="footer-brand">
+        <img [src]="settings.logoUrlResolved()" [attr.alt]="settings.acronyme()" class="footer-limtic-logo" />
+        <div class="brand-text">
+          <h2>{{ settings.acronyme() }}</h2>
+          <p>{{ settings.nom() }}</p>
+        </div>
+      </div>
+      <p class="footer-desc">{{ settings.description() }}</p>
+    </div>
+
+    <!-- Section 2: Quick Links -->
+    <div class="footer-section quick-links">
+      <h3>{{ i18n.t('footer.liens_rapides') }}</h3>
+      <ul>
+        <li><a routerLink="/home" (click)="fermerTout()">{{ i18n.t('nav.accueil') }}</a></li>
+        <li><a routerLink="/directeur" (click)="fermerTout()">{{ i18n.t('nav.directeur') }}</a></li>
+        <li><a routerLink="/publications" (click)="fermerTout()">{{ i18n.t('nav.publications') }}</a></li>
+        <li><a routerLink="/evenements" (click)="fermerTout()">{{ i18n.t('nav.evenements') }}</a></li>
+        <li><a routerLink="/contact" (click)="fermerTout()">{{ i18n.t('nav.contact') }}</a></li>
+      </ul>
+    </div>
+
+    <!-- Section 3: Contact Info & Socials -->
+    <div class="footer-section contact-info">
+      <h3>{{ i18n.t('footer.contact') }}</h3>
+      <p><span class="icon">📍</span> {{ settings.adresse() || '123 Avenue de la Recherche, Tunis' }}</p>
+      <p><span class="icon">📞</span> {{ settings.telephone() || '+216 71 123 456' }}</p>
+      <p><span class="icon">✉️</span> {{ settings.email() }}</p>
+    </div>
+
+    <!-- Section 4: Preferences & Socials -->
+    <div class="footer-section preferences">
+      <h3>{{ i18n.t('footer.preferences') }}</h3>
+      <div class="footer-prefs">
+        <!-- Theme Toggle -->
+        <button class="footer-toggle-btn" (click)="themeService.toggle()">
+          <span class="icon">{{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}</span>
+          {{ themeService.theme() === 'dark' ? i18n.t('footer.mode_clair') : i18n.t('footer.mode_sombre') }}
+        </button>
+        
+        <!-- Lang Toggle -->
+        <button class="footer-toggle-btn" (click)="i18n.setLangue(i18n.langue() === 'fr' ? 'en' : 'fr')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="globe-icon">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span style="text-transform: uppercase">{{ i18n.langue() }}</span>
+        </button>
+      </div>
+
+      <h3 class="social-title">{{ i18n.t('footer.suivez_nous') }}</h3>
+      <div class="social-links" style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+        <!-- Facebook -->
+        <a href="#" target="_blank" class="social-btn facebook" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+          </svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="#" target="_blank" class="social-btn linkedin" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+            <rect x="2" y="9" width="4" height="12"></rect>
+            <circle cx="4" cy="4" r="2"></circle>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2026 {{ settings.acronyme() }}. {{ i18n.t('footer.droits') }}</p>
+  </div>
+</footer>
+} @else {
+<router-outlet />
+}
