@@ -6,10 +6,12 @@ import { ApiService } from './services/api.service';
 import { ThemeService } from './services/theme.service';
 import { LabSettingsService } from './services/lab-settings.service';
 import { SeoService } from './services/seo.service';
+import { I18nService } from './i18n/i18n.service';
+import { LangSwitcherComponent } from './i18n/lang-switcher.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, LangSwitcherComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -27,7 +29,8 @@ export class App implements OnInit {
     private api: ApiService,
     public themeService: ThemeService,
     public settings: LabSettingsService,
-    private seoService: SeoService
+    private seoService: SeoService,
+    public i18n: I18nService
   ) {}
 
   ngOnInit() {

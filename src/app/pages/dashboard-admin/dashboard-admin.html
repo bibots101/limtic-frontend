@@ -42,6 +42,17 @@
           ⚙ Paramètres
         </button>
       }
+      <!-- Journal d'audit -->
+      <button [class.active]="activeTab() === 'audit'" (click)="setTab('audit')" class="nav-btn-audit" title="Journal d'audit">
+        <span class="audit-clock-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 8 14"/>
+            <path d="M4.93 4.93a10 10 0 0 0 0 14.14" stroke-dasharray="2 2"/>
+          </svg>
+        </span>
+        Historique
+      </button>
       <button class="btn-logout-mobile" (click)="logout()">⏻ Quitter</button>
     </nav>
     <div class="sidebar-footer">
@@ -1475,5 +1486,190 @@
     }
     <!-- ── fin TAB PARAMÈTRES ── -->
 
+    <!-- TAB: JOURNAL D'AUDIT -->
+    @if (activeTab() === 'audit') {
+      <div class="tab-header-row">
+        <div>
+          <h1>
+            <span class="audit-title-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 8 14"/>
+                <path d="M4.93 4.93a10 10 0 0 0 0 14.14" stroke-dasharray="2 2"/>
+              </svg>
+            </span>
+            Journal d'audit
+          </h1>
+          <p>{{ auditLogs().length }} événement(s) enregistré(s) — toutes les actions importantes du système</p>
+        </div>
+        <div class="audit-header-actions">
+          <button class="btn-add" (click)="loadAuditLogs()" [disabled]="auditLoading()">
+            @if (auditLoading()) { ⏳ } @else { ↺ } Actualiser
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="audit-filters">
+        <div class="audit-filter-group">
+          <label>Action</label>
+          <select [(ngModel)]="auditFilterAction" (change)="applyAuditFilters()">
+            <option value="">Toutes</option>
+            <option value="LOGIN">LOGIN</option>
+            <option value="LOGOUT">LOGOUT</option>
+            <option value="CREATE">CREATE</option>
+            <option value="UPDATE">UPDATE</option>
+            <option value="DELETE">DELETE</option>
+            <option value="EXPORT">EXPORT</option>
+            <option value="IMPORT">IMPORT</option>
+            <option value="PUBLISH">PUBLISH</option>
+            <option value="RESET_PASSWORD">RESET_PASSWORD</option>
+          </select>
+        </div>
+        <div class="audit-filter-group">
+          <label>Entité</label>
+          <select [(ngModel)]="auditFilterEntite" (change)="applyAuditFilters()">
+            <option value="">Toutes</option>
+            <option value="Publication">Publication</option>
+            <option value="Chercheur">Chercheur</option>
+            <option value="Evenement">Evenement</option>
+            <option value="Axe">Axe</option>
+            <option value="User">User</option>
+            <option value="Doctorant">Doctorant</option>
+            <option value="Masterien">Masterien</option>
+          </select>
+        </div>
+        <div class="audit-filter-group">
+          <label>Utilisateur (email)</label>
+          <input type="text" [(ngModel)]="auditFilterUser" (input)="applyAuditFilters()" placeholder="Filtrer par email…" />
+        </div>
+        <div class="audit-filter-group">
+          <label>Résultat</label>
+          <select [(ngModel)]="auditFilterSucces" (change)="applyAuditFilters()">
+            <option value="">Tous</option>
+            <option value="true">Succès</option>
+            <option value="false">Échec</option>
+          </select>
+        </div>
+        @if (auditFilterAction || auditFilterEntite || auditFilterUser || auditFilterSucces) {
+          <button class="btn-audit-clear" (click)="clearAuditFilters()">✕ Effacer les filtres</button>
+        }
+      </div>
+
+      @if (auditLoading()) {
+        <div class="audit-loading">
+          <div class="audit-spinner"></div>
+          Chargement du journal…
+        </div>
+      }
+
+      @if (!auditLoading()) {
+        @if (filteredAuditLogs().length === 0) {
+          <div class="audit-empty">
+            <span class="audit-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 8 14"/>
+              </svg>
+            </span>
+            <p>Aucun événement trouvé dans le journal.</p>
+          </div>
+        }
+
+        @if (filteredAuditLogs().length > 0) {
+          <div class="audit-stats-row">
+            <div class="audit-stat">
+              <span class="audit-stat-num">{{ filteredAuditLogs().length }}</span>
+              <span class="audit-stat-label">Événements</span>
+            </div>
+            <div class="audit-stat">
+              <span class="audit-stat-num audit-stat-success">{{ auditSuccessCount() }}</span>
+              <span class="audit-stat-label">Succès</span>
+            </div>
+            <div class="audit-stat">
+              <span class="audit-stat-num audit-stat-fail">{{ auditFailCount() }}</span>
+              <span class="audit-stat-label">Échecs</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Action</th>
+                  <th>Entité</th>
+                  <th>Utilisateur</th>
+                  <th>Détails</th>
+                  <th>IP</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (log of paginatedAuditLogs(); track log.id) {
+                  <tr [class.audit-row-fail]="!log.succes">
+                    <td class="audit-date">
+                      <div class="audit-date-main">{{ log.dateAction | date:'dd/MM/yyyy' }}</div>
+                      <div class="audit-date-time">{{ log.dateAction | date:'HH:mm:ss' }}</div>
+                    </td>
+                    <td>
+                      <span class="audit-action-badge" [ngClass]="getAuditActionClass(log.action)">
+                        {{ log.action }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (log.entite) {
+                        <span class="audit-entite">
+                          {{ log.entite }}
+                          @if (log.entiteId) { <span class="audit-entite-id">#{{ log.entiteId }}</span> }
+                        </span>
+                      } @else {
+                        <span class="cell-muted">—</span>
+                      }
+                    </td>
+                    <td class="audit-user">
+                      @if (log.userEmail) {
+                        <div class="cell-user">
+                          <div class="mini-avatar audit-avatar">{{ log.userEmail[0].toUpperCase() }}</div>
+                          <span class="audit-email">{{ log.userEmail }}</span>
+                        </div>
+                      } @else {
+                        <span class="cell-muted">Anonyme</span>
+                      }
+                    </td>
+                    <td class="audit-details">{{ log.details || '—' }}</td>
+                    <td class="audit-ip">{{ log.ipAddress || '—' }}</td>
+                    <td>
+                      <span class="audit-status-badge" [class.audit-success]="log.succes" [class.audit-fail]="!log.succes">
+                        {{ log.succes ? '✓ OK' : '✗ KO' }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          @if (auditTotalPages() > 1) {
+            <div class="audit-pagination">
+              <button class="audit-page-btn" [disabled]="auditPage() === 0" (click)="auditPageSet(0)">«</button>
+              <button class="audit-page-btn" [disabled]="auditPage() === 0" (click)="auditPageSet(auditPage() - 1)">‹</button>
+              @for (pg of auditPageRange(); track pg) {
+                <button class="audit-page-btn" [class.active]="pg === auditPage()" (click)="auditPageSet(pg)">
+                  {{ pg + 1 }}
+                </button>
+              }
+              <button class="audit-page-btn" [disabled]="auditPage() >= auditTotalPages() - 1" (click)="auditPageSet(auditPage() + 1)">›</button>
+              <button class="audit-page-btn" [disabled]="auditPage() >= auditTotalPages() - 1" (click)="auditPageSet(auditTotalPages() - 1)">»</button>
+              <span class="audit-page-info">Page {{ auditPage() + 1 }} / {{ auditTotalPages() }}</span>
+            </div>
+          }
+        }
+      }
+    }
+    <!-- ── fin TAB AUDIT ── -->
+
   </main>
+
 </div>

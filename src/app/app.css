@@ -426,6 +426,14 @@ body {
     text-align: center;
     transition: all 0.2s;
     box-shadow: 0 2px 10px rgba(0,210,255,0.3);
+    flex: 1;
+  }
+
+  /* Ligne langue + connexion en mobile (non connecté) */
+  .mobile-auth-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 }
 

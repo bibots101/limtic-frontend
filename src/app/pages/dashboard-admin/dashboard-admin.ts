@@ -97,6 +97,41 @@ export class DashboardAdmin implements OnInit {
   editingAxe   = signal<any | null>(null);
   assocMap     = signal<Record<number, number | null>>({});
 
+  // ── Journal d'audit ───────────────────────────────────────────────────────
+  auditLogs          = signal<any[]>([]);
+  filteredAuditLogs  = signal<any[]>([]);
+  auditLoading       = signal(false);
+  auditPage          = signal(0);
+  readonly AUDIT_PAGE_SIZE = 25;
+
+  auditFilterAction  = '';
+  auditFilterEntite  = '';
+  auditFilterUser    = '';
+  auditFilterSucces  = '';
+
+  auditTotalPages = computed(() =>
+    Math.ceil(this.filteredAuditLogs().length / this.AUDIT_PAGE_SIZE)
+  );
+
+  paginatedAuditLogs = computed(() => {
+    const start = this.auditPage() * this.AUDIT_PAGE_SIZE;
+    return this.filteredAuditLogs().slice(start, start + this.AUDIT_PAGE_SIZE);
+  });
+
+  auditPageRange = computed(() => {
+    const total = this.auditTotalPages();
+    const current = this.auditPage();
+    const range: number[] = [];
+    const start = Math.max(0, current - 2);
+    const end   = Math.min(total - 1, current + 2);
+    for (let i = start; i <= end; i++) range.push(i);
+    return range;
+  });
+
+  auditSuccessCount = computed(() => this.filteredAuditLogs().filter(l => l.succes).length);
+  auditFailCount    = computed(() => this.filteredAuditLogs().filter(l => !l.succes).length);
+  // ─────────────────────────────────────────────────────────────────────────
+
   publicationsEnAttente = computed(() =>
     this.publications().filter(p => p.statut === 'SOUMIS')
   );
@@ -404,6 +439,10 @@ export class DashboardAdmin implements OnInit {
     // Charger les paramètres quand on arrive sur l'onglet
     if (tab === 'parametres') {
       this.loadParametres();
+    }
+    // Charger l'audit quand on arrive sur l'onglet
+    if (tab === 'audit') {
+      this.loadAuditLogs();
     }
   }
 
@@ -1525,4 +1564,71 @@ export class DashboardAdmin implements OnInit {
       }
     });
   }
-}
+
+  // ── Journal d'audit ───────────────────────────────────────────────────────
+
+  loadAuditLogs() {
+    this.auditLoading.set(true);
+    this.api.getAuditLog(0, 500).subscribe({
+      next: (res: any) => {
+        const logs = res?.content ?? res ?? [];
+        this.auditLogs.set(logs);
+        this.applyAuditFilters();
+        this.auditLoading.set(false);
+      },
+      error: (err) => {
+        this.handleError(err);
+        this.auditLoading.set(false);
+      }
+    });
+  }
+
+  applyAuditFilters() {
+    let logs = this.auditLogs();
+    if (this.auditFilterAction) {
+      logs = logs.filter(l => l.action === this.auditFilterAction);
+    }
+    if (this.auditFilterEntite) {
+      logs = logs.filter(l => l.entite === this.auditFilterEntite);
+    }
+    if (this.auditFilterUser) {
+      const q = this.auditFilterUser.toLowerCase();
+      logs = logs.filter(l => l.userEmail?.toLowerCase().includes(q));
+    }
+    if (this.auditFilterSucces !== '') {
+      const s = this.auditFilterSucces === 'true';
+      logs = logs.filter(l => l.succes === s);
+    }
+    this.filteredAuditLogs.set(logs);
+    this.auditPage.set(0);
+  }
+
+  clearAuditFilters() {
+    this.auditFilterAction  = '';
+    this.auditFilterEntite  = '';
+    this.auditFilterUser    = '';
+    this.auditFilterSucces  = '';
+    this.applyAuditFilters();
+  }
+
+  auditPageSet(page: number) {
+    const total = this.auditTotalPages();
+    this.auditPage.set(Math.max(0, Math.min(page, total - 1)));
+  }
+
+  /** Returns the CSS class for the audit action badge based on the action type. */
+  getAuditActionClass(action: string): string {
+    const map: Record<string, string> = {
+      LOGIN:          'audit-action-login',
+      LOGOUT:         'audit-action-logout',
+      CREATE:         'audit-action-create',
+      UPDATE:         'audit-action-update',
+      DELETE:         'audit-action-delete',
+      EXPORT:         'audit-action-export',
+      IMPORT:         'audit-action-import',
+      PUBLISH:        'audit-action-publish',
+      RESET_PASSWORD: 'audit-action-reset',
+    };
+    return map[action] ?? 'audit-action-other';
+  }
+}

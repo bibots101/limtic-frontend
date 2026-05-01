@@ -101,6 +101,8 @@
             (click)="fermerTout()">
             <span class="dd-icon">⚙️</span> Mon dashboard
           </a>
+          <!-- Sélecteur de langue dans le menu mobile -->
+          <app-lang-switcher mode="dropdown" />
           <a (click)="logout(); fermerTout()" style="cursor: pointer;">
             <span class="dd-icon">⏻</span> Déconnexion
           </a>
@@ -108,7 +110,11 @@
         }
       </div>
       } @else {
-      <a routerLink="/login" class="btn-signup-mobile" (click)="fermerTout()">Connexion</a>
+      <!-- Sélecteur de langue + bouton connexion côte à côte en mobile -->
+      <div class="mobile-auth-row">
+        <app-lang-switcher />
+        <a routerLink="/login" class="btn-signup-mobile" (click)="fermerTout()">Connexion</a>
+      </div>
       }
     </div>
   </div>
@@ -138,6 +144,8 @@
           (click)="fermerTout()">
           <span class="dd-icon">⚙️</span> Tableau de bord
         </a>
+        <!-- Sélecteur de langue dans le menu utilisateur -->
+        <app-lang-switcher mode="dropdown" />
         <a (click)="logout(); fermerTout()" style="cursor: pointer;">
           <span class="dd-icon">⏻</span> Déconnexion
         </a>
@@ -145,6 +153,8 @@
       }
     </div>
     } @else {
+    <!-- Sélecteur de langue visible à côté du bouton Connexion -->
+    <app-lang-switcher />
     <a routerLink="/login" class="btn-signup" (click)="fermerTout()">Connexion</a>
     }
   </div>
