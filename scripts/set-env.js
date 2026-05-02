@@ -16,10 +16,11 @@ const targetPath = path.join(__dirname, '../src/environments/environment.prod.ts
 
 console.log('Generating environment.prod.ts...');
 
-fs.writeFile(targetPath, envConfigFile, function (err) {
-  if (err) {
-    console.error('Error writing environment.prod.ts:', err);
-    process.exit(1);
-  }
+try {
+  fs.writeFileSync(targetPath, envConfigFile);
   console.log(`Successfully generated environment.prod.ts at ${targetPath}`);
-});
+} catch (err) {
+  console.error('Error writing environment.prod.ts:', err);
+  process.exit(1);
+}
+
