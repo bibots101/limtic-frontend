@@ -17,6 +17,9 @@ export class ApiService {
   login(email: string, motDePasse: string): Observable<any> {
     return this.http.post(`${this.base}/auth/login`, { email, motDePasse }, this.options);
   }
+  verifyEmail(token: string): Observable<any> {
+    return this.http.post(`${this.base}/auth/verify-email`, { token }, this.options);
+  }
   logout(): Observable<any> {
     return this.http.post(`${this.base}/auth/logout`, {}, this.options);
   }
@@ -274,6 +277,46 @@ export class ApiService {
     formData.append('file', file);
     return this.http.post<{ logoUrl: string }>(
       `${this.base}/admin/parametres/logo`,
+      formData,
+      { withCredentials: true }
+    );
+  }
+
+  uploadDoctorantPhoto(doctorantId: number, file: File): Observable<{ photoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ photoUrl: string }>(
+      `${this.base}/doctorants/${doctorantId}/photo`,
+      formData,
+      { withCredentials: true }
+    );
+  }
+
+  uploadMasterienPhoto(masterienId: number, file: File): Observable<{ photoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ photoUrl: string }>(
+      `${this.base}/masteriens/${masterienId}/photo`,
+      formData,
+      { withCredentials: true }
+    );
+  }
+
+  uploadChercheurPhoto(chercheurId: number, file: File): Observable<{ photoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ photoUrl: string }>(
+      `${this.base}/chercheurs/${chercheurId}/photo`,
+      formData,
+      { withCredentials: true }
+    );
+  }
+
+  uploadDirecteurPhoto(file: File): Observable<{ photoUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ photoUrl: string }>(
+      `${this.base}/directeur/photo`,
       formData,
       { withCredentials: true }
     );

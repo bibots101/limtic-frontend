@@ -1,0 +1,98 @@
+.verify-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+  background: var(--bg-primary);
+}
+
+.verify-card {
+  width: min(560px, 100%);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+}
+
+.verify-card h1 {
+  margin: 0 0 1rem;
+  color: var(--text-heading);
+}
+
+.verify-card .info {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.message {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.message.success {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.message.error {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 0.95rem 1.25rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.actions {
+  margin-top: 1.25rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

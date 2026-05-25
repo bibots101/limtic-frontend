@@ -20,6 +20,11 @@ export class DoctorantDetail implements OnInit {
     public i18n: I18nService
   ) {}
 
+  getPhotoUrl(doc: any): string | null {
+    if (!doc?.photoUrl) return null;
+    return doc.photoUrl.startsWith('/uploads/') ? this.api.getUploadUrl(doc.photoUrl) : doc.photoUrl;
+  }
+
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.api.getDoctorants().subscribe((data: any[]) => {

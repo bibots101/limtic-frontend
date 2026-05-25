@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
 import { ApiService } from '../../services/api.service';
 import { ThemeService } from '../../services/theme.service';
 import { LabSettingsService } from '../../services/lab-settings.service';
@@ -12,7 +13,6 @@ import { I18nService } from '../../i18n/i18n.service';
 
 // ── Types internes pour §4.3.6 ────────────────────────────────────────────────
 
-/** Valeurs du formulaire "Identité du laboratoire" */
 interface LaboForm {
   nom:        string;
   acronyme:   string;
@@ -24,7 +24,6 @@ interface LaboForm {
 
 type ThemeKey = 'dark' | 'light';
 
-/** Valeurs du formulaire "Couleurs du thème" */
 interface ThemePalette {
   bgPrimary: string;
   bgSecondary: string;
@@ -53,7 +52,6 @@ interface ThemePalette {
 
 type ThemeForm = Record<ThemeKey, ThemePalette>;
 
-/** Valeurs du formulaire "Parametres SMTP" */
 interface SmtpForm {
   host: string;
   port: string;
@@ -62,15 +60,32 @@ interface SmtpForm {
   password: string;
 }
 
-/** Métadonnées SEO pour une page */
 interface SeoPageForm {
   titre:       string;
   description: string;
   motsCles:    string;
 }
 
-/** Map page-clé → métadonnées SEO */
 type SeoForm = Record<string, SeoPageForm>;
+
+// ── Directeur ─────────────────────────────────────────────────────────────────
+
+interface DirecteurForm {
+  nom: string;
+  prenom: string;
+  titre: string;
+  specialite: string;
+  institution: string;
+  email: string;
+  telephone: string;
+  bureau: string;
+  photoUrl: string;
+  message: string;
+  linkedinUrl: string;
+  researchgateUrl: string;
+  googleScholarUrl: string;
+  orcidUrl: string;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -141,7 +156,17 @@ export class DashboardAdmin implements OnInit {
   newEvent     = { titre: '', type: 'Séminaire', dateEvenement: '', lieu: '', description: '' };
   newUser      = { email: '', motDePasse: '', role: 'CHERCHEUR' };
   newDoctorant = { nom: '', prenom: '', sujetThese: '', directeurId: null as number | null, dateInscription: '', statut: 'EN_COURS', mention: '', photoUrl: '' };
-  newMasterien = { nom: '', prenom: '', sujetMemoire: '', encadrantId: null as number | null, promotion: '', statut: 'EN_COURS' };
+  newMasterien = { nom: '', prenom: '', sujetMemoire: '', encadrantId: null as number | null, promotion: '', statut: 'EN_COURS', photoUrl: '' };
+  doctorantPhotoFile: File | null = null;
+  doctorantPhotoPreviewUrl: SafeResourceUrl | null = null;
+  editingDoctorantPhotoFile: File | null = null;
+  editingDoctorantPhotoPreviewUrl: SafeResourceUrl | null = null;
+  masterienPhotoFile: File | null = null;
+  masterienPhotoPreviewUrl: SafeResourceUrl | null = null;
+  editingMasterienPhotoFile: File | null = null;
+  editingMasterienPhotoPreviewUrl: SafeResourceUrl | null = null;
+  directeurPhotoFile: File | null = null;
+  directeurPhotoPreviewUrl: SafeResourceUrl | null = null;
   newPub: {
     titre: string; type: string; annee: number; journal: string; resume: string;
     statut: string; doi: string; pdfUrl: string; lienUrl: string; motsCles: string;
@@ -179,70 +204,35 @@ export class DashboardAdmin implements OnInit {
 
   // ── §4.3.6 — Paramètres généraux ────────────────────────────────────────
 
-  /** Formulaire identité labo */
   laboForm: LaboForm = {
-    nom:         '',
-    acronyme:    '',
-    description: '',
-    email:       '',
-    telephone:   '',
-    adresse:     '',
+    nom: '', acronyme: '', description: '', email: '', telephone: '', adresse: '',
   };
 
   private readonly THEME_DEFAULTS: ThemeForm = {
     dark: {
-      bgPrimary: '#111827',
-      bgSecondary: '#1a2234',
-      bgCard: '#1f2937',
-      bgInput: '#252840',
-      bgSidebar: '#1e293b',
-      bgModal: '#1f2937',
-      bgTableHead: '#1a2234',
-      bgTableRow: '#1f2937',
-      bgTableHover: '#252840',
+      bgPrimary: '#111827', bgSecondary: '#1a2234', bgCard: '#1f2937',
+      bgInput: '#252840', bgSidebar: '#1e293b', bgModal: '#1f2937',
+      bgTableHead: '#1a2234', bgTableRow: '#1f2937', bgTableHover: '#252840',
       bgNavbar: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
-      textPrimary: '#ffffff',
-      textSecondary: '#d1d5db',
-      textMuted: 'rgba(255,255,255,0.4)',
-      textHeading: '#ffffff',
-      textBody: '#d1d5db',
-      textPlaceholder: 'rgba(255,255,255,0.4)',
-      borderColor: 'rgba(0,210,255,0.15)',
-      borderSubtle: 'rgba(255,255,255,0.05)',
-      accent: '#00d2ff',
-      accentHover: '#00a8cc',
-      success: '#34d399',
-      warning: '#f59e0b',
-      danger: '#f87171'
+      textPrimary: '#ffffff', textSecondary: '#d1d5db', textMuted: 'rgba(255,255,255,0.4)',
+      textHeading: '#ffffff', textBody: '#d1d5db', textPlaceholder: 'rgba(255,255,255,0.4)',
+      borderColor: 'rgba(0,210,255,0.15)', borderSubtle: 'rgba(255,255,255,0.05)',
+      accent: '#00d2ff', accentHover: '#00a8cc',
+      success: '#34d399', warning: '#f59e0b', danger: '#f87171'
     },
     light: {
-      bgPrimary: '#f2f3f7',
-      bgSecondary: '#ffffff',
-      bgCard: '#ffffff',
-      bgInput: '#f2f3f7',
-      bgSidebar: '#f8fafc',
-      bgModal: '#ffffff',
-      bgTableHead: '#dde1ef',
-      bgTableRow: '#ffffff',
-      bgTableHover: '#e4e7f2',
+      bgPrimary: '#f2f3f7', bgSecondary: '#ffffff', bgCard: '#ffffff',
+      bgInput: '#f2f3f7', bgSidebar: '#f8fafc', bgModal: '#ffffff',
+      bgTableHead: '#dde1ef', bgTableRow: '#ffffff', bgTableHover: '#e4e7f2',
       bgNavbar: 'linear-gradient(135deg, #f2f3f7, #f7f8fc, #ffffff)',
-      textPrimary: '#0a0c18',
-      textSecondary: '#1a1d2e',
-      textMuted: '#5c637a',
-      textHeading: '#0a0c18',
-      textBody: '#2d3152',
-      textPlaceholder: '#9ba3c0',
-      borderColor: '#d9dce8',
-      borderSubtle: '#d8dceb',
-      accent: '#4338ca',
-      accentHover: '#3730a3',
-      success: '#15803d',
-      warning: '#b45309',
-      danger: '#b91c1c'
+      textPrimary: '#0a0c18', textSecondary: '#1a1d2e', textMuted: '#5c637a',
+      textHeading: '#0a0c18', textBody: '#2d3152', textPlaceholder: '#9ba3c0',
+      borderColor: '#d9dce8', borderSubtle: '#d8dceb',
+      accent: '#4338ca', accentHover: '#3730a3',
+      success: '#15803d', warning: '#b45309', danger: '#b91c1c'
     }
   };
 
-  /** Formulaire couleurs du thème */
   themeForm: ThemeForm = {
     dark: { ...this.THEME_DEFAULTS.dark },
     light: { ...this.THEME_DEFAULTS.light }
@@ -260,7 +250,7 @@ export class DashboardAdmin implements OnInit {
     { key: 'bgInput', label: 'Fond des champs', hint: 'Inputs et selects' },
     { key: 'bgSidebar', label: 'Fond sidebar', hint: 'Menus latéraux' },
     { key: 'bgModal', label: 'Fond modales', hint: 'Fenêtres modales' },
-    { key: 'bgTableHead', label: 'Table - en-tête', hint: 'Ligne d’en-tête' },
+    { key: 'bgTableHead', label: 'Table - en-tête', hint: 'Ligne d\'en-tête' },
     { key: 'bgTableRow', label: 'Table - lignes', hint: 'Lignes normales' },
     { key: 'bgTableHover', label: 'Table - survol', hint: 'Ligne au survol' },
     { key: 'bgNavbar', label: 'Fond navbar', hint: 'Barre de navigation' },
@@ -280,41 +270,18 @@ export class DashboardAdmin implements OnInit {
   ];
 
   private readonly THEME_VAR_MAP: Record<keyof ThemePalette, string> = {
-    bgPrimary: '--bg-primary',
-    bgSecondary: '--bg-secondary',
-    bgCard: '--bg-card',
-    bgInput: '--bg-input',
-    bgSidebar: '--bg-sidebar',
-    bgModal: '--bg-modal',
-    bgTableHead: '--bg-table-head',
-    bgTableRow: '--bg-table-row',
-    bgTableHover: '--bg-table-hover',
-    bgNavbar: '--bg-navbar',
-    textPrimary: '--text-primary',
-    textSecondary: '--text-secondary',
-    textMuted: '--text-muted',
-    textHeading: '--text-heading',
-    textBody: '--text-body',
-    textPlaceholder: '--text-placeholder',
-    borderColor: '--border-color',
-    borderSubtle: '--border-subtle',
-    accent: '--accent',
-    accentHover: '--accent-hover',
-    success: '--success',
-    warning: '--warning',
-    danger: '--danger'
+    bgPrimary: '--bg-primary', bgSecondary: '--bg-secondary', bgCard: '--bg-card',
+    bgInput: '--bg-input', bgSidebar: '--bg-sidebar', bgModal: '--bg-modal',
+    bgTableHead: '--bg-table-head', bgTableRow: '--bg-table-row', bgTableHover: '--bg-table-hover',
+    bgNavbar: '--bg-navbar', textPrimary: '--text-primary', textSecondary: '--text-secondary',
+    textMuted: '--text-muted', textHeading: '--text-heading', textBody: '--text-body',
+    textPlaceholder: '--text-placeholder', borderColor: '--border-color', borderSubtle: '--border-subtle',
+    accent: '--accent', accentHover: '--accent-hover',
+    success: '--success', warning: '--warning', danger: '--danger'
   };
 
-  /** Formulaire SMTP */
-  smtpForm: SmtpForm = {
-    host: '',
-    port: '',
-    username: '',
-    destinataire: '',
-    password: ''
-  };
+  smtpForm: SmtpForm = { host: '', port: '', username: '', destinataire: '', password: '' };
 
-  /** Pages publiques pour lesquelles on peut configurer le SEO */
   readonly SEO_PAGES: { key: string; label: string; icon: string }[] = [
     { key: 'home',         label: 'Accueil',            icon: '🏠' },
     { key: 'chercheurs',   label: 'Chercheurs',         icon: '👥' },
@@ -328,44 +295,40 @@ export class DashboardAdmin implements OnInit {
     { key: 'outils',       label: 'Outils & logiciels', icon: '🛠' },
   ];
 
-  /** Formulaire SEO indexé par clé de page */
   seoForm: SeoForm = Object.fromEntries(
     ['home','chercheurs','publications','evenements','axes',
      'doctorants','masteriens','directeur','contact','outils']
       .map(k => [k, { titre: '', description: '', motsCles: '' }])
   );
 
-  /** Page SEO actuellement ouverte dans l'accordéon */
-  seoPageActive = signal<string>('home');
-
-  /** Section de paramètres actuellement ouverte dans l'accordéon */
+  seoPageActive       = signal<string>('home');
   activeParamsSection = signal<string>('identite');
 
-  /** URL courante du logo (relative, ex: /uploads/logos/logo-abc.png) */
   logoUrlCouranteLight = signal<string>('');
-  logoUrlCouranteDark = signal<string>('');
-
-  /** Prévisualisation locale du logo avant upload */
-  logoPreviewUrlLight = signal<string>('');
-  logoPreviewUrlDark = signal<string>('');
-
-  /** Fichier logo sélectionné en attente d'upload */
+  logoUrlCouranteDark  = signal<string>('');
+  logoPreviewUrlLight  = signal<string>('');
+  logoPreviewUrlDark   = signal<string>('');
   logoLightFile: File | null = null;
-  logoDarkFile: File | null = null;
-
-  /** Indique si le logo doit être supprimé */
+  logoDarkFile:  File | null = null;
   logoLightDeleted = signal(false);
-  logoDarkDeleted = signal(false);
+  logoDarkDeleted  = signal(false);
 
-  /** Section paramètres ouverte */
-  paramSectionActive = signal<string>('identite');
+  paramSectionActive  = signal<string>('identite');
+  parametresSaving    = signal(false);
+  parametresLoading   = signal(false);
 
-  /** Indicateur de sauvegarde en cours */
-  parametresSaving = signal(false);
+  // ── Directeur ─────────────────────────────────────────────────────────────
+  directeurLoading  = signal(true);
+  directeurSaving   = signal(false);
+  directeurSuccess  = signal(false);
+  directeurError    = signal<string | null>(null);
 
-  /** Indicateur de chargement initial des paramètres */
-  parametresLoading = signal(false);
-
+  directeurForm: DirecteurForm = {
+    nom: '', prenom: '', titre: '', specialite: '', institution: '',
+    email: '', telephone: '', bureau: '', photoUrl: '',
+    message: '', linkedinUrl: '', researchgateUrl: '',
+    googleScholarUrl: '', orcidUrl: ''
+  };
   // ─────────────────────────────────────────────────────────────────────────
 
   constructor(
@@ -374,7 +337,8 @@ export class DashboardAdmin implements OnInit {
     private sanitizer: DomSanitizer,
     public themeService: ThemeService,
     public settings: LabSettingsService,
-    public i18n: I18nService
+    public i18n: I18nService,
+    private http: HttpClient
   ) {
     effect(() => {
       const currentTheme = this.themeService.theme();
@@ -390,6 +354,10 @@ export class DashboardAdmin implements OnInit {
 
   toggleParamSection(key: string) {
     this.paramSectionActive.set(this.paramSectionActive() === key ? '' : key);
+  }
+
+  toggleParamsSection(key: string) {
+    this.activeParamsSection.set(this.activeParamsSection() === key ? '' : key);
   }
 
   ngOnInit() {
@@ -423,10 +391,9 @@ export class DashboardAdmin implements OnInit {
   }
 
   setTab(tab: string) {
-    if (this.userRole() !== 'SUPER_ADMIN' && ['comptes', 'parametres'].includes(tab)) {
+    if (this.userRole() !== 'SUPER_ADMIN' && tab === 'comptes') {
       return;
     }
-    
     this.activeTab.set(tab);
     this.showForm.set('');
     this.message.set('');
@@ -438,11 +405,9 @@ export class DashboardAdmin implements OnInit {
     this.editingMasterien.set(null);
     this.editingPublication.set(null);
 
-    // Charger les paramètres quand on arrive sur l'onglet
     if (tab === 'parametres') {
       this.loadParametres();
     }
-    // Charger l'audit quand on arrive sur l'onglet
     if (tab === 'audit') {
       this.loadAuditLogs();
     }
@@ -488,10 +453,7 @@ export class DashboardAdmin implements OnInit {
   }
 
   clearPdfSelection() {
-    if (this._pdfBlobUrl) {
-      URL.revokeObjectURL(this._pdfBlobUrl);
-      this._pdfBlobUrl = null;
-    }
+    if (this._pdfBlobUrl) { URL.revokeObjectURL(this._pdfBlobUrl); this._pdfBlobUrl = null; }
     this.newPubPdfPreviewUrl = null;
     this.newPubPdfFile = null;
   }
@@ -500,34 +462,20 @@ export class DashboardAdmin implements OnInit {
 
   startEditPublication(p: any) {
     this.editingPublication.set({
-      id: p.id,
-      titre: p.titre || '',
-      type: p.type || 'Journal',
-      annee: p.annee || new Date().getFullYear(),
-      journal: p.journal || '',
-      resume: p.resume || '',
-      doi: p.doi || '',
-      lienUrl: p.lienUrl || '',
-      motsCles: p.motsCles || '',
-      statut: p.statut || 'BROUILLON',
-      scimagoQuartile: p.scimagoQuartile ?? null,
-      classementCORE: p.classementCORE ?? null,
-      facteurImpact: p.facteurImpact ?? null,
-      snip: p.snip ?? null,
-      sourceClassement: p.sourceClassement || '',
-      pdfUrl: p.pdfUrl || null
+      id: p.id, titre: p.titre || '', type: p.type || 'Journal',
+      annee: p.annee || new Date().getFullYear(), journal: p.journal || '',
+      resume: p.resume || '', doi: p.doi || '', lienUrl: p.lienUrl || '',
+      motsCles: p.motsCles || '', statut: p.statut || 'BROUILLON',
+      scimagoQuartile: p.scimagoQuartile ?? null, classementCORE: p.classementCORE ?? null,
+      facteurImpact: p.facteurImpact ?? null, snip: p.snip ?? null,
+      sourceClassement: p.sourceClassement || '', pdfUrl: p.pdfUrl || null
     });
     this.clearEditPdfSelection();
     this.editRemovePdf = false;
     this._editExistingPdfSafeUrl = null;
-    if (this._editExistingPdfBlobUrl) {
-      URL.revokeObjectURL(this._editExistingPdfBlobUrl);
-      this._editExistingPdfBlobUrl = null;
-    }
+    if (this._editExistingPdfBlobUrl) { URL.revokeObjectURL(this._editExistingPdfBlobUrl); this._editExistingPdfBlobUrl = null; }
     this.editPdfViewerUrl.set(null);
-    if (p.pdfUrl) {
-      this.loadEditExistingPdf();
-    }
+    if (p.pdfUrl) { this.loadEditExistingPdf(); }
     this.showForm.set('');
   }
 
@@ -535,36 +483,21 @@ export class DashboardAdmin implements OnInit {
     const p = this.editingPublication();
     if (!p) return;
     if (!p.titre?.trim()) { this.message.set('Le titre est obligatoire.'); return; }
-
     if (this.editRemovePdf && !this.editPubPdfFile) {
       this.api.deletePdfPublication(p.id).subscribe({ next: () => {}, error: () => {} });
       p.pdfUrl = null;
     }
-
     const payload = {
       ...p,
-      scimagoQuartile: p.scimagoQuartile || null,
-      classementCORE:  p.classementCORE  || null,
-      facteurImpact:   p.facteurImpact   ?? null,
-      snip:            p.snip            ?? null,
+      scimagoQuartile: p.scimagoQuartile || null, classementCORE: p.classementCORE || null,
+      facteurImpact: p.facteurImpact ?? null, snip: p.snip ?? null,
     };
-
     this.api.updatePublication(p.id, payload).subscribe({
       next: () => {
         if (this.editPubPdfFile) {
           this.api.uploadPdfPublication(p.id, this.editPubPdfFile).subscribe({
-            next: () => {
-              this.message.set('Publication mise à jour avec le nouveau PDF !');
-              this.clearEditPdfSelection();
-              this.editingPublication.set(null);
-              this.api.getPublications().subscribe(data => this.publications.set(data));
-            },
-            error: () => {
-              this.message.set('Publication mise à jour, mais erreur lors de l\'upload PDF.');
-              this.clearEditPdfSelection();
-              this.editingPublication.set(null);
-              this.api.getPublications().subscribe(data => this.publications.set(data));
-            }
+            next: () => { this.message.set('Publication mise à jour avec le nouveau PDF !'); this.clearEditPdfSelection(); this.editingPublication.set(null); this.api.getPublications().subscribe(data => this.publications.set(data)); },
+            error: () => { this.message.set('Publication mise à jour, mais erreur lors de l\'upload PDF.'); this.clearEditPdfSelection(); this.editingPublication.set(null); this.api.getPublications().subscribe(data => this.publications.set(data)); }
           });
         } else {
           this.message.set('Publication mise à jour !');
@@ -580,10 +513,7 @@ export class DashboardAdmin implements OnInit {
     this.clearEditPdfSelection();
     this.editRemovePdf = false;
     this._editExistingPdfSafeUrl = null;
-    if (this._editExistingPdfBlobUrl) {
-      URL.revokeObjectURL(this._editExistingPdfBlobUrl);
-      this._editExistingPdfBlobUrl = null;
-    }
+    if (this._editExistingPdfBlobUrl) { URL.revokeObjectURL(this._editExistingPdfBlobUrl); this._editExistingPdfBlobUrl = null; }
     this.editPdfViewerUrl.set(null);
     this.editingPublication.set(null);
   }
@@ -600,38 +530,23 @@ export class DashboardAdmin implements OnInit {
   }
 
   clearEditPdfSelection() {
-    if (this._editPdfBlobUrl) {
-      URL.revokeObjectURL(this._editPdfBlobUrl);
-      this._editPdfBlobUrl = null;
-    }
+    if (this._editPdfBlobUrl) { URL.revokeObjectURL(this._editPdfBlobUrl); this._editPdfBlobUrl = null; }
     this.editPubPdfPreviewUrl = null;
     this.editPubPdfFile = null;
-    if (!this.editRemovePdf) {
-      this.loadEditExistingPdf();
-    } else {
-      this.editPdfViewerUrl.set(null);
-    }
+    if (!this.editRemovePdf) { this.loadEditExistingPdf(); } else { this.editPdfViewerUrl.set(null); }
   }
 
   markRemoveEditPdf() {
     this.editRemovePdf = true;
     this.clearEditPdfSelection();
     this._editExistingPdfSafeUrl = null;
-    if (this._editExistingPdfBlobUrl) {
-      URL.revokeObjectURL(this._editExistingPdfBlobUrl);
-      this._editExistingPdfBlobUrl = null;
-    }
+    if (this._editExistingPdfBlobUrl) { URL.revokeObjectURL(this._editExistingPdfBlobUrl); this._editExistingPdfBlobUrl = null; }
     this.editPdfViewerUrl.set(null);
   }
 
-  undoRemoveEditPdf() {
-    this.editRemovePdf = false;
-    this.loadEditExistingPdf();
-  }
+  undoRemoveEditPdf() { this.editRemovePdf = false; this.loadEditExistingPdf(); }
 
-  getFullPdfUrl(relativePath: string): string {
-    return this.api.getUploadUrl(relativePath);
-  }
+  getFullPdfUrl(relativePath: string): string { return this.api.getUploadUrl(relativePath); }
 
   getEditExistingPdfUrl(): SafeResourceUrl {
     const p = this.editingPublication();
@@ -644,17 +559,13 @@ export class DashboardAdmin implements OnInit {
           this._editExistingPdfBlobUrl = URL.createObjectURL(blob);
           this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this._editExistingPdfBlobUrl);
         },
-        error: () => {
-          this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
-        }
+        error: () => { this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(''); }
       });
     }
     return this._editExistingPdfSafeUrl;
   }
 
-  getEditPdfViewerUrl(): SafeResourceUrl | null {
-    return this.editPdfViewerUrl();
-  }
+  getEditPdfViewerUrl(): SafeResourceUrl | null { return this.editPdfViewerUrl(); }
 
   private loadEditExistingPdf() {
     const p = this.editingPublication();
@@ -667,29 +578,20 @@ export class DashboardAdmin implements OnInit {
         this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this._editExistingPdfBlobUrl);
         this.editPdfViewerUrl.set(this._editExistingPdfSafeUrl);
       },
-      error: () => {
-        this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('');
-        this.editPdfViewerUrl.set(null);
-      }
+      error: () => { this._editExistingPdfSafeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(''); this.editPdfViewerUrl.set(null); }
     });
   }
 
   validerPublication(id: number) {
     this.api.patch(`publications/${id}/statut`, { statut: 'PUBLIE' }).subscribe({
-      next: () => {
-        this.message.set('Publication validée !');
-        this.api.getPublications().subscribe(data => this.publications.set(data));
-      },
+      next: () => { this.message.set('Publication validée !'); this.api.getPublications().subscribe(data => this.publications.set(data)); },
       error: err => this.handleError(err)
     });
   }
 
   rejeterPublication(id: number) {
     this.api.patch(`publications/${id}/statut`, { statut: 'BROUILLON' }).subscribe({
-      next: () => {
-        this.message.set('Publication renvoyée en brouillon.');
-        this.api.getPublications().subscribe(data => this.publications.set(data));
-      },
+      next: () => { this.message.set('Publication renvoyée en brouillon.'); this.api.getPublications().subscribe(data => this.publications.set(data)); },
       error: err => this.handleError(err)
     });
   }
@@ -697,10 +599,7 @@ export class DashboardAdmin implements OnInit {
   supprimerPublication(id: number) {
     if (!confirm('Supprimer cette publication ?')) return;
     this.api.delete('publications/' + id).subscribe({
-      next: () => {
-        this.message.set('Publication supprimée.');
-        this.api.getPublications().subscribe(data => this.publications.set(data));
-      },
+      next: () => { this.message.set('Publication supprimée.'); this.api.getPublications().subscribe(data => this.publications.set(data)); },
       error: err => this.handleError(err)
     });
   }
@@ -723,12 +622,7 @@ export class DashboardAdmin implements OnInit {
 
   ajouterEvenement() {
     this.api.post('evenements', this.newEvent).subscribe({
-      next: () => {
-        this.message.set('Événement ajouté !');
-        this.showForm.set('');
-        this.newEvent = { titre: '', type: 'Séminaire', dateEvenement: '', lieu: '', description: '' };
-        this.api.getEvenements().subscribe(data => this.evenements.set(data));
-      },
+      next: () => { this.message.set('Événement ajouté !'); this.showForm.set(''); this.newEvent = { titre: '', type: 'Séminaire', dateEvenement: '', lieu: '', description: '' }; this.api.getEvenements().subscribe(data => this.evenements.set(data)); },
       error: err => this.handleError(err)
     });
   }
@@ -736,10 +630,7 @@ export class DashboardAdmin implements OnInit {
   supprimerEvenement(id: number) {
     if (!confirm('Supprimer cet événement ?')) return;
     this.api.delete('evenements/' + id).subscribe({
-      next: () => {
-        this.message.set('Événement supprimé.');
-        this.api.getEvenements().subscribe(data => this.evenements.set(data));
-      },
+      next: () => { this.message.set('Événement supprimé.'); this.api.getEvenements().subscribe(data => this.evenements.set(data)); },
       error: err => this.handleError(err)
     });
   }
@@ -764,24 +655,14 @@ export class DashboardAdmin implements OnInit {
 
   importChercheursCsv() {
     const file = this.csvFile();
-    if (!file) {
-      this.erreur.set('Veuillez sélectionner un fichier CSV.');
-      return;
-    }
+    if (!file) { this.erreur.set('Veuillez sélectionner un fichier CSV.'); return; }
     this.api.importChercheursCsv(file).subscribe({
       next: (res: any) => {
-        this.csvImportReport.set({
-          importes: res.importes ?? 0,
-          ignores: res.ignores ?? 0,
-          erreurs: res.erreurs ?? []
-        });
+        this.csvImportReport.set({ importes: res.importes ?? 0, ignores: res.ignores ?? 0, erreurs: res.erreurs ?? [] });
         this.message.set(res.message || 'Import CSV terminé.');
         this.erreur.set('');
         this.csvFile.set(null);
-        this.api.getChercheurs().subscribe(data => {
-          this.chercheurs.set(data);
-          this.stats.update(s => ({ ...s, chercheurs: data.length }));
-        });
+        this.api.getChercheurs().subscribe(data => { this.chercheurs.set(data); this.stats.update(s => ({ ...s, chercheurs: data.length })); });
       },
       error: err => this.handleError(err)
     });
@@ -790,10 +671,7 @@ export class DashboardAdmin implements OnInit {
   supprimerChercheur(id: number) {
     if (!confirm('Supprimer ce chercheur ?')) return;
     this.api.delete('chercheurs/' + id).subscribe({
-      next: () => {
-        this.message.set('Chercheur supprimé.');
-        this.api.getChercheurs().subscribe(data => this.chercheurs.set(data));
-      },
+      next: () => { this.message.set('Chercheur supprimé.'); this.api.getChercheurs().subscribe(data => this.chercheurs.set(data)); },
       error: err => this.handleError(err)
     });
   }
@@ -801,74 +679,51 @@ export class DashboardAdmin implements OnInit {
   // ── Comptes ───────────────────────────────────────────────────────────────
 
   loadUsers() {
-    this.api.getUsers().subscribe(data => {
-      this.users.set(data);
-      this.stats.update(s => ({ ...s, users: data.length }));
-    });
+    this.api.getUsers().subscribe(data => { this.users.set(data); this.stats.update(s => ({ ...s, users: data.length })); });
   }
 
   creerCompte() {
-    if (!this.newUser.email || !this.newUser.motDePasse) {
-      this.message.set('Email et mot de passe obligatoires.');
-      return;
-    }
+    if (!this.newUser.email || !this.newUser.motDePasse) { this.message.set('Email et mot de passe obligatoires.'); return; }
     this.api.post('users', this.newUser).subscribe({
       next: (res: any) => {
         if (res.error) {
           this.message.set(res.error);
         } else {
-          this.message.set('Compte créé avec succès !');
+          this.message.set(res.message || 'Compte créé avec succès ! Un email de vérification a été envoyé.');
           this.showForm.set('');
           this.newUser = { email: '', motDePasse: '', role: 'CHERCHEUR' };
           this.loadUsers();
         }
-      }
+      },
+      error: err => this.handleError(err)
     });
   }
 
   changerRole(id: number, event: Event) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) {
-      this.erreur.set("Vous ne pouvez pas modifier votre propre rôle.");
-      return;
-    }
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas modifier votre propre rôle."); return; }
     const role = (event.target as HTMLSelectElement).value;
     this.api.patch(`users/${id}/role`, { role }).subscribe({
-      next: () => {
-        this.message.set('Rôle modifié.');
-        this.loadUsers();
-      },
+      next: () => { this.message.set('Rôle modifié.'); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
 
   toggleActif(id: number) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) {
-      this.erreur.set("Vous ne pouvez pas désactiver votre propre compte.");
-      return;
-    }
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas désactiver votre propre compte."); return; }
     this.api.patch(`users/${id}/toggle`, {}).subscribe({
-      next: () => {
-        this.message.set('Statut modifié.');
-        this.loadUsers();
-      },
+      next: () => { this.message.set('Statut modifié.'); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
 
   supprimerUser(id: number) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) {
-      this.erreur.set("Vous ne pouvez pas supprimer votre propre compte.");
-      return;
-    }
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas supprimer votre propre compte."); return; }
     if (!confirm('Supprimer ce compte définitivement ?')) return;
     this.api.delete('users/' + id).subscribe({
-      next: () => {
-        this.message.set('Compte supprimé.');
-        this.loadUsers();
-      },
+      next: () => { this.message.set('Compte supprimé.'); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
@@ -876,21 +731,13 @@ export class DashboardAdmin implements OnInit {
   // ── Axes ──────────────────────────────────────────────────────────────────
 
   loadAxes() {
-    this.api.getAxes().subscribe(data => {
-      this.axes.set(data);
-      this.stats.update(s => ({ ...s, axes: data.length }));
-    });
+    this.api.getAxes().subscribe(data => { this.axes.set(data); this.stats.update(s => ({ ...s, axes: data.length })); });
   }
 
   ajouterAxe() {
     if (!this.newAxe.nom.trim()) { this.message.set("Le nom de l'axe est obligatoire."); return; }
     this.api.createAxe(this.newAxe).subscribe({
-      next: () => {
-        this.message.set('Axe créé !');
-        this.showForm.set('');
-        this.newAxe = { nom: '', description: '', responsableId: null };
-        this.loadAxes();
-      },
+      next: () => { this.message.set('Axe créé !'); this.showForm.set(''); this.newAxe = { nom: '', description: '', responsableId: null }; this.loadAxes(); },
       error: err => this.handleError(err)
     });
   }
@@ -903,11 +750,7 @@ export class DashboardAdmin implements OnInit {
     const axe = this.editingAxe();
     if (!axe) return;
     this.api.updateAxe(axe.id, axe).subscribe({
-      next: () => {
-        this.message.set('Axe mis à jour !');
-        this.editingAxe.set(null);
-        this.loadAxes();
-      },
+      next: () => { this.message.set('Axe mis à jour !'); this.editingAxe.set(null); this.loadAxes(); },
       error: err => this.handleError(err)
     });
   }
@@ -917,10 +760,7 @@ export class DashboardAdmin implements OnInit {
   supprimerAxe(id: number) {
     if (!confirm("Supprimer cet axe ?")) return;
     this.api.deleteAxe(id).subscribe({
-      next: () => {
-        this.message.set('Axe supprimé.');
-        this.loadAxes();
-      },
+      next: () => { this.message.set('Axe supprimé.'); this.loadAxes(); },
       error: err => this.handleError(err)
     });
   }
@@ -936,11 +776,7 @@ export class DashboardAdmin implements OnInit {
     const cid = this.getAssocChercheur(axeId);
     if (!cid) return;
     this.api.addChercheurToAxe(axeId, cid).subscribe({
-      next: () => {
-        this.message.set("Chercheur associé à l'axe !");
-        this.assocMap.update(m => ({ ...m, [axeId]: null }));
-        this.loadAxes();
-      },
+      next: () => { this.message.set("Chercheur associé à l'axe !"); this.assocMap.update(m => ({ ...m, [axeId]: null })); this.loadAxes(); },
       error: err => this.handleError(err)
     });
   }
@@ -948,10 +784,7 @@ export class DashboardAdmin implements OnInit {
   retirerChercheur(axeId: number, chercheurId: number) {
     if (!confirm("Retirer ce chercheur de l'axe ?")) return;
     this.api.removeChercheurFromAxe(axeId, chercheurId).subscribe({
-      next: () => {
-        this.message.set('Chercheur retiré.');
-        this.loadAxes();
-      },
+      next: () => { this.message.set('Chercheur retiré.'); this.loadAxes(); },
       error: err => this.handleError(err)
     });
   }
@@ -959,23 +792,28 @@ export class DashboardAdmin implements OnInit {
   // ── Doctorants ────────────────────────────────────────────────────────────
 
   loadDoctorants() {
-    this.api.getDoctorants().subscribe(data => {
-      this.doctorants.set(data);
-      this.stats.update(s => ({ ...s, doctorants: data.length }));
-    });
+    this.api.getDoctorants().subscribe(data => { this.doctorants.set(data); this.stats.update(s => ({ ...s, doctorants: data.length })); });
   }
 
   ajouterDoctorant() {
-    if (!this.newDoctorant.nom || !this.newDoctorant.prenom) {
-      this.message.set('Nom et prénom obligatoires.');
-      return;
-    }
+    if (!this.newDoctorant.nom || !this.newDoctorant.prenom) { this.message.set('Nom et prénom obligatoires.'); return; }
     this.api.createDoctorant(this.newDoctorant).subscribe({
-      next: () => {
-        this.message.set('Doctorant ajouté !');
-        this.showForm.set('');
-        this.newDoctorant = { nom: '', prenom: '', sujetThese: '', directeurId: null, dateInscription: '', statut: 'EN_COURS', mention: '', photoUrl: '' };
-        this.loadDoctorants();
+      next: (created: any) => {
+        const finalize = () => {
+          this.message.set('Doctorant ajouté !');
+          this.showForm.set('');
+          this.newDoctorant = { nom: '', prenom: '', sujetThese: '', directeurId: null, dateInscription: '', statut: 'EN_COURS', mention: '', photoUrl: '' };
+          this.clearDoctorantPhotoSelection();
+          this.loadDoctorants();
+        };
+        if (this.doctorantPhotoFile && created?.id) {
+          this.api.uploadDoctorantPhoto(created.id, this.doctorantPhotoFile).subscribe({
+            next: () => finalize(),
+            error: err => { this.handleError(err); finalize(); }
+          });
+        } else {
+          finalize();
+        }
       },
       error: err => this.handleError(err)
     });
@@ -983,15 +821,12 @@ export class DashboardAdmin implements OnInit {
 
   startEditDoctorant(d: any) {
     this.editingDoctorant.set({
-      id: d.id, nom: d.nom, prenom: d.prenom,
-      sujetThese: d.sujetThese || '',
-      directeurId: d.directeur?.id ?? null,
-      dateInscription: d.dateInscription || '',
-      dateSoutenance: d.dateSoutenance || '',
-      statut: d.statut || 'EN_COURS',
-      mention: d.mention || '',
-      photoUrl: d.photoUrl || ''
+      id: d.id, nom: d.nom, prenom: d.prenom, sujetThese: d.sujetThese || '',
+      directeurId: d.directeur?.id ?? null, dateInscription: d.dateInscription || '',
+      dateSoutenance: d.dateSoutenance || '', statut: d.statut || 'EN_COURS',
+      mention: d.mention || '', photoUrl: d.photoUrl || ''
     });
+    this.clearEditDoctorantPhotoSelection();
   }
 
   saveEditDoctorant() {
@@ -999,9 +834,20 @@ export class DashboardAdmin implements OnInit {
     if (!d) return;
     this.api.updateDoctorant(d.id, d).subscribe({
       next: () => {
-        this.message.set('Doctorant mis à jour !');
-        this.editingDoctorant.set(null);
-        this.loadDoctorants();
+        const finalize = () => {
+          this.message.set('Doctorant mis à jour !');
+          this.editingDoctorant.set(null);
+          this.clearEditDoctorantPhotoSelection();
+          this.loadDoctorants();
+        };
+        if (this.editingDoctorantPhotoFile) {
+          this.api.uploadDoctorantPhoto(d.id, this.editingDoctorantPhotoFile).subscribe({
+            next: () => finalize(),
+            error: err => { this.handleError(err); finalize(); }
+          });
+        } else {
+          finalize();
+        }
       },
       error: err => this.handleError(err)
     });
@@ -1012,34 +858,60 @@ export class DashboardAdmin implements OnInit {
   supprimerDoctorant(id: number) {
     if (!confirm('Supprimer ce doctorant ?')) return;
     this.api.deleteDoctorant(id).subscribe({
-      next: () => {
-        this.message.set('Doctorant supprimé.');
-        this.loadDoctorants();
-      },
+      next: () => { this.message.set('Doctorant supprimé.'); this.loadDoctorants(); },
       error: err => this.handleError(err)
     });
+  }
+
+  onDoctorantPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.doctorantPhotoFile = input.files[0];
+    this.doctorantPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.doctorantPhotoFile));
+  }
+
+  clearDoctorantPhotoSelection() {
+    this.doctorantPhotoFile = null;
+    this.doctorantPhotoPreviewUrl = null;
+  }
+
+  onEditDoctorantPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.editingDoctorantPhotoFile = input.files[0];
+    this.editingDoctorantPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.editingDoctorantPhotoFile));
+  }
+
+  clearEditDoctorantPhotoSelection() {
+    this.editingDoctorantPhotoFile = null;
+    this.editingDoctorantPhotoPreviewUrl = null;
   }
 
   // ── Mastériens ────────────────────────────────────────────────────────────
 
   loadMasteriens() {
-    this.api.getMasteriens().subscribe(data => {
-      this.masteriens.set(data);
-      this.stats.update(s => ({ ...s, masteriens: data.length }));
-    });
+    this.api.getMasteriens().subscribe(data => { this.masteriens.set(data); this.stats.update(s => ({ ...s, masteriens: data.length })); });
   }
 
   ajouterMasterien() {
-    if (!this.newMasterien.nom || !this.newMasterien.prenom) {
-      this.message.set('Nom et prénom obligatoires.');
-      return;
-    }
+    if (!this.newMasterien.nom || !this.newMasterien.prenom) { this.message.set('Nom et prénom obligatoires.'); return; }
     this.api.createMasterien(this.newMasterien).subscribe({
-      next: () => {
-        this.message.set('Mastérien ajouté !');
-        this.showForm.set('');
-        this.newMasterien = { nom: '', prenom: '', sujetMemoire: '', encadrantId: null, promotion: '', statut: 'EN_COURS' };
-        this.loadMasteriens();
+      next: (created: any) => {
+        const finalize = () => {
+          this.message.set('Mastérien ajouté !');
+          this.showForm.set('');
+          this.newMasterien = { nom: '', prenom: '', sujetMemoire: '', encadrantId: null, promotion: '', statut: 'EN_COURS', photoUrl: '' };
+          this.clearMasterienPhotoSelection();
+          this.loadMasteriens();
+        };
+        if (this.masterienPhotoFile && created?.id) {
+          this.api.uploadMasterienPhoto(created.id, this.masterienPhotoFile).subscribe({
+            next: () => finalize(),
+            error: err => { this.handleError(err); finalize(); }
+          });
+        } else {
+          finalize();
+        }
       },
       error: err => this.handleError(err)
     });
@@ -1047,12 +919,10 @@ export class DashboardAdmin implements OnInit {
 
   startEditMasterien(m: any) {
     this.editingMasterien.set({
-      id: m.id, nom: m.nom, prenom: m.prenom,
-      sujetMemoire: m.sujetMemoire || '',
-      encadrantId: m.encadrant?.id ?? null,
-      promotion: m.promotion || '',
-      statut: m.statut || 'EN_COURS'
+      id: m.id, nom: m.nom, prenom: m.prenom, sujetMemoire: m.sujetMemoire || '',
+      encadrantId: m.encadrant?.id ?? null, promotion: m.promotion || '', statut: m.statut || 'EN_COURS', photoUrl: m.photoUrl || ''
     });
+    this.clearEditMasterienPhotoSelection();
   }
 
   saveEditMasterien() {
@@ -1060,9 +930,20 @@ export class DashboardAdmin implements OnInit {
     if (!m) return;
     this.api.updateMasterien(m.id, m).subscribe({
       next: () => {
-        this.message.set('Mastérien mis à jour !');
-        this.editingMasterien.set(null);
-        this.loadMasteriens();
+        const finalize = () => {
+          this.message.set('Mastérien mis à jour !');
+          this.editingMasterien.set(null);
+          this.clearEditMasterienPhotoSelection();
+          this.loadMasteriens();
+        };
+        if (this.editingMasterienPhotoFile) {
+          this.api.uploadMasterienPhoto(m.id, this.editingMasterienPhotoFile).subscribe({
+            next: () => finalize(),
+            error: err => { this.handleError(err); finalize(); }
+          });
+        } else {
+          finalize();
+        }
       },
       error: err => this.handleError(err)
     });
@@ -1073,12 +954,45 @@ export class DashboardAdmin implements OnInit {
   supprimerMasterien(id: number) {
     if (!confirm('Supprimer ce mastérien ?')) return;
     this.api.deleteMasterien(id).subscribe({
-      next: () => {
-        this.message.set('Mastérien supprimé.');
-        this.loadMasteriens();
-      },
+      next: () => { this.message.set('Mastérien supprimé.'); this.loadMasteriens(); },
       error: err => this.handleError(err)
     });
+  }
+
+  onMasterienPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.masterienPhotoFile = input.files[0];
+    this.masterienPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.masterienPhotoFile));
+  }
+
+  clearMasterienPhotoSelection() {
+    this.masterienPhotoFile = null;
+    this.masterienPhotoPreviewUrl = null;
+  }
+
+  onEditMasterienPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.editingMasterienPhotoFile = input.files[0];
+    this.editingMasterienPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.editingMasterienPhotoFile));
+  }
+
+  clearEditMasterienPhotoSelection() {
+    this.editingMasterienPhotoFile = null;
+    this.editingMasterienPhotoPreviewUrl = null;
+  }
+
+  onDirecteurPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.directeurPhotoFile = input.files[0];
+    this.directeurPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.directeurPhotoFile));
+  }
+
+  clearDirecteurPhotoSelection() {
+    this.directeurPhotoFile = null;
+    this.directeurPhotoPreviewUrl = null;
   }
 
   fermerTout() {
@@ -1093,29 +1007,19 @@ export class DashboardAdmin implements OnInit {
 
   // ── §4.3.6 — Paramètres généraux ─────────────────────────────────────────
 
-  /**
-   * Charge tous les paramètres depuis le backend et remplit les formulaires.
-   * Appelé automatiquement à l'arrivée sur l'onglet "Paramètres".
-   */
   loadParametres() {
     this.parametresLoading.set(true);
     this.api.getParametres().subscribe({
       next: (params: any[]) => {
-        // Construire un dictionnaire cle → valeur pour un accès facile
         const map: Record<string, string> = {};
         params.forEach(p => { map[p.cle] = p.valeur ?? ''; });
 
-        // Peupler le formulaire labo
         this.laboForm = {
-          nom:         map['labo.nom']         ?? '',
-          acronyme:    map['labo.acronyme']     ?? '',
-          description: map['labo.description']  ?? '',
-          email:       map['labo.email']        ?? '',
-          telephone:   map['labo.telephone']    ?? '',
-          adresse:     map['labo.adresse']      ?? '',
+          nom: map['labo.nom'] ?? '', acronyme: map['labo.acronyme'] ?? '',
+          description: map['labo.description'] ?? '', email: map['labo.email'] ?? '',
+          telephone: map['labo.telephone'] ?? '', adresse: map['labo.adresse'] ?? '',
         };
 
-        // Peupler le formulaire thème (garder les valeurs par défaut si absent)
         this.themeForm = {
           dark: {
             bgPrimary: map['theme.dark.bgPrimary'] ?? this.THEME_DEFAULTS.dark.bgPrimary,
@@ -1169,31 +1073,21 @@ export class DashboardAdmin implements OnInit {
           }
         };
 
-        // Parametres SMTP (mot de passe vide tant qu'il n'est pas change)
         this.smtpForm = {
-          host: map['smtp.host'] ?? '',
-          port: map['smtp.port'] ?? '',
-          username: map['smtp.username'] ?? '',
-          destinataire: map['smtp.destinataire'] ?? '',
+          host: map['smtp.host'] ?? '', port: map['smtp.port'] ?? '',
+          username: map['smtp.username'] ?? '', destinataire: map['smtp.destinataire'] ?? '',
           password: ''
         };
 
-        // Logos existants
         const logoLightUrl = map['labo.logoUrlLight'] ?? '';
-        const logoDarkUrl = map['labo.logoUrlDark'] ?? '';
+        const logoDarkUrl  = map['labo.logoUrlDark']  ?? '';
         this.logoUrlCouranteLight.set(logoLightUrl);
         this.logoUrlCouranteDark.set(logoDarkUrl);
-        // Ne pas écraser la preview locale si l'admin a déjà sélectionné un fichier
-        if (!this.logoLightFile) {
-          this.logoPreviewUrlLight.set(logoLightUrl ? this.api.getLogoUrl(logoLightUrl) : '');
-        }
-        if (!this.logoDarkFile) {
-          this.logoPreviewUrlDark.set(logoDarkUrl ? this.api.getLogoUrl(logoDarkUrl) : '');
-        }
+        if (!this.logoLightFile) { this.logoPreviewUrlLight.set(logoLightUrl ? this.api.getLogoUrl(logoLightUrl) : ''); }
+        if (!this.logoDarkFile)  { this.logoPreviewUrlDark.set(logoDarkUrl  ? this.api.getLogoUrl(logoDarkUrl)  : ''); }
         this.logoLightDeleted.set(false);
         this.logoDarkDeleted.set(false);
 
-        // SEO — charger chaque page
         for (const page of this.SEO_PAGES) {
           this.seoForm[page.key] = {
             titre:       map[`seo.${page.key}.titre`]       ?? '',
@@ -1203,8 +1097,35 @@ export class DashboardAdmin implements OnInit {
         }
 
         this.appliquerCouleursTheme(this.themeService.theme(), this.themeForm[this.themeService.theme()]);
-
         this.parametresLoading.set(false);
+
+        // ── Load directeur data alongside other params ──
+        this.directeurLoading.set(true);
+        this.http.get<any>('https://localhost:8443/api/directeur', { withCredentials: true }).subscribe({
+          next: (d) => {
+            this.directeurForm = {
+              nom:              d.nom              ?? '',
+              prenom:           d.prenom           ?? '',
+              titre:            d.titre            ?? '',
+              specialite:       d.specialite       ?? '',
+              institution:      d.institution      ?? '',
+              email:            d.email            ?? '',
+              telephone:        d.telephone        ?? '',
+              bureau:           d.bureau           ?? '',
+              photoUrl:         d.photoUrl         ?? '',
+              message:          d.message          ?? '',
+              linkedinUrl:      d.linkedinUrl      ?? '',
+              researchgateUrl:  d.researchgateUrl  ?? '',
+              googleScholarUrl: d.googleScholarUrl ?? '',
+              orcidUrl:         d.orcidUrl         ?? ''
+            };
+            this.directeurLoading.set(false);
+          },
+          error: () => {
+            this.directeurError.set('Impossible de charger les données du directeur.');
+            this.directeurLoading.set(false);
+          }
+        });
       },
       error: err => {
         this.parametresLoading.set(false);
@@ -1213,92 +1134,46 @@ export class DashboardAdmin implements OnInit {
     });
   }
 
-  /**
-   * Appelé à chaque changement d'un color picker pour prévisualiser
-   * les nouvelles couleurs en temps réel sans sauvegarder.
-   */
   onCouleurChange(themeKey: ThemeKey) {
     this.appliquerCouleursTheme(themeKey, this.themeForm[themeKey]);
   }
 
-  /**
-   * Liaison (input) du color picker natif → met à jour themeForm et
-   * prévisualise immédiatement la couleur choisie.
-  * Appelé par : (input)="onColorInput('dark', 'accent', $event)"
-   */
   onColorInput(themeKey: ThemeKey, key: keyof ThemePalette, event: Event) {
     const val = (event.target as HTMLInputElement).value;
-    this.themeForm = {
-      ...this.themeForm,
-      [themeKey]: { ...this.themeForm[themeKey], [key]: val }
-    };
+    this.themeForm = { ...this.themeForm, [themeKey]: { ...this.themeForm[themeKey], [key]: val } };
     this.appliquerCouleursTheme(themeKey, this.themeForm[themeKey]);
   }
 
-  /**
-   * Liaison (change) du champ texte hexadécimal → valide le format
-   * et synchronise le color picker avec la valeur saisie.
-  * Appelé par : (change)="onColorText('dark', 'accent', $event)"
-   */
   onColorText(themeKey: ThemeKey, key: keyof ThemePalette, event: Event) {
     const raw = (event.target as HTMLInputElement).value.trim();
-    // Accepter #rrggbb, #rgb, rgb(a) et linear-gradient()
     const hexRegex = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
     const rgbRegex = /^rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(,\s*(0|1|0?\.\d+)\s*)?\)$/;
     const gradientRegex = /^linear-gradient\(/i;
     if (!hexRegex.test(raw) && !rgbRegex.test(raw) && !gradientRegex.test(raw)) return;
-    this.themeForm = {
-      ...this.themeForm,
-      [themeKey]: { ...this.themeForm[themeKey], [key]: raw }
-    };
+    this.themeForm = { ...this.themeForm, [themeKey]: { ...this.themeForm[themeKey], [key]: raw } };
     this.appliquerCouleursTheme(themeKey, this.themeForm[themeKey]);
   }
 
-  /**
-   * Alias public pour le bouton "Réinitialiser les couleurs par défaut"
-   * dans le template HTML (dashboard-admin.html ligne ~1294).
-   * Délègue à reinitialiserCouleurs() qui contient la logique réelle.
-   */
-  resetCouleursDefaut(themeKey: ThemeKey) {
-    this.reinitialiserCouleurs(themeKey);
-  }
+  resetCouleursDefaut(themeKey: ThemeKey) { this.reinitialiserCouleurs(themeKey); }
 
-  /** Ouvre/ferme un panneau de la liste SEO (accordéon) */
   toggleSeoPage(key: string) {
     this.seoPageActive.set(this.seoPageActive() === key ? '' : key);
   }
 
-  /** Ouvre/ferme une section de paramètres dans l'accordéon */
-  toggleParamsSection(key: string) {
-    this.activeParamsSection.set(this.activeParamsSection() === key ? '' : key);
-  }
-
-  /**
-   * Applique les couleurs du formulaire comme variables CSS sur :root
-   * afin que tout le dashboard reflète les changements en direct.
-   */
   private appliquerCouleursTheme(themeKey: ThemeKey, theme: ThemePalette) {
     if (themeKey !== this.themeService.theme()) return;
     const root = document.documentElement;
     const body = document.body;
-
     const setVar = (name: string, value: string) => {
       root.style.setProperty(name, value);
       body?.style.setProperty(name, value);
     };
-
     const normalizeHex = (value: string): string | null => {
       const v = value.trim();
       if (!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v)) return null;
-      if (v.length === 4) {
-        const r = v[1];
-        const g = v[2];
-        const b = v[3];
-        return `#${r}${r}${g}${g}${b}${b}`;
-      }
+      if (v.length === 4) { const r = v[1]; const g = v[2]; const b = v[3]; return `#${r}${r}${g}${g}${b}${b}`; }
       return v;
     };
-
     const toRgba = (hex: string, alpha: number): string | null => {
       const norm = normalizeHex(hex);
       if (!norm) return null;
@@ -1307,87 +1182,49 @@ export class DashboardAdmin implements OnInit {
       const b = parseInt(norm.slice(5, 7), 16);
       return `rgba(${r},${g},${b},${alpha})`;
     };
-
     (Object.keys(this.THEME_VAR_MAP) as (keyof ThemePalette)[]).forEach((key) => {
       setVar(this.THEME_VAR_MAP[key], theme[key]);
     });
-
-    const accentSoft = toRgba(theme.accent, 0.1);
-    const dangerSoft = toRgba(theme.danger, 0.12);
+    const accentSoft  = toRgba(theme.accent,  0.1);
+    const dangerSoft  = toRgba(theme.danger,  0.12);
     const successSoft = toRgba(theme.success, 0.1);
     const warningSoft = toRgba(theme.warning, 0.1);
-
-    if (accentSoft) setVar('--accent-soft', accentSoft);
-    if (dangerSoft) setVar('--danger-soft', dangerSoft);
+    if (accentSoft)  setVar('--accent-soft',  accentSoft);
+    if (dangerSoft)  setVar('--danger-soft',  dangerSoft);
     if (successSoft) setVar('--success-soft', successSoft);
     if (warningSoft) setVar('--warning-soft', warningSoft);
   }
 
-  /**
-   * Réinitialise les couleurs aux valeurs par défaut du thème sélectionné.
-   */
   reinitialiserCouleurs(themeKey: ThemeKey) {
-    this.themeForm = {
-      ...this.themeForm,
-      [themeKey]: { ...this.THEME_DEFAULTS[themeKey] }
-    };
+    this.themeForm = { ...this.themeForm, [themeKey]: { ...this.THEME_DEFAULTS[themeKey] } };
     this.appliquerCouleursTheme(themeKey, this.themeForm[themeKey]);
   }
 
-  /**
-   * Gère la sélection d'un fichier logo depuis l'input file.
-   * Génère immédiatement une prévisualisation locale (blob URL).
-   */
   onLogoFileSelected(themeKey: ThemeKey, event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
-
     const file = input.files[0];
-
-    // Valider côté client (type + taille) avant même d'envoyer
-    if (!file.type.startsWith('image/')) {
-      this.erreur.set('Seules les images sont acceptées (PNG, JPEG, SVG, WebP).');
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      this.erreur.set('Le logo ne doit pas dépasser 2 Mo.');
-      return;
-    }
-
-    if (themeKey === 'light') {
-      this.logoLightFile = file;
-      this.logoLightDeleted.set(false);
-    } else {
-      this.logoDarkFile = file;
-      this.logoDarkDeleted.set(false);
-    }
+    if (!file.type.startsWith('image/')) { this.erreur.set('Seules les images sont acceptées (PNG, JPEG, SVG, WebP).'); return; }
+    if (file.size > 2 * 1024 * 1024) { this.erreur.set('Le logo ne doit pas dépasser 2 Mo.'); return; }
+    if (themeKey === 'light') { this.logoLightFile = file; this.logoLightDeleted.set(false); }
+    else { this.logoDarkFile = file; this.logoDarkDeleted.set(false); }
     this.erreur.set('');
-
-    // Prévisualisation locale immédiate
     const reader = new FileReader();
     reader.onload = (e) => {
       const url = e.target?.result as string;
-      if (themeKey === 'light') {
-        this.logoPreviewUrlLight.set(url);
-      } else {
-        this.logoPreviewUrlDark.set(url);
-      }
+      if (themeKey === 'light') { this.logoPreviewUrlLight.set(url); }
+      else { this.logoPreviewUrlDark.set(url); }
     };
     reader.readAsDataURL(file);
   }
 
-  /**
-   * Annule la sélection en cours et revient au logo sauvegardé.
-   */
   annulerLogoSelection(themeKey: ThemeKey) {
     if (themeKey === 'light') {
-      this.logoLightFile = null;
-      this.logoLightDeleted.set(false);
+      this.logoLightFile = null; this.logoLightDeleted.set(false);
       const urlCourante = this.logoUrlCouranteLight();
       this.logoPreviewUrlLight.set(urlCourante ? this.api.getLogoUrl(urlCourante) : '');
     } else {
-      this.logoDarkFile = null;
-      this.logoDarkDeleted.set(false);
+      this.logoDarkFile = null; this.logoDarkDeleted.set(false);
       const urlCourante = this.logoUrlCouranteDark();
       this.logoPreviewUrlDark.set(urlCourante ? this.api.getLogoUrl(urlCourante) : '');
     }
@@ -1395,23 +1232,10 @@ export class DashboardAdmin implements OnInit {
 
   supprimerLogo(themeKey: ThemeKey) {
     if (!confirm('Supprimer ce logo ?')) return;
-    if (themeKey === 'light') {
-      this.logoLightFile = null;
-      this.logoUrlCouranteLight.set('');
-      this.logoPreviewUrlLight.set('');
-      this.logoLightDeleted.set(true);
-    } else {
-      this.logoDarkFile = null;
-      this.logoUrlCouranteDark.set('');
-      this.logoPreviewUrlDark.set('');
-      this.logoDarkDeleted.set(true);
-    }
+    if (themeKey === 'light') { this.logoLightFile = null; this.logoUrlCouranteLight.set(''); this.logoPreviewUrlLight.set(''); this.logoLightDeleted.set(true); }
+    else { this.logoDarkFile = null; this.logoUrlCouranteDark.set(''); this.logoPreviewUrlDark.set(''); this.logoDarkDeleted.set(true); }
   }
 
-  /**
-   * Sauvegarde les paramètres labo + thème en une seule opération.
-   * Si un nouveau logo a été sélectionné, il est uploadé en premier.
-   */
   sauvegarderParametres() {
     this.parametresSaving.set(true);
     this.message.set('');
@@ -1419,123 +1243,74 @@ export class DashboardAdmin implements OnInit {
 
     const uploads: { key: ThemeKey; file: File }[] = [];
     if (this.logoLightFile) uploads.push({ key: 'light', file: this.logoLightFile });
-    if (this.logoDarkFile) uploads.push({ key: 'dark', file: this.logoDarkFile });
+    if (this.logoDarkFile)  uploads.push({ key: 'dark',  file: this.logoDarkFile });
 
     const uploadNext = (index: number) => {
-      if (index >= uploads.length) {
-        this.sauvegarderParamsTexte();
-        return;
-      }
+      if (index >= uploads.length) { this.sauvegarderParamsTexte(); return; }
       const current = uploads[index];
       this.api.uploadLogo(current.file).subscribe({
         next: (res) => {
-          if (current.key === 'light') {
-            this.logoUrlCouranteLight.set(res.logoUrl);
-            this.logoLightFile = null;
-          } else {
-            this.logoUrlCouranteDark.set(res.logoUrl);
-            this.logoDarkFile = null;
-          }
+          if (current.key === 'light') { this.logoUrlCouranteLight.set(res.logoUrl); this.logoLightFile = null; }
+          else { this.logoUrlCouranteDark.set(res.logoUrl); this.logoDarkFile = null; }
           uploadNext(index + 1);
         },
-        error: err => {
-          this.parametresSaving.set(false);
-          this.handleError(err);
-        }
+        error: err => { this.parametresSaving.set(false); this.handleError(err); }
       });
     };
 
     uploadNext(0);
   }
 
-  /**
-   * Envoi en lot de tous les paramètres texte (labo + thème) vers le backend.
-   */
   private sauvegarderParamsTexte() {
     const payload: Record<string, string> = {
-      // Identité labo
-      'labo.nom':         this.laboForm.nom,
-      'labo.acronyme':    this.laboForm.acronyme,
-      'labo.description': this.laboForm.description,
-      'labo.email':       this.laboForm.email,
-      'labo.telephone':   this.laboForm.telephone,
-      'labo.adresse':     this.laboForm.adresse,
-      // SMTP
-      'smtp.host': this.smtpForm.host,
-      'smtp.port': String(this.smtpForm.port || ''),
-      'smtp.username': this.smtpForm.username,
-      'smtp.destinataire': this.smtpForm.destinataire,
-      // Couleurs du thème (dark)
-      'theme.dark.bgPrimary': this.themeForm.dark.bgPrimary,
-      'theme.dark.bgSecondary': this.themeForm.dark.bgSecondary,
-      'theme.dark.bgCard': this.themeForm.dark.bgCard,
-      'theme.dark.bgInput': this.themeForm.dark.bgInput,
-      'theme.dark.bgSidebar': this.themeForm.dark.bgSidebar,
-      'theme.dark.bgModal': this.themeForm.dark.bgModal,
-      'theme.dark.bgTableHead': this.themeForm.dark.bgTableHead,
-      'theme.dark.bgTableRow': this.themeForm.dark.bgTableRow,
-      'theme.dark.bgTableHover': this.themeForm.dark.bgTableHover,
-      'theme.dark.bgNavbar': this.themeForm.dark.bgNavbar,
-      'theme.dark.textPrimary': this.themeForm.dark.textPrimary,
-      'theme.dark.textSecondary': this.themeForm.dark.textSecondary,
-      'theme.dark.textMuted': this.themeForm.dark.textMuted,
-      'theme.dark.textHeading': this.themeForm.dark.textHeading,
-      'theme.dark.textBody': this.themeForm.dark.textBody,
-      'theme.dark.textPlaceholder': this.themeForm.dark.textPlaceholder,
-      'theme.dark.borderColor': this.themeForm.dark.borderColor,
-      'theme.dark.borderSubtle': this.themeForm.dark.borderSubtle,
-      'theme.dark.accent': this.themeForm.dark.accent,
-      'theme.dark.accentHover': this.themeForm.dark.accentHover,
-      'theme.dark.success': this.themeForm.dark.success,
-      'theme.dark.warning': this.themeForm.dark.warning,
+      'labo.nom': this.laboForm.nom, 'labo.acronyme': this.laboForm.acronyme,
+      'labo.description': this.laboForm.description, 'labo.email': this.laboForm.email,
+      'labo.telephone': this.laboForm.telephone, 'labo.adresse': this.laboForm.adresse,
+      'theme.dark.bgPrimary': this.themeForm.dark.bgPrimary, 'theme.dark.bgSecondary': this.themeForm.dark.bgSecondary,
+      'theme.dark.bgCard': this.themeForm.dark.bgCard, 'theme.dark.bgInput': this.themeForm.dark.bgInput,
+      'theme.dark.bgSidebar': this.themeForm.dark.bgSidebar, 'theme.dark.bgModal': this.themeForm.dark.bgModal,
+      'theme.dark.bgTableHead': this.themeForm.dark.bgTableHead, 'theme.dark.bgTableRow': this.themeForm.dark.bgTableRow,
+      'theme.dark.bgTableHover': this.themeForm.dark.bgTableHover, 'theme.dark.bgNavbar': this.themeForm.dark.bgNavbar,
+      'theme.dark.textPrimary': this.themeForm.dark.textPrimary, 'theme.dark.textSecondary': this.themeForm.dark.textSecondary,
+      'theme.dark.textMuted': this.themeForm.dark.textMuted, 'theme.dark.textHeading': this.themeForm.dark.textHeading,
+      'theme.dark.textBody': this.themeForm.dark.textBody, 'theme.dark.textPlaceholder': this.themeForm.dark.textPlaceholder,
+      'theme.dark.borderColor': this.themeForm.dark.borderColor, 'theme.dark.borderSubtle': this.themeForm.dark.borderSubtle,
+      'theme.dark.accent': this.themeForm.dark.accent, 'theme.dark.accentHover': this.themeForm.dark.accentHover,
+      'theme.dark.success': this.themeForm.dark.success, 'theme.dark.warning': this.themeForm.dark.warning,
       'theme.dark.danger': this.themeForm.dark.danger,
-      // Couleurs du thème (light)
-      'theme.light.bgPrimary': this.themeForm.light.bgPrimary,
-      'theme.light.bgSecondary': this.themeForm.light.bgSecondary,
-      'theme.light.bgCard': this.themeForm.light.bgCard,
-      'theme.light.bgInput': this.themeForm.light.bgInput,
-      'theme.light.bgSidebar': this.themeForm.light.bgSidebar,
-      'theme.light.bgModal': this.themeForm.light.bgModal,
-      'theme.light.bgTableHead': this.themeForm.light.bgTableHead,
-      'theme.light.bgTableRow': this.themeForm.light.bgTableRow,
-      'theme.light.bgTableHover': this.themeForm.light.bgTableHover,
-      'theme.light.bgNavbar': this.themeForm.light.bgNavbar,
-      'theme.light.textPrimary': this.themeForm.light.textPrimary,
-      'theme.light.textSecondary': this.themeForm.light.textSecondary,
-      'theme.light.textMuted': this.themeForm.light.textMuted,
-      'theme.light.textHeading': this.themeForm.light.textHeading,
-      'theme.light.textBody': this.themeForm.light.textBody,
-      'theme.light.textPlaceholder': this.themeForm.light.textPlaceholder,
-      'theme.light.borderColor': this.themeForm.light.borderColor,
-      'theme.light.borderSubtle': this.themeForm.light.borderSubtle,
-      'theme.light.accent': this.themeForm.light.accent,
-      'theme.light.accentHover': this.themeForm.light.accentHover,
-      'theme.light.success': this.themeForm.light.success,
-      'theme.light.warning': this.themeForm.light.warning,
+      'theme.light.bgPrimary': this.themeForm.light.bgPrimary, 'theme.light.bgSecondary': this.themeForm.light.bgSecondary,
+      'theme.light.bgCard': this.themeForm.light.bgCard, 'theme.light.bgInput': this.themeForm.light.bgInput,
+      'theme.light.bgSidebar': this.themeForm.light.bgSidebar, 'theme.light.bgModal': this.themeForm.light.bgModal,
+      'theme.light.bgTableHead': this.themeForm.light.bgTableHead, 'theme.light.bgTableRow': this.themeForm.light.bgTableRow,
+      'theme.light.bgTableHover': this.themeForm.light.bgTableHover, 'theme.light.bgNavbar': this.themeForm.light.bgNavbar,
+      'theme.light.textPrimary': this.themeForm.light.textPrimary, 'theme.light.textSecondary': this.themeForm.light.textSecondary,
+      'theme.light.textMuted': this.themeForm.light.textMuted, 'theme.light.textHeading': this.themeForm.light.textHeading,
+      'theme.light.textBody': this.themeForm.light.textBody, 'theme.light.textPlaceholder': this.themeForm.light.textPlaceholder,
+      'theme.light.borderColor': this.themeForm.light.borderColor, 'theme.light.borderSubtle': this.themeForm.light.borderSubtle,
+      'theme.light.accent': this.themeForm.light.accent, 'theme.light.accentHover': this.themeForm.light.accentHover,
+      'theme.light.success': this.themeForm.light.success, 'theme.light.warning': this.themeForm.light.warning,
       'theme.light.danger': this.themeForm.light.danger,
     };
 
-    if (this.logoLightDeleted()) {
-      payload['labo.logoUrlLight'] = '';
-    } else if (this.logoUrlCouranteLight()) {
-      payload['labo.logoUrlLight'] = this.logoUrlCouranteLight();
-    }
-    if (this.logoDarkDeleted()) {
-      payload['labo.logoUrlDark'] = '';
-    } else if (this.logoUrlCouranteDark()) {
-      payload['labo.logoUrlDark'] = this.logoUrlCouranteDark();
-    }
+    if (this.logoLightDeleted()) { payload['labo.logoUrlLight'] = ''; }
+    else if (this.logoUrlCouranteLight()) { payload['labo.logoUrlLight'] = this.logoUrlCouranteLight(); }
+    if (this.logoDarkDeleted()) { payload['labo.logoUrlDark'] = ''; }
+    else if (this.logoUrlCouranteDark()) { payload['labo.logoUrlDark'] = this.logoUrlCouranteDark(); }
 
-    // SEO par page
-    for (const page of this.SEO_PAGES) {
-      const f = this.seoForm[page.key];
-      payload[`seo.${page.key}.titre`]       = f.titre;
-      payload[`seo.${page.key}.description`] = f.description;
-      payload[`seo.${page.key}.motsCles`]    = f.motsCles;
-    }
+    if (this.userRole() === 'SUPER_ADMIN') {
+      payload['smtp.host'] = this.smtpForm.host;
+      payload['smtp.port'] = String(this.smtpForm.port || '');
+      payload['smtp.username'] = this.smtpForm.username;
+      payload['smtp.destinataire'] = this.smtpForm.destinataire;
 
-    if (this.smtpForm.password.trim()) {
-      payload['smtp.password'] = this.smtpForm.password.trim();
+      for (const page of this.SEO_PAGES) {
+        const f = this.seoForm[page.key];
+        payload[`seo.${page.key}.titre`]       = f.titre;
+        payload[`seo.${page.key}.description`] = f.description;
+        payload[`seo.${page.key}.motsCles`]    = f.motsCles;
+      }
+
+      if (this.smtpForm.password.trim()) { payload['smtp.password'] = this.smtpForm.password.trim(); }
     }
 
     this.api.updateParametresLot(payload).subscribe({
@@ -1545,25 +1320,48 @@ export class DashboardAdmin implements OnInit {
         this.settings.refresh();
         this.smtpForm = { ...this.smtpForm, password: '' };
       },
-      error: err => {
-        this.parametresSaving.set(false);
-        this.handleError(err);
-      }
+      error: err => { this.parametresSaving.set(false); this.handleError(err); }
     });
+  }
+
+  // ── Directeur ─────────────────────────────────────────────────────────────
+
+  sauvegarderDirecteur() {
+    this.directeurSaving.set(true);
+    this.directeurSuccess.set(false);
+    this.directeurError.set(null);
+
+    const saveProfile = () => {
+      this.http.put<any>(
+        'https://localhost:8443/api/directeur',
+        this.directeurForm,
+        { withCredentials: true }
+      ).subscribe({
+        next: () => { this.directeurSuccess.set(true); this.directeurSaving.set(false); },
+        error: (e) => { this.directeurError.set(e?.error?.message ?? 'Erreur serveur'); this.directeurSaving.set(false); }
+      });
+    };
+
+    if (this.directeurPhotoFile) {
+      this.api.uploadDirecteurPhoto(this.directeurPhotoFile).subscribe({
+        next: (res) => {
+          if (res?.photoUrl) { this.directeurForm.photoUrl = res.photoUrl; }
+          this.clearDirecteurPhotoSelection();
+          saveProfile();
+        },
+        error: (e) => { this.directeurError.set(e?.error?.message ?? 'Erreur serveur'); this.directeurSaving.set(false); }
+      });
+    } else {
+      saveProfile();
+    }
   }
 
   // ── Auth ──────────────────────────────────────────────────────────────────
 
   logout() {
     this.api.logout().subscribe({
-      next: () => {
-        localStorage.clear();
-        this.router.navigate(['/login']);
-      },
-      error: () => {
-        localStorage.clear();
-        this.router.navigate(['/login']);
-      }
+      next: () => { localStorage.clear(); this.router.navigate(['/login']); },
+      error: () => { localStorage.clear(); this.router.navigate(['/login']); }
     });
   }
 
@@ -1572,44 +1370,24 @@ export class DashboardAdmin implements OnInit {
   loadAuditLogs() {
     this.auditLoading.set(true);
     this.api.getAuditLog(0, 500).subscribe({
-      next: (res: any) => {
-        const logs = res?.content ?? res ?? [];
-        this.auditLogs.set(logs);
-        this.applyAuditFilters();
-        this.auditLoading.set(false);
-      },
-      error: (err) => {
-        this.handleError(err);
-        this.auditLoading.set(false);
-      }
+      next: (res: any) => { const logs = res?.content ?? res ?? []; this.auditLogs.set(logs); this.applyAuditFilters(); this.auditLoading.set(false); },
+      error: (err) => { this.handleError(err); this.auditLoading.set(false); }
     });
   }
 
   applyAuditFilters() {
     let logs = this.auditLogs();
-    if (this.auditFilterAction) {
-      logs = logs.filter(l => l.action === this.auditFilterAction);
-    }
-    if (this.auditFilterEntite) {
-      logs = logs.filter(l => l.entite === this.auditFilterEntite);
-    }
-    if (this.auditFilterUser) {
-      const q = this.auditFilterUser.toLowerCase();
-      logs = logs.filter(l => l.userEmail?.toLowerCase().includes(q));
-    }
-    if (this.auditFilterSucces !== '') {
-      const s = this.auditFilterSucces === 'true';
-      logs = logs.filter(l => l.succes === s);
-    }
+    if (this.auditFilterAction) { logs = logs.filter(l => l.action === this.auditFilterAction); }
+    if (this.auditFilterEntite) { logs = logs.filter(l => l.entite === this.auditFilterEntite); }
+    if (this.auditFilterUser)   { const q = this.auditFilterUser.toLowerCase(); logs = logs.filter(l => l.userEmail?.toLowerCase().includes(q)); }
+    if (this.auditFilterSucces !== '') { const s = this.auditFilterSucces === 'true'; logs = logs.filter(l => l.succes === s); }
     this.filteredAuditLogs.set(logs);
     this.auditPage.set(0);
   }
 
   clearAuditFilters() {
-    this.auditFilterAction  = '';
-    this.auditFilterEntite  = '';
-    this.auditFilterUser    = '';
-    this.auditFilterSucces  = '';
+    this.auditFilterAction = ''; this.auditFilterEntite = '';
+    this.auditFilterUser = '';   this.auditFilterSucces = '';
     this.applyAuditFilters();
   }
 
@@ -1618,19 +1396,14 @@ export class DashboardAdmin implements OnInit {
     this.auditPage.set(Math.max(0, Math.min(page, total - 1)));
   }
 
-  /** Returns the CSS class for the audit action badge based on the action type. */
   getAuditActionClass(action: string): string {
     const map: Record<string, string> = {
-      LOGIN:          'audit-action-login',
-      LOGOUT:         'audit-action-logout',
-      CREATE:         'audit-action-create',
-      UPDATE:         'audit-action-update',
-      DELETE:         'audit-action-delete',
-      EXPORT:         'audit-action-export',
-      IMPORT:         'audit-action-import',
-      PUBLISH:        'audit-action-publish',
+      LOGIN: 'audit-action-login', LOGOUT: 'audit-action-logout',
+      CREATE: 'audit-action-create', UPDATE: 'audit-action-update',
+      DELETE: 'audit-action-delete', EXPORT: 'audit-action-export',
+      IMPORT: 'audit-action-import', PUBLISH: 'audit-action-publish',
       RESET_PASSWORD: 'audit-action-reset',
     };
     return map[action] ?? 'audit-action-other';
   }
-}
+}

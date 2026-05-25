@@ -3,9 +3,13 @@
   <div class="hero-section">
     <div class="hero-left">
       <div class="photo-container">
-        <div class="photo-placeholder">
-          {{ directeur.prenom[0] }}{{ directeur.nom[0] }}
-        </div>
+        @if (getPhotoUrl(directeur.photo)) {
+          <img [src]="getPhotoUrl(directeur.photo)" [alt]="directeur.prenom + ' ' + directeur.nom" class="directeur-photo" />
+        } @else {
+          <div class="photo-placeholder">
+            {{ directeur.prenom[0] }}{{ directeur.nom[0] }}
+          </div>
+        }
         <div class="photo-badge">{{ i18n.t('dir.titre') }}</div>
       </div>
     </div>

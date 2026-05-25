@@ -48,6 +48,16 @@
   box-shadow: 0 0 30px rgba(0,210,255,0.2);
 }
 
+.directeur-photo,
+.photo-container img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(0,210,255,0.3);
+  box-shadow: 0 0 30px rgba(0,210,255,0.2);
+}
+
 .photo-badge {
   background: rgba(0,210,255,0.1);
   border: 1px solid rgba(0,210,255,0.3);

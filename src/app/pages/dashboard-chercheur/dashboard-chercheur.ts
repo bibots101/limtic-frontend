@@ -38,6 +38,9 @@ export class DashboardChercheur implements OnInit {
     googleScholar: '', researchGate: '', orcid: '', linkedin: ''
   };
 
+  chercheurPhotoFile: File | null = null;
+  chercheurPhotoPreviewUrl: SafeResourceUrl | null = null;
+
   newPub: {
     titre: string; type: string; annee: number;
     journal: string; resume: string; doi: string; lienUrl: string; statut: string;
@@ -79,7 +82,7 @@ export class DashboardChercheur implements OnInit {
 
   public i18n = inject(I18nService);
 
-  constructor(private router: Router, private api: ApiService, private sanitizer: DomSanitizer, public themeService: ThemeService) {}
+  constructor(private router: Router, public api: ApiService, private sanitizer: DomSanitizer, public themeService: ThemeService) {}
 
   private handleError(error: any) {
     const message = error?.error?.message || error?.message || error?.statusText || 'Erreur backend';
@@ -187,13 +190,39 @@ export class DashboardChercheur implements OnInit {
   sauvegarderProfil() {
     const id = this.chercheurId();
     if (!id) { this.message.set('Profil introuvable.'); return; }
-    this.api.patch(`chercheurs/${id}/profil`, this.editProfil).subscribe({
-      next: () => {
-        this.message.set('Profil mis à jour avec succès !');
-        this.loadProfil();
-      },
-      error: err => this.handleError(err)
-    });
+
+    const saveProfile = () => {
+      this.api.patch(`chercheurs/${id}/profil`, this.editProfil).subscribe({
+        next: () => {
+          this.message.set('Profil mis à jour avec succès !');
+          this.chercheurPhotoFile = null;
+          this.chercheurPhotoPreviewUrl = null;
+          this.loadProfil();
+        },
+        error: err => this.handleError(err)
+      });
+    };
+
+    if (this.chercheurPhotoFile) {
+      this.api.uploadChercheurPhoto(id, this.chercheurPhotoFile).subscribe({
+        next: () => saveProfile(),
+        error: err => this.handleError(err)
+      });
+    } else {
+      saveProfile();
+    }
+  }
+
+  onChercheurPhotoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+    this.chercheurPhotoFile = input.files[0];
+    this.chercheurPhotoPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.chercheurPhotoFile));
+  }
+
+  clearChercheurPhotoSelection() {
+    this.chercheurPhotoFile = null;
+    this.chercheurPhotoPreviewUrl = null;
   }
 
   ajouterPublication() {

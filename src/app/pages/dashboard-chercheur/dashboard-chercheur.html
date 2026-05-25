@@ -121,6 +121,14 @@
             <label>{{ i18n.t('chercheur.profil.tel') }}</label>
             <input [(ngModel)]="editProfil.telephone" placeholder="ex. +216 71 XXX XXX" />
           </div>
+          <div class="field">
+            <label>Photo de profil</label>
+            <input type="file" accept="image/*" (change)="onChercheurPhotoSelected($event)" />
+            <div class="image-preview" *ngIf="chercheurPhotoPreviewUrl || profil().photoUrl">
+              <img [src]="chercheurPhotoPreviewUrl ? chercheurPhotoPreviewUrl : api.getUploadUrl(profil().photoUrl)" alt="Photo de profil" />
+              <button class="btn-secondary" type="button" (click)="clearChercheurPhotoSelection()">Annuler</button>
+            </div>
+          </div>
           <div class="field full">
             <label>{{ i18n.t('chercheur.profil.bio') }}</label>
             <textarea [(ngModel)]="editProfil.biographie" rows="4"></textarea>

@@ -1,0 +1,20 @@
+<div class="verify-page">
+  <div class="verify-card">
+    <h1>Vérification d'email</h1>
+    <p class="info">{{ i18n.t('verification.email_intro') || 'Utilisez le lien reçu par email pour vérifier votre compte.' }}</p>
+
+    <div *ngIf="message()" [class.success]="status() === 'success'" [class.error]="status() === 'error'" class="message">
+      {{ message() }}
+    </div>
+
+    <form *ngIf="showForm()" (ngSubmit)="verify()">
+      <label for="token">Token de vérification</label>
+      <input id="token" name="token" [(ngModel)]="token" placeholder="Entrez le token ici" />
+      <button type="submit" [disabled]="status() === 'pending'">Vérifier mon email</button>
+    </form>
+
+    <div class="actions">
+      <a routerLink="/login">Retour à la connexion</a>
+    </div>
+  </div>
+</div>

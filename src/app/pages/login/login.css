@@ -4,6 +4,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text-primary);
+  font-family: 'Segoe UI', sans-serif;
+  padding: 1rem;
 }
 
 .auth-card {
@@ -140,4 +143,15 @@
   border-radius: 6px;
   margin-bottom: 12px;
   font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 2rem;
+    margin: 1rem;
+  }
+
+  .auth-header h1 {
+    font-size: 1.75rem;
+  }
 }

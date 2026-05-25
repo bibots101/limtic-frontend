@@ -8,8 +8,8 @@
       <div class="masterien-header">
         <div class="hero-section">
           <div class="photo-container">
-            @if (doc.photoUrl) {
-              <img [src]="doc.photoUrl" [alt]="doc.prenom"
+            @if (getPhotoUrl(doc)) {
+              <img [src]="getPhotoUrl(doc)" [alt]="doc.prenom"
                 style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,210,255,0.3);" />
             } @else {
               <div class="photo-placeholder">

@@ -28,6 +28,11 @@ export class Doctorants implements OnInit {
 
   constructor(private api: ApiService, public settings: LabSettingsService, public i18n: I18nService) {}
 
+  getPhotoUrl(d: any): string | null {
+    if (!d?.photoUrl) return null;
+    return d.photoUrl.startsWith('/uploads/') ? this.api.getUploadUrl(d.photoUrl) : d.photoUrl;
+  }
+
   ngOnInit() {
     this.api.getAxes().subscribe(axes => this.axesList.set(axes));
 

@@ -33,8 +33,8 @@
       <div class="card" [class.soutenu]="d.statut === 'SOUTENU'" [routerLink]="['/doctorants', d.id]">
 
         <div class="card-top">
-          @if (d.photoUrl) {
-            <img [src]="d.photoUrl" [alt]="d.prenom + ' ' + d.nom" class="avatar-img" />
+          @if (getPhotoUrl(d)) {
+            <img [src]="getPhotoUrl(d)" [alt]="d.prenom + ' ' + d.nom" class="avatar-img" />
           } @else {
             <div class="avatar-initials">{{ getInitials(d) }}</div>
           }
