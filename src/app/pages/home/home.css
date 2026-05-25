@@ -8,6 +8,7 @@
   gap: 4rem;
   position: relative;
   overflow: hidden;
+  transition: padding-top 0.25s ease;
 }
 
 .hero::before {
@@ -386,6 +387,8 @@
     text-align: center;
     gap: 2.5rem;
   }
+  /* reduce heavy decorative background on smaller screens */
+  .hero::before { width: 300px; height: 300px; }
   .hero-content h1 { font-size: 3rem; letter-spacing: 4px; }
   .hero-sub        { margin: 0 auto 2rem; font-size: 0.9rem; }
   .hero-actions    { justify-content: center; }
@@ -417,17 +420,30 @@
 }
 
 @media (max-width: 480px) {
-  .hero            { padding: 2.5rem 1.25rem 2rem; }
-  .hero-content h1 { font-size: 2.5rem; letter-spacing: 2px; }
-  .hero-actions    { flex-direction: column; width: 100%; }
-  .btn-primary, .btn-outline { text-align: center; width: 100%; }
+  .hero            { padding: calc(64px + 12px) 1.25rem 1.5rem; }
+  /* Ensure hero content fits on very small screens */
+  .hero-content h1 { font-size: 2.2rem; letter-spacing: 1.5px; line-height: 1.05; }
+  .hero-sub { max-width: 100%; font-size: 0.95rem; }
+  .hero-badge { padding: 6px 16px; font-size: 0.72rem; }
+  .hero-actions    { flex-direction: column; width: 100%; gap: 0.75rem; }
+  .btn-primary, .btn-outline { text-align: center; width: 100%; padding: 12px 20px; }
 
-  .stat            { flex: 1 1 100%; border-right: none; }
-  .stat:nth-child(odd) { border-right: none; }
+  /* further reduce decorative background for small phones */
+  .hero::before { width: 200px; height: 200px; }
 
-  .sections        { grid-template-columns: 1fr; padding: 1.5rem 1.25rem; }
-  .actualites-section { padding: 1.5rem 1rem; }
+  /* Stats compact */
+  .stat            { flex: 1 1 100%; border-right: none; padding: 1rem 0; }
+  .stat-num { font-size: 2rem; }
 
-  .evt-date-block  { padding: 8px 10px; min-width: 50px; }
-  .evt-jour        { font-size: 1.3rem; }
+  .sections        { grid-template-columns: 1fr; padding: 1rem 1rem; }
+  .actualites-section { padding: 1rem 0.75rem; }
+
+  .evt-date-block  { padding: 8px 10px; min-width: 48px; }
+  .evt-jour        { font-size: 1.2rem; }
+}
+
+@media (max-width: 375px) {
+  .hero-content h1 { font-size: 1.9rem; letter-spacing: 1px; }
+  .btn-primary, .btn-outline { padding: 10px 16px; font-size: 0.9rem; }
+  .hero { padding-top: calc(64px + 8px); }
 }

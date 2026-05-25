@@ -118,7 +118,7 @@ const FR: T = {
   // Admin Dashboard
   'admin.sidebar.dashboard': 'Tableau de bord', 'admin.sidebar.membres': 'Membres', 'admin.sidebar.comptes': 'Comptes',
   'admin.sidebar.publications': 'Publications', 'admin.sidebar.evenements': 'Événements', 'admin.sidebar.axes': 'Axes',
-  'admin.sidebar.doctorants': 'Doctorants', 'admin.sidebar.masteriens': 'Mastériens', 'admin.sidebar.parametres': '⚙ Paramètres',
+  'admin.sidebar.doctorants': 'Doctorants', 'admin.sidebar.masteriens': 'Mastériens', 'admin.sidebar.parametres': 'Paramètres',
   'admin.sidebar.audit': 'Historique', 'admin.sidebar.quitter': '⏻ Quitter', 'admin.sidebar.retour_site': 'Retour au site',
   'admin.sidebar.deconnexion': '⏻ Déconnexion',
   'admin.dash.titre': 'Tableau de bord', 'admin.dash.sous_titre': 'Vue d\'ensemble du laboratoire',

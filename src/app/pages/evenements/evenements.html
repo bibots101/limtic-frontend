@@ -58,6 +58,11 @@
           <span class="month">{{ e.dateEvenement | slice:5:7 }}</span>
           <span class="year">{{ e.dateEvenement | slice:0:4 }}</span>
         </div>
+        @if (e.photos?.length) {
+          <div class="event-thumb">
+            <img [src]="getEventPreviewUrl(e.photos?.[0]?.url)" [alt]="e.photos?.[0]?.legende || e.titre" />
+          </div>
+        }
         <div class="event-body">
           <span class="event-type">{{ e.type }}</span>
           <h3>{{ e.titre }}</h3>

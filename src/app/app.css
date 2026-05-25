@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+/* Global responsive media helpers */
+img, picture, svg, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
 body {
   font-family: 'Segoe UI', sans-serif;
   background: var(--bg-primary);
@@ -536,6 +543,13 @@ body {
   }
 }
 
+/* When mobile menu is open, push the page content down so hero isn't overlapped */
+@media (max-width: 768px) {
+  body.mobile-menu-open .hero {
+    padding-top: calc(64px + 220px); /* navbar (64) + estimated menu height (220) */
+  }
+}
+
 .btn-dashboard {
   padding: 0.35rem 0.8rem;
   font-size: 0.82rem;
@@ -853,19 +867,49 @@ body {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+/* Responsive Footer */
+@media (max-width: 1024px) {
   .footer-content {
     grid-template-columns: 1fr 1fr;
+    gap: 2rem;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .app-footer {
+    padding: 2.5rem 1.25rem 1.5rem;
+  }
+
+  .footer-desc {
+    max-width: 100%;
+  }
+
+  .lab-info {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
   .footer-content {
     grid-template-columns: 1fr;
     gap: 2rem;
   }
 
   .app-footer {
-    padding: 3rem 1.5rem 1.5rem;
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .footer-toggle-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .social-links {
+    justify-content: flex-start;
   }
 }

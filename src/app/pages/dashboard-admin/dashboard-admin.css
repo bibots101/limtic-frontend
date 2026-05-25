@@ -220,8 +220,8 @@
 }
 
 .btn-add-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   color: var(--text-secondary);
 }
 
@@ -627,9 +627,9 @@
 }
 
 .btn-cancel {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-input);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 11px 26px;
   margin-left: 10px;
@@ -640,8 +640,8 @@
 }
 
 .btn-cancel:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
 }
 
 .btn-edit {
@@ -681,51 +681,96 @@
 }
 
 .section-card {
-  background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 16px;
   padding: 1.75rem;
   margin-top: 1.5rem;
 }
 
 .section-card h3 {
-  color: white;
+  color: var(--text-primary);
   margin: 0 0 0.5rem;
 }
 
 .section-card p {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   margin: 0 0 1rem;
 }
 
 .assoc-grid {
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .assoc-item {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(220px, 1fr) auto;
-  gap: 1rem;
+  grid-template-columns: 1fr 2fr auto;
   align-items: center;
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
-  padding: 1rem;
+  gap: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  transition: all 0.2s;
+}
+
+.assoc-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-soft);
 }
 
 .assoc-item strong {
-  color: white;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .assoc-item select {
-  min-width: 0;
   width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.assoc-item select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.assoc-item .btn-assoc {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 0.7rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 10px;
 }
 
 @media (max-width: 860px) {
   .assoc-item {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .assoc-item strong {
+    font-size: 1rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .assoc-item select,
+  .assoc-item .btn-assoc {
+    width: 100%;
   }
 }
 
@@ -748,18 +793,18 @@
 }
 
 .role-select {
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
   padding: 5px 10px;
-  color: white;
+  color: var(--text-primary);
   font-size: 0.82rem;
   cursor: pointer;
 }
 
 .role-select:focus {
   outline: none;
-  border-color: #00d2ff;
+  border-color: var(--accent);
 }
 
 .badge-status {
@@ -786,8 +831,8 @@
 }
 
 .axe-item {
-  background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -797,14 +842,14 @@
 }
 
 .axe-nom {
-  color: white;
+  color: var(--text-primary);
   font-weight: 700;
   font-size: 0.95rem;
   margin-bottom: 4px;
 }
 
 .axe-desc-admin {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-secondary);
   font-size: 0.82rem;
   margin-bottom: 8px;
 }
@@ -830,8 +875,8 @@
 }
 
 .axe-item-card {
-  background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 14px;
   padding: 1.5rem;
   margin-bottom: 1rem;
@@ -971,7 +1016,7 @@
 }
 
 .alert-text span {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-muted);
   font-size: 0.82rem;
 }
 
@@ -1011,8 +1056,8 @@
 }
 
 .pending-card {
-  background: #1f2937;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 10px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -1025,25 +1070,25 @@
 }
 
 .pending-body h4 {
-  color: white;
+  color: var(--text-primary);
   font-size: 0.9rem;
   font-weight: 600;
   margin: 4px 0;
 }
 
 .pending-meta {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   font-size: 0.8rem;
 }
 
 .pending-author {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-secondary);
   font-size: 0.8rem;
   margin-top: 2px;
 }
 
 .pending-resume {
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-secondary);
   font-size: 0.78rem;
   margin-top: 4px;
 }
@@ -1193,9 +1238,9 @@
     z-index: 100;
     padding: 0;
     border-right: none;
-    border-bottom: 1px solid rgba(0, 210, 255, 0.1);
-    background: #1a2234;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-sidebar);
+    box-shadow: var(--shadow-sm);
   }
 
   .sidebar-brand {
@@ -1398,11 +1443,18 @@
 
   /* Axes — association */
   .assoc-item {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.75rem;
   }
 
-  .btn-assoc {
+  .assoc-item strong {
+    width: 100%;
+  }
+
+  .assoc-item select,
+  .assoc-item .btn-assoc {
     width: 100%;
   }
 

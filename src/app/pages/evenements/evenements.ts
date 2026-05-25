@@ -16,6 +16,13 @@ import { I18nService } from '../../i18n/i18n.service';
 export class Evenements implements OnInit {
   evenements = signal<Evenement[]>([]);
 
+  getEventPreviewUrl(url?: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const normalized = url.startsWith('/') ? url : `/uploads/evenements/${url}`;
+    return this.api.getUploadUrl(normalized);
+  }
+
   // Filtres
   filtreStatut = signal('tous'); // tous / avenir / passe
   filtreType = signal('');

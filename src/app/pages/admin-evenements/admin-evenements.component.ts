@@ -90,9 +90,13 @@ export class AdminEvenementsComponent implements OnInit, OnDestroy {
 
   // ── données ────────────────────────────────────────────────────────
   private normalizeImage(img: any): ImageEvenement {
-    const url = img.url && !img.url.startsWith('http')
-      ? this.api.getUploadUrl(img.url)
-      : img.url;
+    let url = img.url ?? '';
+    if (!url.startsWith('http')) {
+      if (!url.startsWith('/')) {
+        url = `/uploads/evenements/${url}`;
+      }
+      url = this.api.getUploadUrl(url);
+    }
     return { ...img, url };
   }
 

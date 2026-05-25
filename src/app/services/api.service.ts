@@ -80,7 +80,12 @@ export class ApiService {
   }
 
   getUploadUrl(relativePath: string): string {
-    return `${environment.baseUrl}${relativePath}`;
+    if (!relativePath) return '';
+    if (relativePath.startsWith('http')) {
+      return relativePath;
+    }
+    const normalizedPath = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
+    return `${environment.baseUrl}${normalizedPath}`;
   }
 
   getPdfBlob(relativePath: string): Observable<Blob> {

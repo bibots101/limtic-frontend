@@ -40,16 +40,8 @@
         {{ i18n.t('admin.sidebar.parametres') }}
       </button>
       <button [class.active]="activeTab() === 'audit'" (click)="setTab('audit')" class="nav-btn-audit" title="Journal d'audit">
-        <span class="audit-clock-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 8 14"/>
-            <path d="M4.93 4.93a10 10 0 0 0 0 14.14" stroke-dasharray="2 2"/>
-          </svg>
-        </span>
         {{ i18n.t('admin.sidebar.audit') }}
       </button>
-      <button class="btn-logout-mobile" (click)="logout()">{{ i18n.t('admin.sidebar.quitter') }}</button>
     </nav>
     <div class="sidebar-footer">
       <span class="admin-email">{{ email() }}</span>

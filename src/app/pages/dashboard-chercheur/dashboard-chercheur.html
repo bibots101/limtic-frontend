@@ -31,13 +31,12 @@
               (click)="activeTab.set('encadrements')">
         {{ i18n.t('chercheur.dash.mes_encadrements') }}
       </button>
-      <button class="btn-logout-mobile" (click)="logout()">{{ i18n.t('chercheur.dash.quitter') }}</button>
     </nav>
     <div class="sidebar-footer">
       <span class="user-email">{{ email() }}</span>
       <span class="user-role">CHERCHEUR</span>
       <a routerLink="/home" class="btn-site-link" (click)="fermerTout()">{{ i18n.t('chercheur.dash.retour') }}</a>
-      <button class="btn-logout-side" (click)="logout()">{{ i18n.t('chercheur.dash.quitter') }}</button>
+      <button class="btn-logout-side" (click)="logout()">{{ i18n.t('nav.deconnexion') }}</button>
     </div>
   </aside>
 

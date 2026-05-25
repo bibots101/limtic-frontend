@@ -44,6 +44,7 @@ export class App implements OnInit {
       this.checkAuth();
       this.dropdownOuvert.set(null);
       this.menuOuvert.set(false);
+      document.body.classList.remove('mobile-menu-open');
     });
 
     document.addEventListener('click', (e) => {
@@ -53,6 +54,7 @@ export class App implements OnInit {
       }
       if (!target.closest('.navbar')) {
         this.menuOuvert.set(false);
+        document.body.classList.remove('mobile-menu-open');
       }
     });
   }
@@ -60,6 +62,11 @@ export class App implements OnInit {
   toggleMenu() {
     this.menuOuvert.set(!this.menuOuvert());
     this.dropdownOuvert.set(null);
+    if (this.menuOuvert()) {
+      document.body.classList.add('mobile-menu-open');
+    } else {
+      document.body.classList.remove('mobile-menu-open');
+    }
   }
 
   toggleDropdown(nom: string) {
@@ -69,6 +76,7 @@ export class App implements OnInit {
   fermerTout() {
     this.dropdownOuvert.set(null);
     this.menuOuvert.set(false);
+    document.body.classList.remove('mobile-menu-open');
   }
 
   checkAuth() {
