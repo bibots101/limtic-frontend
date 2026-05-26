@@ -1,3 +1,29 @@
+/* Global layout guards to prevent mobile horizontal overflow */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 375px) {
+  body {
+    overflow-x: clip;
+  }
+}
+
 /* ══════════════════════════════════════════════════════════
    THÈME DARK (défaut — design actuel)
    ══════════════════════════════════════════════════════════ */

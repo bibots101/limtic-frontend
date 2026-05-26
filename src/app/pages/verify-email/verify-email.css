@@ -96,3 +96,36 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+@media (max-width: 768px) {
+  .verify-page {
+    padding: 1.25rem;
+    min-height: calc(100vh - 64px);
+  }
+
+  .verify-card {
+    padding: 1.5rem;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .verify-page {
+    padding: 0.9rem;
+  }
+
+  .verify-card {
+    padding: 1.1rem;
+    border-radius: 12px;
+  }
+
+  .verify-card h1 {
+    font-size: 1.35rem;
+  }
+
+  input,
+  button {
+    padding: 0.85rem 0.9rem;
+    border-radius: 10px;
+  }
+}

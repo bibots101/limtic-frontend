@@ -84,6 +84,12 @@
 
     <!-- Auth dans le menu mobile -->
     <div class="nav-auth-mobile">
+      <button class="theme-toggle-mobile" (click)="themeService.toggle()"
+        [title]="themeService.theme() === 'dark' ? i18n.t('footer.mode_clair') : i18n.t('footer.mode_sombre')">
+        <span class="theme-icon">{{ themeService.theme() === 'dark' ? '☀️' : '🌙' }}</span>
+        <span>{{ themeService.theme() === 'dark' ? i18n.t('footer.mode_clair') : i18n.t('footer.mode_sombre') }}</span>
+      </button>
+
       @if (isLoggedIn()) {
       <div class="nav-dropdown">
         <span class="nav-dropdown-trigger" [class.active]="dropdownOuvert() === 'auth-mobile'"

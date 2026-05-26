@@ -108,6 +108,10 @@ body {
   transform: scale(1.1);
 }
 
+.theme-toggle-mobile {
+  display: none;
+}
+
 /* Liens desktop */
 .nav-links {
   display: flex;
@@ -474,6 +478,10 @@ body {
     display: none;
   }
 
+  .theme-toggle {
+    display: none;
+  }
+
   .nav-auth-mobile {
     display: flex;
     flex-direction: column;
@@ -481,6 +489,32 @@ body {
     padding: 0.75rem 0.5rem 0.25rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     margin-top: 0.5rem;
+  }
+
+  .theme-toggle-mobile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--accent-soft);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .theme-toggle-mobile:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .theme-toggle-mobile .theme-icon {
+    line-height: 1;
   }
 
   .user-info-mobile {
@@ -540,6 +574,11 @@ body {
   .nav-isi-logo,
   .nav-utm-logo {
     height: 24px;
+  }
+
+  .theme-toggle-mobile {
+    font-size: 0.84rem;
+    padding: 9px 10px;
   }
 }
 
