@@ -360,15 +360,17 @@ body {
 
 @media (max-width: 768px) {
   .navbar {
-    flex-wrap: wrap;
-    height: auto;
+    flex-wrap: nowrap;
+    position: sticky;
     padding: 0.75rem 1rem;
     gap: 0;
+    overflow: visible;
   }
 
   /* Brand occupe toute la largeur sauf le bouton hamburger */
   .nav-brand {
     flex: 1;
+    min-width: 0;
   }
 
   /* Hamburger visible */
@@ -396,13 +398,22 @@ body {
   /* Menu fermé par défaut */
   .nav-links {
     display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    right: 0;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    width: 100%;
-    padding: 0.5rem 0 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-    margin-top: 0.5rem;
+    width: auto;
+    padding: 0.75rem 1rem 1rem;
+    margin-top: 0;
+    background: var(--bg-navbar);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--shadow-lg);
+    z-index: 250;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
     justify-content: flex-start;
   }
 
@@ -454,8 +465,8 @@ body {
   .dropdown-menu {
     position: static;
     transform: none;
-    width: calc(100% - 1rem);
-    margin-left: 1rem;
+    width: 100%;
+    margin-left: 0;
     margin-top: 0.25rem;
     border-radius: 8px;
     box-shadow: none;
