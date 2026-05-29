@@ -292,6 +292,7 @@
             <tr>
               <th>{{ i18n.t('admin.comptes.col_email') }}</th>
               <th>{{ i18n.t('admin.comptes.col_role') }}</th>
+              <th>{{ i18n.t('admin.comptes.col_verification') }}</th>
               <th>{{ i18n.t('admin.comptes.col_statut') }}</th>
               <th>{{ i18n.t('admin.membres.col_actions') }}</th>
             </tr>
@@ -314,12 +315,23 @@
                   </select>
                 </td>
                 <td>
+                  <span class="badge-verification" [class.verification-pending]="isVerificationPending(u)" [class.verification-verified]="!isVerificationPending(u)">
+                    {{ getVerificationLabel(u) }}
+                  </span>
+                </td>
+                <td>
                   <span class="badge-status" [class.status-on]="u.actif" [class.status-off]="!u.actif">
                     {{ u.actif ? i18n.t('admin.comptes.actif') : i18n.t('admin.comptes.desactive') }}
                   </span>
                 </td>
                 <td>
                   <div class="actions-row">
+                    @if (isVerificationPending(u)) {
+                      <button class="btn-action btn-verify" (click)="forceActivateUser(u.id)">{{ i18n.t('admin.comptes.force_activate') }}</button>
+                      @if (u.emailVerificationRequired) {
+                        <button class="btn-action btn-resend" (click)="resendVerificationMail(u.id)">{{ i18n.t('admin.comptes.resend_verification') }}</button>
+                      }
+                    }
                     <button class="btn-action btn-view" (click)="toggleActif(u.id)" [disabled]="u.email === email()">
                       {{ u.actif ? i18n.t('admin.btn.desactiver') : i18n.t('admin.btn.activer') }}
                     </button>

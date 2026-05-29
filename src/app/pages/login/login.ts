@@ -47,7 +47,12 @@ export class Login {
       },
       error: (err) => {
         this.loading.set(false);
-        this.erreur.set(err.error?.error || 'Erreur de connexion');
+        // Step 6: surface the email-not-verified case with a clear, actionable message
+        if (err.error?.error === 'EMAIL_NOT_VERIFIED') {
+          this.erreur.set('Veuillez vérifier votre adresse email avant de vous connecter. Consultez votre boîte de réception.');
+        } else {
+          this.erreur.set(err.error?.error || 'Erreur de connexion');
+        }
       }
     });
   }

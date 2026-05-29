@@ -8,124 +8,180 @@
 }
 
 .verify-card {
-  width: min(560px, 100%);
+  width: min(480px, 100%);
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 18px;
-  box-shadow: var(--shadow-md);
-  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.verify-card h1 {
-  margin: 0 0 1rem;
+/* ── Header ── */
+.verify-header {
+  text-align: center;
+}
+
+.verify-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.verify-header h1 {
+  margin: 0 0 0.4rem;
+  font-size: 1.6rem;
   color: var(--text-heading);
 }
 
-.verify-card .info {
-  margin: 0 0 1.5rem;
+.subtitle {
   color: var(--text-secondary);
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
-.message {
-  margin: 0 0 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid transparent;
+/* ── State blocks ── */
+.state-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-radius: 14px;
+  text-align: center;
 }
 
-.message.success {
+.state-block.pending {
+  background: var(--bg-subtle, rgba(0,0,0,0.04));
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.state-block.success {
   background: var(--success-soft);
-  color: var(--success);
-  border-color: var(--success);
+  border: 1px solid var(--success);
 }
 
-.message.error {
+.state-icon {
+  font-size: 2rem;
+}
+
+.state-msg {
+  color: var(--success);
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Alert ── */
+.alert-error {
   background: var(--danger-soft);
   color: var(--danger);
-  border-color: var(--danger);
-}
-
-form {
-  display: grid;
-  gap: 1rem;
-}
-
-label {
-  color: var(--text-muted);
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
   font-size: 0.9rem;
 }
 
-input {
+/* ── Form ── */
+.verify-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.field label {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.field input {
   width: 100%;
-  padding: 0.95rem 1rem;
+  padding: 0.9rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: 12px;
   background: var(--bg-input);
   color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color 0.15s;
 }
 
-button {
+.field input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.field input:disabled {
+  opacity: 0.5;
+}
+
+/* ── Submit button (also used as nav link in success state) ── */
+.btn-submit {
+  display: block;
+  width: 100%;
+  padding: 0.95rem;
   border: none;
   border-radius: 12px;
-  padding: 0.95rem 1.25rem;
   background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s ease, opacity 0.15s;
 }
 
-button:disabled {
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
-  transform: translateY(-1px);
+/* ── Footer ── */
+.footer-link {
+  text-align: center;
 }
 
-.actions {
-  margin-top: 1.25rem;
-}
-
-a {
+.footer-link a {
   color: var(--accent);
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
-a:hover {
+.footer-link a:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .verify-page {
-    padding: 1.25rem;
-    min-height: calc(100vh - 64px);
-  }
-
-  .verify-card {
-    padding: 1.5rem;
-    border-radius: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .verify-page {
-    padding: 0.9rem;
-  }
-
-  .verify-card {
-    padding: 1.1rem;
-    border-radius: 12px;
-  }
-
-  .verify-card h1 {
-    font-size: 1.35rem;
-  }
-
-  input,
-  button {
-    padding: 0.85rem 0.9rem;
-    border-radius: 10px;
-  }
+/* ── Responsive ── */
+@media (max-width: 520px) {
+  .verify-page  { padding: 1rem; }
+  .verify-card  { padding: 1.75rem 1.25rem; border-radius: 16px; }
+  .verify-header h1 { font-size: 1.35rem; }
 }

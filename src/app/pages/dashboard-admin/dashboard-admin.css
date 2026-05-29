@@ -509,6 +509,24 @@
   background: rgba(220, 38, 38, 0.2);
 }
 
+.btn-verify {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.btn-verify:hover {
+  background: rgba(16, 185, 129, 0.24);
+}
+
+.btn-resend {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.btn-resend:hover {
+  background: rgba(245, 158, 11, 0.24);
+}
+
 /* ADD BUTTON */
 .btn-add {
   background: var(--accent);
@@ -812,6 +830,25 @@
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+.badge-verification {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.verification-verified {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.verification-pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
 }
 
 .status-on {

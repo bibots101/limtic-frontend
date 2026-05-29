@@ -682,14 +682,28 @@ export class DashboardAdmin implements OnInit {
     this.api.getUsers().subscribe(data => { this.users.set(data); this.stats.update(s => ({ ...s, users: data.length })); });
   }
 
+  isVerificationPending(user: any): boolean {
+    return !Boolean(user?.emailVerified);
+  }
+
+  getVerificationLabel(user: any): string {
+    return this.isVerificationPending(user)
+      ? this.i18n.t('admin.comptes.verif.pending')
+      : this.i18n.t('admin.comptes.verif.verified');
+  }
+
+  getVerificationClass(user: any): string {
+    return this.isVerificationPending(user) ? 'verification-pending' : 'verification-verified';
+  }
+
   creerCompte() {
-    if (!this.newUser.email || !this.newUser.motDePasse) { this.message.set('Email et mot de passe obligatoires.'); return; }
+    if (!this.newUser.email || !this.newUser.motDePasse) { this.message.set(this.i18n.t('admin.comptes.email_password_required')); return; }
     this.api.post('users', this.newUser).subscribe({
       next: (res: any) => {
         if (res.error) {
           this.message.set(res.error);
         } else {
-          this.message.set(res.message || 'Compte créé avec succès ! Un email de vérification a été envoyé.');
+          this.message.set(res.message || this.i18n.t('admin.comptes.created_with_verification'));
           this.showForm.set('');
           this.newUser = { email: '', motDePasse: '', role: 'CHERCHEUR' };
           this.loadUsers();
@@ -701,29 +715,43 @@ export class DashboardAdmin implements OnInit {
 
   changerRole(id: number, event: Event) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas modifier votre propre rôle."); return; }
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set(this.i18n.t('admin.comptes.cannot_modify_own_role')); return; }
     const role = (event.target as HTMLSelectElement).value;
     this.api.patch(`users/${id}/role`, { role }).subscribe({
-      next: () => { this.message.set('Rôle modifié.'); this.loadUsers(); },
+      next: () => { this.message.set(this.i18n.t('admin.comptes.role_updated')); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
 
   toggleActif(id: number) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas désactiver votre propre compte."); return; }
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set(this.i18n.t('admin.comptes.cannot_disable_own_account')); return; }
     this.api.patch(`users/${id}/toggle`, {}).subscribe({
-      next: () => { this.message.set('Statut modifié.'); this.loadUsers(); },
+      next: () => { this.message.set(this.i18n.t('admin.comptes.status_updated')); this.loadUsers(); },
+      error: err => this.handleError(err)
+    });
+  }
+
+  forceActivateUser(id: number) {
+    this.api.patch(`users/${id}/force-activate`, {}).subscribe({
+      next: () => { this.message.set(this.i18n.t('admin.comptes.force_activated')); this.loadUsers(); },
+      error: err => this.handleError(err)
+    });
+  }
+
+  resendVerificationMail(id: number) {
+    this.api.post(`users/${id}/resend-verification`, {}).subscribe({
+      next: () => { this.message.set(this.i18n.t('admin.comptes.verification_resent')); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
 
   supprimerUser(id: number) {
     const userToModify = this.users().find(u => u.id === id);
-    if (userToModify && userToModify.email === this.email()) { this.erreur.set("Vous ne pouvez pas supprimer votre propre compte."); return; }
-    if (!confirm('Supprimer ce compte définitivement ?')) return;
+    if (userToModify && userToModify.email === this.email()) { this.erreur.set(this.i18n.t('admin.comptes.cannot_delete_own_account')); return; }
+    if (!confirm(this.i18n.t('admin.comptes.delete_confirm'))) return;
     this.api.delete('users/' + id).subscribe({
-      next: () => { this.message.set('Compte supprimé.'); this.loadUsers(); },
+      next: () => { this.message.set(this.i18n.t('admin.comptes.deleted')); this.loadUsers(); },
       error: err => this.handleError(err)
     });
   }
